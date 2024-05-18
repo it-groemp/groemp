@@ -1,0 +1,77 @@
+.nav-link{
+    font-size: 1.5vw;
+    font-weight: bolder;
+    color: black !important;
+}
+
+.active{
+    color: #04bc64 !important;
+}
+
+.success{
+    color: #04bc64;
+}
+
+.error{
+    color: red;
+}
+
+.btn-colored{
+    color: #fff;
+    background-color: #04bc64;
+    border-color: #04bc64;
+    font-weight: bolder;
+}
+
+.btn-outline, .btn-outline:hover{
+    border: 2px solid #04bc64;
+    padding: 5px 20px; 
+    border-radius: 20px;
+    color: #04bc64;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+.btn-outline-secondary, .btn-outline-secondary:hover{
+    border: 2px solid #6C757D;
+    padding: 5px 20px; 
+    border-radius: 20px;
+    color: #6C757D;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+.btn-delete, .btn-delete:hover{
+    border: 2px solid red;
+    padding: 5px 30px; 
+    border-radius: 30px;
+    color: red;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 10px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.align-right{
+    float: right;
+}
+
+.border{
+    border: 1px solid black !important;
+}
+
+.form-container{
+    width: 70%;
+    border: 1px solid black;
+}
+
+.no-border{
+    border-width: 0 !important;
+}

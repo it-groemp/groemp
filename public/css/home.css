@@ -1,0 +1,139 @@
+body{
+    font-family: "Open Sans";
+}
+
+.nav-link{
+    font-size: 1.5vw;
+    font-weight: bolder;
+    color: black !important;
+}
+
+.success{
+    color: #04bc64;
+}
+
+.error{
+    color: red;
+}
+
+.btn-colored{
+    color: #fff;
+    background-color: #04bc64;
+    border-color: #04bc64;
+    font-weight: bolder;
+}
+
+.btn-outline, .btn-outline:hover{
+    border: 2px solid #04bc64;
+    padding: 5px 20px; 
+    border-radius: 20px;
+    color: #04bc64;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+.btn-outline-secondary, .btn-outline-secondary:hover{
+    border: 2px solid #6C757D;
+    padding: 5px 20px; 
+    border-radius: 20px;
+    color: #6C757D;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+footer{
+    background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url('../images/footer.jpeg');
+    background-size: 100% 100%;
+    color: white;
+}
+
+.footer-links{
+    color: white;
+    text-decoration: none;
+}
+
+.footer-links:hover{
+    font-weight: bolder;
+    color: white;
+}
+
+.link-heading{
+    font-weight: bold;
+    font-size: x-large !important;
+}
+
+.links-active{
+    font-weight: bold;
+}
+
+#btn-back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    background-color: #04bc64;
+    border-radius: 40px;
+    font-size: 30px;
+}
+
+.growth-img{
+    max-width:100%;
+    max-height:100%;
+    vertical-align: middle;
+}
+
+.section-title{
+    color: #04bc64;
+    font-size: 3rem;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.what-we-do li{
+    list-style-type: none;
+    font-size: large;
+}
+
+.what-we-do .fa-arrow-right{
+    color:#04bc64;
+}
+
+.border{
+    border: 3px solid black !important;
+}
+
+.benefit-img{
+    max-width:80%;
+    max-height:80%;
+    display: block;
+}
+
+.about-us p{
+    font-weight: normal;
+}
+
+.reason{
+    height: 100%;
+    font-weight: bold;
+    background-color: #d9ead6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.reason:hover{
+    animation: 1s move-up-and-down ease;
+}
+
+@keyframes move-up-and-down {
+    0% { 
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(10px);
+    }
+}
+
+.align-right{
+    float: right;
+}
