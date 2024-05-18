@@ -17,13 +17,12 @@
         @elseif(session("error"))
             <div class="error mb-3">{!!session("error")!!}</div>
         @endif
-        <form id="login-form" method="post" action="{{route('send-admin-otp')}}">
+        <form id="login-form" method="post" action="{{route('admin-send-otp')}}">
             {{ csrf_field() }}
             <div class="form-group mt-3">
                 <label for="mobile">Mobile:</label>
                 <input type="tel" class="form-control" name="mobile" id="mobile" pattern="[6-9]{1}[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" minlength=10 maxlength=10 required>
-            </div>
-            
+            </div>            
             <div class="form-group mt-3">
                 <button type="submit" class="btn btn-colored">Send OTP</button>
             </div>
@@ -54,7 +53,7 @@
                     @elseif(session("successResend"))
                         <div class="success mb-3 p-3"></div>
                     @endif
-					<form id="otp-form" method="post" action="{{route('verify-admin-otp')}}">
+					<form id="otp-form" method="post" action="{{route('admin-verify-otp')}}">
             			{{ csrf_field() }}
 						<div class="form-group mt-3">
 							<label for="name">Enter OTP:</label>
