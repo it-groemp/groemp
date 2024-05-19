@@ -5,11 +5,19 @@
                 <img src="../images/logo.png" width="80px" height="80px" alt="Logo"/>
             </a>
         </div>
+        @if(Session::has("role"))
+            <div class="d-flex">				
+                <a class="btn btn-colored" href="{{route('admin-logout')}}" style="padding: 10px 20px;">Logout</a>
+            </div>
+        @endif
     </nav>
     @if(Session::has("email"))
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='company-details'?' active':''?>" aria-current="page" href="{{route('company-details')}}">Company Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='add-admin'?' active':''?>" aria-current="page" href="{{route('add-admin')}}">Add Admin Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='employee-details'?' active':''?>" aria-current="page" href="{{route('employee-details')}}">Employee Details</a>

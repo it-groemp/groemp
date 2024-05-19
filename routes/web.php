@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BenefitController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CompanyController;
@@ -33,13 +34,15 @@ Route::post("/send-otp", [EmployeeController::class,"sendOtp"])->name("send-otp"
 Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
 Route::get("/profile",[EmployeeController::class,"profile"])->name("profile");
 
-Route::get("/admin/login", [EmployeeController::class,"adminLogin"])->name("admin-login");
-Route::get("/admin/logout", [EmployeeController::class,"adminLogout"])->name("admin-logout");
-Route::post("/send-admin-otp", [EmployeeController::class,"sendAdminOtp"])->name("send-admin-otp");
-Route::post("/verify-admin-otp", [EmployeeController::class,"verifyAdminOtp"])->name("verify-admin-otp");
-
-Route::get("/employee-details", [EmployeeController::class,"employeeDetails"])->name("employee-details");
-Route::post("/save-employee-details", [EmployeeController::class,"saveEmployeeDetails"])->name("save-employee-details");
+Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
+Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
+Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
+Route::post("/admin/send-otp", [AdminController::class,"sendAdminOtp"])->name("admin-send-otp");
+Route::post("/admin/verify-otp", [AdminController::class,"verifyAdminOtp"])->name("admin-verify-otp");
+Route::get("/admin/add-admin", [AdminController::class,"addAdmin"])->name("add-admin");
+Route::post("/admin/save-admin", [AdminController::class,"saveAdmin"])->name("save-admin");
+Route::get("/employee-details", [AdminController::class,"employeeDetails"])->name("employee-details");
+Route::post("/save-employee-details", [AdminController::class,"saveEmployeeDetails"])->name("save-employee-details");
 
 Route::get("/upload", [PagesController::class, "upload"])->name("upload");
 Route::post("/save", [PagesController::class, "save"])->name("save");
