@@ -39,12 +39,10 @@
             </div>
             <div class="modal-body">
                 <div class="form p-4">
-                    @if($errors->any())
+                    @if(Session::has("error"))
                         <div class="alert error mt-3">
                             <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
+                                <li>{{Session::get("error")}}</li>
                             </ul>
                         </div>
                     @endif
