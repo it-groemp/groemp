@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Company;
+use App\Models\Address;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -15,25 +16,33 @@ class CompanyImport implements ToCollection, WithHeadingRow
     * @return \Illuminate\Database\Eloquent\Model|null
     */
 
-    public function sheets(): array
-    {
-        return [
-            "Group_Company" => $this,
-        ];
-    }
+    // public function sheets(): array
+    // {
+    //     return [
+    //         "Group_Company" => $this,
+    //     ];
+    // }
 
     public function Collection(Collection $collection)
     {
-        
+        $prev_pan="";
         foreach ($collection as $row){
-            Company::create([
-                "name" => $row["name"] ?? "",
-                "group_company_code" => $row["group_company_code"] ?? "",
-                "pan" => $row["pan"] ?? "",
-                "mobile" => $row["mobile"] ?? "",
-                "email" => $row["email"] ?? "",
+            $curr_pan = $row["pan"];
+            if($prev_pan!=$curr_pan){
+                Company::create([
+                    "name" => $row["name"] ?? "",
+                    "group_company_code" => $row["group_company_code"] ?? "",
+                    "pan" => $curr_pan ?? "",
+                    "mobile" => $row["mobile"] ?? "",
+                    "email" => $row["email"] ?? ""
+                ]);
+            }
+            $prev_pan = $curr_pan;         
+            Address::create([
+                "company_pan" => $curr_pan,
                 "state" => $row["state"] ?? "",
-                "city" => $row["city"] ?? ""
+                "city" => $row["city"] ?? "",
+                "pincode" => $row["pincode"] ?? ""
             ]);
         }
     }

@@ -10,7 +10,7 @@ use App\Models\Benefit;
 class BrandController extends Controller
 {
     public function brandDetails(){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $brand = Brand::join("benefits","brands.benefit_id","=","benefits.id")->get(['brands.id as id','brands.name as name','benefits.name as benefit_name','brands.image_name as image_name']);
             return view("admin.brands.list-brand")->with("brands",$brand);
         }
@@ -20,7 +20,7 @@ class BrandController extends Controller
     }
 
     public function addbrand(){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $benefits = Benefit::all()->pluck("name")->toArray();
             return view("admin.brands.add-brand")->with("benefits",$benefits);
         }
@@ -30,7 +30,7 @@ class BrandController extends Controller
     }
 
     public function savebrand(Request $request){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $this->validate($request, [
                 "name" => "required|max:50",
                 "benefit" => "required",
@@ -58,7 +58,7 @@ class BrandController extends Controller
     }
 
     public function editBrand($id){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $brand = Brand::find($id);
             $benefits = Benefit::all()->pluck("name")->toArray();
             return view("admin.brands.edit-brand",["brand"=>$brand, "benefits"=>$benefits]);
@@ -69,7 +69,7 @@ class BrandController extends Controller
     }
 
     public function updateBrand(Request $request){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $this->validate($request, [
                 "name" => "required|max:50",
                 "benefit" => "required"
@@ -96,7 +96,7 @@ class BrandController extends Controller
     }
 
     public function deleteBrand($id){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $brand = Brand::find($id);      
             $brand->delete();
             return redirect("/brand-details");

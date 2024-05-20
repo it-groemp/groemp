@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class Address extends Model
 {
     use HasFactory;
+    protected $table = "address";
     protected $fillable = [
-        "name",
-        "group_company_code",
-        "pan",
-        "mobile",
-        "email"
+        "company_pan",
+        "state",
+        "city",
+        "pincode"
     ];
 }

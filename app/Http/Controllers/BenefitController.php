@@ -9,7 +9,7 @@ use App\Models\Benefit;
 class BenefitController extends Controller
 {
     public function benefitDetails(){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $benefits = Benefit::all();
             return view("/admin/benefit/list-benefits")->with("benefits",$benefits);
         }
@@ -19,7 +19,7 @@ class BenefitController extends Controller
     }
 
     public function addBenefit(){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             return view("admin.benefit.add-benefit");
         }
         else{
@@ -28,7 +28,7 @@ class BenefitController extends Controller
     }
 
     public function saveBenefit(Request $request){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $this->validate($request, [
                 "name" => "required|max:50",
                 "amount" => "required|numeric",
@@ -56,7 +56,7 @@ class BenefitController extends Controller
     }
 
     public function editBenefit($id){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $benefit = Benefit::find($id);
             return view("admin.benefit.edit-benefit",["benefit"=>$benefit]);
         }
@@ -66,7 +66,7 @@ class BenefitController extends Controller
     }
 
     public function updateBenefit(Request $request){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $this->validate($request, [
                 "name" => "required|max:50",
                 "amount" => "required|numeric"
@@ -93,7 +93,7 @@ class BenefitController extends Controller
     }
 
     public function deleteBenefit($id){
-        if((new EmployeeController)->checkAdminSession()){
+        if((new AdminController)->checkAdminSession()){
             $benefit = Benefit::find($id);      
             $benefit->delete();
             return redirect("/benefit-details");
