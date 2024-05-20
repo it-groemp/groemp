@@ -11,10 +11,10 @@
             </div>
         @endif
     </nav>
-    @if(Session::has("email"))
+    @if(Session::has("mobile") && Session::get("role")=="Admin")
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link <?php echo Route::currentRouteName()=='company-details'?' active':''?>" aria-current="page" href="{{route('company-details')}}">Company Details</a>
+                <a class="nav-link <?php echo Route::currentRouteName()=='company-details-admin'?' active':''?>" aria-current="page" href="{{route('company-details-admin')}}">Company Details</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='add-admin'?' active':''?>" aria-current="page" href="{{route('add-admin')}}">Add Admin Login</a>
@@ -30,6 +30,18 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='benefit-details'?' active':''?>" aria-current="page" href="{{route('benefit-details')}}">Benefit Details</a>
+            </li>
+        </ul>
+    @elseif(Session::has("mobile") && Session::get("role")=="Employer")
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='company-details-employer'?' active':''?>" aria-current="page" href="{{route('company-details-employer')}}">Company Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='employee-details'?' active':''?>" aria-current="page" href="{{route('employee-details')}}">Employee Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='voucher-details'?' active':''?>" aria-current="page" href="">Voucher Details</a>
             </li>
         </ul>
     @endif

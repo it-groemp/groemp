@@ -24,7 +24,8 @@ use App\Http\Controllers;
 Route::get("/", [PagesController::class,"index"])->name("home");
 Route::get("/our-brands", [PagesController::class,"ourBrands"])->name("our-brands");
 
-Route::get("/company-details", [CompanyController::class,"companyDetails"])->name("company-details");
+Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAdmin"])->name("company-details-admin");
+Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");
 Route::get("/register-company", [CompanyController::class,"registerCompany"])->name("register-company");
 Route::post("/save-company-details", [CompanyController::class,"saveCompanyDetails"])->name("save-company-details");
 
