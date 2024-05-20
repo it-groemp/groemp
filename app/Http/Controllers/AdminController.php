@@ -80,6 +80,7 @@ class AdminController extends Controller
             Session::forget("otpModal");
             $admin = Admin::where("mobile",$mobile)->first();
             $role=$admin->role;
+            Session::put("mobile",$admin->mobile);
             Session::put("email",$admin->email);
             Session::put("role",$admin->role);
             return redirect("/employee-details");
@@ -117,14 +118,21 @@ class AdminController extends Controller
     public function employeeDetails(){
         if($this->checkAdminSession() || $this->checkEmployerSession()){
             $role = Session::get("role");
-            $employees = null;
+            $mobile = Session::get("mobile");
+            $employees = [];
             if($role == "Admin"){
-                $employees = Employee::all();
+                $count = Employee::all()->count();
+                if($count>0){
+                    $employees = Employee::all();
+                }
             }
             else if($role == "Employer"){
                 $email = Session::get("email");
-                $company = Employee::where("email",$email)->pluck("company");
-                $employees = Employee::where("company",$company);
+                $company = Admin::where("mobile",$mobile)->pluck("pan_number");
+                $count = Employee::where("company",$company)->count();
+                if($count>0){
+                    $employees = Employee::where("company",$company);
+                }
             }
             return view("/admin/employee/list-employees")->with("employees",$employees);
         }
