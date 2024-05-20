@@ -50,7 +50,7 @@ class AdminController extends Controller
     }
 
     public function adminLogout(){      
-        Session::forget("email");
+        Session::forget("user_id");
         Session::forget("role");
         return redirect("/admin/login");
     }
@@ -80,15 +80,14 @@ class AdminController extends Controller
             Session::forget("otpModal");
             $admin = Admin::where("mobile",$mobile)->first();
             $role=$admin->role;
-            Session::put("mobile",$admin->mobile);
-            Session::put("email",$admin->email);
+            Session::put("user_id",$admin->id);
             Session::put("role",$admin->role);
             return redirect("/employee-details");
         }
     }
 
     public function checkAdminSession(){
-        if(Session::get("email")!="" && Session::get("role")=="Admin"){
+        if(Session::get("user_id")!="" && Session::get("role")=="Admin"){
             return true;
         }
         else{
@@ -97,7 +96,7 @@ class AdminController extends Controller
     }
 
     public function checkEmployerSession(){
-        if(Session::get("email")!="" && Session::get("role")=="Employer"){
+        if(Session::get("user_id")!="" && Session::get("role")=="Employer"){
             return true;
         }
         else{
@@ -118,7 +117,9 @@ class AdminController extends Controller
     public function employeeDetails(){
         if($this->checkAdminSession() || $this->checkEmployerSession()){
             $role = Session::get("role");
-            $mobile = Session::get("mobile");
+            $user_id = Session::get("user_id");
+            $user = Admin::find($id)->first()->pluck("mobile");
+            $mobile = $user->mobile;
             $employees = [];
             if($role == "Admin"){
                 $count = Employee::all()->count();
@@ -127,7 +128,6 @@ class AdminController extends Controller
                 }
             }
             else if($role == "Employer"){
-                $email = Session::get("email");
                 $company = Admin::where("mobile",$mobile)->pluck("pan_number");
                 $count = Employee::where("company",$company)->count();
                 if($count>0){
