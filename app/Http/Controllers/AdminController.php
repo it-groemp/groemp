@@ -117,8 +117,8 @@ class AdminController extends Controller
     public function employeeDetails(){
         if($this->checkAdminSession() || $this->checkEmployerSession()){
             $role = Session::get("role");
-            $user_id = Session::get("user_id");
-            $user = Admin::find($id)->first()->pluck("mobile");
+            $id = Session::get("user_id");
+            $user = Admin::find($id)->first();
             $mobile = $user->mobile;
             $employees = [];
             if($role == "Admin"){

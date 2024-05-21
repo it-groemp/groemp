@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name",50)->null(false);
             $table->string("mobile","10")->null(false);
             $table->string("email","100")->null(false);
-            $table->string("pan_number",10)->null(false);
+            $table->string("pan_number",10)->null(false)->unique();
             $table->string("role",10)->null(false)->default("Employer");
             $table->timestamps();
         });
