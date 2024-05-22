@@ -39,13 +39,6 @@
             </div>
             <div class="modal-body">
                 <div class="form p-4">
-                    @if(Session::has("error"))
-                        <div class="alert error mt-3">
-                            <ul>
-                                <li>{{Session::get("error")}}</li>
-                            </ul>
-                        </div>
-                    @endif
                     @if(session()->get("error"))
                         <div class="error mb-3 p-3">{!!session()->get("error")!!}</div>
                     @elseif(session("successResend"))
