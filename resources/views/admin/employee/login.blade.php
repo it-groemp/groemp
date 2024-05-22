@@ -6,7 +6,7 @@
 @section("content")
 <div class="container box mb-5">
     <h1 class="mb-3 text-center"><strong><i>LOGIN</i></strong></h1>
-    <div class="form p-4">          
+    <div class="form p-4">
         @if(session("otpModal")=="yes")
             <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
             <script>
@@ -14,8 +14,8 @@
                     $("#otpModal").modal("show");
                 });
             </script>
-        @elseif(session("error"))
-            <div class="error mb-3">{!!session("error")!!}</div>
+        @elseif(session()->has("errors"))
+            <div class="error mb-3">{!!session()->get("errors")!!}</div>
         @endif
         <form id="login-form" method="post" action="{{route('admin-send-otp')}}">
             {{ csrf_field() }}

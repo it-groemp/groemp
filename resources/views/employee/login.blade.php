@@ -14,8 +14,8 @@
                     $("#otpModal").modal("show");
                 });
             </script>
-        @elseif(session("error"))
-            <div class="error mb-3">{!!session("error")!!}</div>
+        @elseif(session()->has("errors"))
+            <div class="error mb-3">{!!session()->get("errors")!!}</div>
         @endif
         <form id="login-form" method="post" action="{{route('send-otp')}}">
             {{ csrf_field() }}
@@ -40,15 +40,6 @@
             </div>
             <div class="modal-body">
                 <div class="form p-4">
-                    @if($errors->any())
-                        <div class="alert error mt-3">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
                     @if(session()->get("error"))
                         <div class="error mb-3 p-3">{!!session()->get("error")!!}</div>
                     @elseif(session("successResend"))
