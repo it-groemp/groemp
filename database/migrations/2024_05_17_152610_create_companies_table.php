@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string("group_company_code",255)->default("");
             $table->string("mobile","10")->nullable(false);
             $table->string("email","50");
+            $table->timestamp("from_date")->useCurrent();
+            $table->timestamp("to_date")->nullable(true);
             $table->timestamps();
         });
     }

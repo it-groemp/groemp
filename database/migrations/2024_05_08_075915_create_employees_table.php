@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string("company","50")->null(false);
             $table->integer("benefit_amount")->autoincrement(false)->null(false);
             $table->string("role",10)->null(false)->default("Employee");
+            $table->timestamp("from_date")->useCurrent();
+            $table->timestamp("to_date")->nullable(true);
             $table->timestamps();
         });
     }
