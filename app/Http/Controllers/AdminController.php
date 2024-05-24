@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 
 use App\Models\Admin;
 use App\Models\Employee;
+use App\Models\Company;
 
 use App\Imports\EmployeeImport;
 
@@ -39,7 +40,7 @@ class AdminController extends Controller
             $admin->name = $name;
             $admin->mobile = $mobile;
             $admin->email = $email;
-            $admin->pan_number = $pan_number;
+            $admin->company = $pan_number;
             $admin->role = $role;
             $admin->save();
             return redirect("/admin/add-admin");
@@ -84,8 +85,8 @@ class AdminController extends Controller
         else{
             Session::forget("otpModal");
             $admin = Admin::where("mobile",$mobile)->first();
-            $company = Company::where("pan",$admmin->pan_number)->get();
-            if($company!=null){
+            $company = Company::where("pan",$admin->company)->where("to_date","!=",null)->exists();
+            if($company){
                 $error = "The company has ceased its operations with us.";
                 return redirect()->back()->with("error",$error);
             }
@@ -135,11 +136,11 @@ class AdminController extends Controller
                 $employees = Employee::all();
             }
             else if($role == "Employer"){
-                $company = Admin::where("mobile",$mobile)->first()->value("pan_number");
+                $company = Admin::where("mobile",$mobile)->first()->value("company");
                 $employees = Employee::join("companies","employees.company","=","companies.pan")->where("employees.company",$company)
                             ->orWhere("companies.group_company_code",$company)
-                            -andWhere("companies.from_date",null)
-                            ->get(["employees.pan_number","employees.name","employees.mobile","employees.email","employees.designation","employees.benefit_amount"]);
+                            ->where("companies.to_date",null)
+                            ->get(["employees.company","employees.name","employees.mobile","employees.email","employees.designation","employees.benefit_amount"]);
             }
             return view("/admin/employee/list-employees")->with("employees",$employees);
         }
