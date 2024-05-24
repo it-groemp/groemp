@@ -31,7 +31,7 @@ class CompanyImport implements ToCollection, WithHeadingRow
             if($prev_pan!=$curr_pan){
                 Company::create([
                     "name" => $row["name"] ?? "",
-                    "group_company_code" => $row["group_company_code"] ?? "",
+                    "group_company_code" => $row["group_company_code"] ?? null,
                     "pan" => $curr_pan ?? "",
                     "mobile" => $row["mobile"] ?? "",
                     "email" => $row["email"] ?? ""
