@@ -39,7 +39,7 @@ class CompanyImport implements ToCollection, WithHeadingRow
             }
             $prev_pan = $curr_pan;         
             Address::create([
-                "company_pan" => $curr_pan,
+                "company" => $curr_pan,
                 "state" => $row["state"] ?? "",
                 "city" => $row["city"] ?? "",
                 "pincode" => $row["pincode"] ?? ""

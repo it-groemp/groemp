@@ -39,12 +39,12 @@ class CompanyController extends Controller
                 return view("admin.company.company-details-employer")->with("group_company",$group_company);
             }
             else{
-                $group_address = Address::where("company_pan",$company_pan)->get();
+                $group_address = Address::where("company",$company_pan)->get();
                 $sister_company = Company::where("group_company_code",$company_pan)->get();
                 $address_company = array();
                 foreach($sister_company as $sis){
                     $sis_pan = $sis->pan;
-                    $addresses = Address::where("company_pan",$sis_pan)->get();
+                    $addresses = Address::where("company",$sis_pan)->get();
                     $arr = array();
                     foreach($addresses as $address){
                         array_push($arr,$address);
