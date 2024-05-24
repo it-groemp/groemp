@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('otps', function (Blueprint $table) {
             $table->id("otp_id");
-            $table->string("type",10)->nullable(false)->unique();
+            $table->string("type",100)->nullable(false)->unique();
             $table->integer("otp")->nullable(false);
             $table->timestamps();
         });

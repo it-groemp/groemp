@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->string("name",50)->null(false);
+            $table->string("name",50)->nullable(false);
             $table->unsignedBigInteger("benefit_id")->nullable(false);
             $table->foreign("benefit_id")->references("id")->on("benefits");
-            $table->string("image_name",60)->null(false);
+            $table->string("image_name",60)->nullable(false);
             $table->string("created_by")->nullable(false);
             $table->string("updated_by")->nullable(false);
             $table->timestamps();

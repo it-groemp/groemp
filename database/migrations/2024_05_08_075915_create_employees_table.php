@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->string("pan_number",10)->primary();
-            $table->string("name",50)->null(false);
-            $table->string("mobile","10")->null(false);
-            $table->string("email","100")->null(false);
-            $table->string("designation","50")->null(false);
-            $table->string("company","50")->null(false);
-            $table->integer("benefit_amount")->autoincrement(false)->null(false);
-            $table->string("role",10)->null(false)->default("Employee");
+            $table->string("employee_code",20)->nullable(false);
+            $table->string("name",50)->nullable(false);
+            $table->string("mobile",10)->nullable(false);
+            $table->string("email",100)->nullable(false);
+            $table->string("designation",50)->nullable(false);
+            $table->string("company",10)->nullable(false);
+            $table->foreign("company")->references("pan")->on("companies");
+            $table->integer("benefit_amount")->autoincrement(false)->nullable(false);
             $table->timestamp("from_date")->useCurrent();
             $table->timestamp("to_date")->nullable(true);
             $table->timestamps();

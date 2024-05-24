@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string("name",50)->null(false);
-            $table->string("mobile","10")->null(false);
-            $table->string("email","100")->null(false);
-            $table->string("pan_number",10)->null(false)->unique();
-            $table->string("role",10)->null(false)->default("Employer");
+            $table->string("name",50)->nullable(false);
+            $table->string("mobile",10)->nullable(false);
+            $table->string("email",100)->nullable(false);
+            $table->string("company",10)->nullable(false)->unique();
+            $table->foreign("company")->references("pan")->on("companies");
+            $table->string("role",10)->nullable(false)->default("Employer");
+            $table->timestamp("from_date")->useCurrent();
+            $table->timestamp("to_date")->nullable(true);
             $table->timestamps();
         });
     }
