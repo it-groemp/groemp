@@ -17,6 +17,9 @@
                 <a class="nav-link <?php echo Route::currentRouteName()=='company-details-admin'?' active':''?>" aria-current="page" href="{{route('company-details-admin')}}">Company Details</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='cc-details'?' active':''?>" aria-current="page" href="{{route('cc-details')}}">Cost Center Details</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='add-admin'?' active':''?>" aria-current="page" href="{{route('add-admin')}}">Add Admin Login</a>
             </li>
             <li class="nav-item">
@@ -36,6 +39,9 @@
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='company-details-employer'?' active':''?>" aria-current="page" href="{{route('company-details-employer')}}">Company Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='cc-details'?' active':''?>" aria-current="page" href="{{route('cc-details')}}">Cost Center Details</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='employee-details'?' active':''?>" aria-current="page" href="{{route('employee-details')}}">Employee Details</a>

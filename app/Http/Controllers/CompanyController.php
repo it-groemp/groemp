@@ -10,8 +10,10 @@ use Illuminate\Support\Arr;
 use App\Models\Admin;
 use App\Models\Company;
 use App\Models\Address;
+use App\Models\CostCenter;
 
 use App\Imports\CompanyImport;
+use App\Imports\CostCenterImport;
 
 use Excel;
 
@@ -33,7 +35,7 @@ class CompanyController extends Controller
         if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
             $id = Session::get("user_id");
             $admin = Admin::find($id);
-            $company_pan = $admin->pan_number;
+            $company_pan = $admin->company;
             $group_company = Company::where("pan",$company_pan)->first();
             if($group_company==null){
                 return view("admin.company.company-details-employer")->with("group_company",$group_company);
@@ -90,5 +92,35 @@ class CompanyController extends Controller
         else{
             return redirect("/admin/login");
         }
+    }
+
+    public function ccDetails(){
+        $ccDetails=[];
+        if((new AdminController())->checkAdminSession()){
+            $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
+            ->get(["company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
+            return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
+        }
+        else if((new AdminController())->checkEmployerSession()){
+            $id = Session::get("user_id");
+            $user = Admin::where("id",$id)->first();
+            $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
+            ->where("companies.pan",$user->company)->orWhere("companies.group_company_code",$user->company)
+            ->get(["company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
+            return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
+        }
+        else{
+            return redirect("/admin/login");
+        }        
+    }
+
+    public function saveCCDetails(Request $request){
+        $request->validate([
+            'uploadFile' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new CostCenterImport, $request->file("uploadFile"));
+
+        return redirect("/cc-details");
     }
 }

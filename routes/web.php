@@ -28,6 +28,8 @@ Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAd
 Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");
 Route::get("/register-company", [CompanyController::class,"registerCompany"])->name("register-company");
 Route::post("/save-company-details", [CompanyController::class,"saveCompanyDetails"])->name("save-company-details");
+Route::get("/cc-details", [CompanyController::class,"ccDetails"])->name("cc-details");
+Route::post("/save-cc-details", [CompanyController::class,"saveCCDetails"])->name("save-cc-details");
 
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
