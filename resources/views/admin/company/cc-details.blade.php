@@ -2,22 +2,6 @@
 @section('pageTitle','Employee Details')
 @section("css")
     <link href="{{asset('css/admin-home.css')}}" rel="stylesheet">
-    <style>
-        #popupDialog {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 0 20px
-                    rgba(0, 0, 0, 0.3);
-                z-index: 1000;
-                visibility: hidden;
-            }
-
-    </style>
 @stop
 @section("content")
     <div class="container my-5">
