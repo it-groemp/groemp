@@ -47,7 +47,7 @@ class EmployeeController extends Controller
             return redirect()->back()->with("error",$error);
         }
         else{
-            $rmployee = Employee::where("mobile",$mobile)->andWhere("from_date",null)->first()->pluck("id");
+            $employee = Employee::where("mobile",$mobile)->where("to_date",null)->first()->pluck("id");
             Session::put("emp-id",$employee->id);
             Session::forget("otpModal");
             return redirect("/profile");
