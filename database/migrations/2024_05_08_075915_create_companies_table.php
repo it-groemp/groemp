@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->string("pan",10)->primary();
             $table->string("name",255)->nullable(false);
-            $table->string("group_company_code",10)->default("");
+            $table->string("group_company_code",10)->default("")->nullable(true);
             $table->foreign("group_company_code")->references("pan")->on("companies");
             $table->string("mobile",10)->nullable(false);
             $table->string("email",100)->nullable(false);
