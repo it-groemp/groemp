@@ -4,13 +4,12 @@
     <link href="{{asset('css/admin-home.css')}}" rel="stylesheet">
 @stop
 @section("content")
-    <div class="container my-5">
+<div class="container my-5">
         <h2 class="text-center mb-3">Cost Center Details</h2>
-       
         @if(count($ccDetails)>0)
             <table class="table">
                 <tr>
-                    <th scope="col">Sr. No.</th>
+                <th scope="col">Sr. No.</th>
                     <th scope="col">Company PAN</th>
                     <th scope="col">Company Name</th>
                     <th scope="col">Cost Center Details</th>
@@ -29,14 +28,18 @@
                         <td>{{$cc->company}}</td>
                         <td>{{$cc->name}}</td>
                         <td>
-                            <button class="btn btn-outline" onClick='openPop(<?php echo json_encode($ccList); ?>)'>View Cost Centers</button>
+                            <button class="btn btn-outline" onClick='viewCC(<?php echo json_encode($ccList); ?>)'>View Cost Centers</button>
+                            @if(Session::get("role")=="Employer")
+                                <button class="btn btn-outline" onClick='editCC(<?php echo json_encode($ccList); ?>,{{$cc->id}})'>Edit Cost Centers</button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
+            </table>
         @endif
         @if(Session::get("role")=="Employer")
             <div class="text-right my-5 pr-3 align-right">
-                <a class="btn btn-outline" href="{{asset('files/Cost_Center.xlsx')}}">Download Cost Center Data Sheet</a>
+            <a class="btn btn-outline" href="{{asset('files/Cost_Center.xlsx')}}">Download Cost Center Data Sheet</a>
                 <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModal">
                     Upload Cost Center Data
                 </button>
@@ -72,6 +75,39 @@
 		</div>
 	</div>
 
+    @if(Session::get("role")=="Employer")
+        <div class="modal fade" id="updateCCModal" tabindex="-1" aria-labelledby="updateCCModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateCCModalLabel">Update Cost Center</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="update-form" method="post" action="">
+                            {{ csrf_field() }}
+                            <div class="form-group mt-3">
+                                <label for="CC1"> CC1:</label>
+                                <input type="text" class="form-control" name="CC1" id="CC1" maxlength=20 required>
+                            </div>
+                            @for($i=2;$i<=10;$i++)
+                                <div class="form-group mt-3">
+                                    <label for="{{'CC'.$i}}"> CC{{$i}}:</label>
+                                    <input type="text" class="form-control" name="{{'CC'.$i}}" id="{{'CC'.$i}}" maxlength=20>
+                                </div>
+                            @endfor
+                            <input type="hidden" id="id" value=""/>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-outline" id="update" value="Update Cost Center Data"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="modal fade" id="uploadDataModal" tabindex="-1" aria-labelledby="uploadDataModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -106,12 +142,26 @@
             }
         });
 
-        function openPop(arr){
+        function viewCC(arr){
             for(var i=0;i<10;i++){
                 var li = document.getElementById('cc'+(i+1));
-                li.textContent = "CC"+(i+1)+": "+arr[i];
+                li.textContent = "CC"+(i+1)+": "+(arr[i]==null ? "" : arr[i]);
             }
             $("#ccDataModal").modal("show");
         }
+
+        function editCC(arr,id){            
+            for(var i=0;i<10;i++){
+                $("#CC"+(i+1)).prop("value",arr[i]);
+            }
+            $("#id").prop("value",id);
+            $("#updateCCModal").modal("show");
+        }
+
+        $("#update").click(function(){
+            $id = $("#id").prop("value");
+            $("#update-form").attr("action","/update-cc-details/"+$id);
+            $("#update-form").submit();
+        });
     </script>
 @stop

@@ -98,7 +98,7 @@ class CompanyController extends Controller
         $ccDetails=[];
         if((new AdminController())->checkAdminSession()){
             $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
-            ->get(["company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
+            ->get(["id","company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
             return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
         }
         else if((new AdminController())->checkEmployerSession()){
@@ -106,12 +106,25 @@ class CompanyController extends Controller
             $user = Admin::where("id",$id)->first();
             $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
             ->where("companies.pan",$user->company)->orWhere("companies.group_company_code",$user->company)
-            ->get(["company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
+            ->get(["id","company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
             return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
         }
         else{
             return redirect("/admin/login");
         }        
+    }
+
+    public function updateCCDetails($id){
+        //$admin_id = Session::get("user_id");
+        //$user = Admin::where("id",$admin_id)->first();
+        $cost_center = CostCenter::where("id",$id)->first();
+        for($i=1;$i<=10;$i++){
+            $name = "CC".$i;
+            $cost_center->$name = request("CC".$i);
+        }  
+        //$cost_center->updated_by = $user->email; 
+        $cost_center->update();     
+        return redirect("/cc-details");
     }
 
     public function saveCCDetails(Request $request){

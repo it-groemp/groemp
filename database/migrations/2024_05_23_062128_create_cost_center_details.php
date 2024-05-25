@@ -17,14 +17,14 @@ return new class extends Migration
             $table->foreign("company")->references("pan")->on("companies");
             $table->string("cc1",20)->nullable(false);
             $table->string("cc2",20)->nullable(false);
-            $table->string("cc3",20);
-            $table->string("cc4",20);
-            $table->string("cc5",20);
-            $table->string("cc6",20);
-            $table->string("cc7",20);
-            $table->string("cc8",20);
-            $table->string("cc9",20);
-            $table->string("cc10",20);
+            $table->string("cc3",20)->nullable(true);
+            $table->string("cc4",20)->nullable(true);
+            $table->string("cc5",20)->nullable(true);
+            $table->string("cc6",20)->nullable(true);
+            $table->string("cc7",20)->nullable(true);
+            $table->string("cc8",20)->nullable(true);
+            $table->string("cc9",20)->nullable(true);
+            $table->string("cc10",20)->nullable(true);
             $table->timestamps();
         });
     }
