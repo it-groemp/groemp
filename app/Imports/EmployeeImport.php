@@ -33,6 +33,7 @@ class EmployeeImport implements ToCollection, WithHeadingRow
         foreach ($collection as $row){
             Employee::create([
                 "pan_number" => $row["pan_number"],
+                "employee_code" => $row["employee_id"],
                 "name" => $row["name"],
                 "mobile" => $row["mobile"],
                 "email" => $row["email"],
