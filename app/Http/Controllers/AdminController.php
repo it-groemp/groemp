@@ -12,6 +12,8 @@ use App\Models\Company;
 
 use App\Imports\EmployeeImport;
 
+use Carbon\Carbon;
+
 use Excel;
 
 class AdminController extends Controller
@@ -136,11 +138,14 @@ class AdminController extends Controller
                 $employees = Employee::all();
             }
             else if($role == "Employer"){
-                $company = Admin::where("mobile",$mobile)->first()->value("company");
-                $employees = Employee::join("companies","employees.company","=","companies.pan")->where("employees.company",$company)
+                $company = $user->company;
+                $employees = Employee::join("companies","employees.company","=","companies.pan")
+                            ->where("employees.company",$company)
                             ->orWhere("companies.group_company_code",$company)
                             ->where("companies.to_date",null)
-                            ->get(["employees.company","employees.name","employees.mobile","employees.email","employees.designation","employees.benefit_amount"]);
+                            ->where("employees.to_date",null)
+                            ->get(["employees.id","employees.pan_number","employees.company","employees.name","employees.mobile","employees.email","employees.designation","employees.benefit_amount"]);
+                //dd($employees);
             }
             return view("/admin/employee/list-employees")->with("employees",$employees);
         }
@@ -153,9 +158,59 @@ class AdminController extends Controller
         $request->validate([
             'uploadFile' => 'required|mimes:xlsx,xls',
         ]);
-
         Excel::import(new EmployeeImport, $request->file("uploadFile"));
+        return redirect("/employee-details");
+    }
 
+    public function updateEmployeeDetails($id){
+        $email = request("email");
+        $name = request("name");
+        $mobile = request("mobile");
+        $pan = request("pan");
+        $designation = request("designation");
+        $amount = request("amount");
+        $error = "";
+        if($name=="" || !preg_match ("/^[a-zA-Z .]+$/",$name)){
+            $error = "Name should contain only Capital, Small Letters, Spaces and Dot Allowed";
+        }
+        if($email=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$email)){
+            $error = $error."<br/> Please enter a valid email address";
+        }
+        if($mobile=="" || !preg_match ("/[6-9]{1}[0-9]{9}/",$mobile)){
+            $error = "Please enter a valid mobile number";
+        }
+        if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
+            $error = $error."<br/> Please enter a valid PAN";
+        }
+        if($designation==""){
+            $error = $error."<br/> Please enter a valid Designation";
+        }
+        if($amount=="" || !preg_match("/^[0-9]+$/",$amount)){
+            $error = $error."<br/> Please enter a valid Amount";
+        }
+        if($error==""){
+            //$admin_id = Session::get("user_id");
+            //$user = Admin::where("id",$admin_id)->first();
+            $employee = Employee::where("id",$id)->first();
+            $employee->pan_number = $pan;
+            $employee->name = $name;
+            $employee->mobile = $mobile;
+            $employee->email = $email;
+            $employee->designation = $designation;
+            $employee->benefit_amount = $amount;
+            //$employee->updated_by = $user->email;
+            $employee->update();
+            return redirect("/employee-details");
+        }
+        else{
+            return redirect()->back()->with("error",$error);
+        }
+    }
+
+    public function freezeEmployee($id){
+        $employee = Employee::where("id",$id)->first();
+        $employee->to_date = Carbon::now()->toDateTimeString();;
+        $employee->update();
         return redirect("/employee-details");
     }
 }

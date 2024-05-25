@@ -46,6 +46,8 @@ Route::get("/admin/add-admin", [AdminController::class,"addAdmin"])->name("add-a
 Route::post("/admin/save-admin", [AdminController::class,"saveAdmin"])->name("save-admin");
 Route::get("/employee-details", [AdminController::class,"employeeDetails"])->name("employee-details");
 Route::post("/save-employee-details", [AdminController::class,"saveEmployeeDetails"])->name("save-employee-details");
+Route::post("/update-employee-details/{id}", [AdminController::class,"updateEmployeeDetails"])->name("update-employee-details");
+Route::get("/freeze-employee/{id}", [AdminController::class,"freezeEmployee"])->name("freeze-employee");
 
 Route::get("/upload", [PagesController::class, "upload"])->name("upload");
 Route::post("/save", [PagesController::class, "save"])->name("save");

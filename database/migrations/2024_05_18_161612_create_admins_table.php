@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name",50)->nullable(false);
             $table->string("mobile",10)->nullable(false);
             $table->string("email",100)->nullable(false);
-            $table->string("company",10)->nullable(true);
+            $table->string("company",10)->nullable(false);
             $table->string("role",10)->nullable(false)->default("Employer");
             $table->timestamp("from_date")->useCurrent();
             $table->timestamp("to_date")->nullable(true);
