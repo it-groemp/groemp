@@ -45,32 +45,32 @@
     </div>
 
     <div class="modal fade" id="ccDataModal" tabindex="-1" aria-labelledby="ccDataModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title fs-5" id="ccDataModalLabel">List of Data Centers</h1>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body" id="cost-centers">
-                        <ul>
-                            <li id="cc1"></li>
-                            <li id="cc2"></li>
-                            <li id="cc3"></li>
-                            <li id="cc4"></li>
-                            <li id="cc5"></li>
-                            <li id="cc6"></li>
-                            <li id="cc7"></li>
-                            <li id="cc8"></li>
-                            <li id="cc9"></li>
-                            <li id="cc10"></li>
-                        </ul>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					</div>
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="ccDataModalLabel">List of Data Centers</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="cost-centers">
+                    <ul>
+                        <li id="cc1"></li>
+                        <li id="cc2"></li>
+                        <li id="cc3"></li>
+                        <li id="cc4"></li>
+                        <li id="cc5"></li>
+                        <li id="cc6"></li>
+                        <li id="cc7"></li>
+                        <li id="cc8"></li>
+                        <li id="cc9"></li>
+                        <li id="cc10"></li>
+                    </ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>
+	</div>
 
     <div class="modal fade" id="uploadDataModal" tabindex="-1" aria-labelledby="uploadDataModalLabel" aria-hidden="true">
         <div class="modal-dialog">

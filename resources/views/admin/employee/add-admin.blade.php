@@ -52,10 +52,10 @@
                     email: true
                 },
                 mobile: {
-                    checkPassword: true
+                    checkMobile: true
                 }
                 pan: {
-                    checkPassword: true
+                    checkPan: true
                 }
             },
             messages:{
@@ -75,14 +75,14 @@
             "Only Capital, Small Letters, Spaces and Dot Allowed"
         );
 
-        $.validator.addMethod("mobile", function (value, elem) {
+        $.validator.addMethod("checkMobile", function (value, elem) {
                 var re = /[6-9]{1}[0-9]{9}/;
                 return re.test(value);
             },
             "Please enter a valid mobile number"
         );
 
-        $.validator.addMethod("pan", function (value, elem) {
+        $.validator.addMethod("checkPan", function (value, elem) {
                 var re = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
                 return re.test(value);
             },
