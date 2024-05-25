@@ -7,7 +7,7 @@
         </div>
         @if(Session::has("role"))
             <div class="d-flex">				
-                <a class="btn btn-colored" href="{{route('admin-logout')}}" style="padding: 10px 20px;">Logout</a>
+                <a class="btn btn-colored" href="{{route('admin-logout')}}" style="padding: 10px 20px; margin-right: 20px;">Logout</a>
             </div>
         @endif
     </nav>

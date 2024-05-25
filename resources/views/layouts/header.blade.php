@@ -21,11 +21,11 @@
                 </ul>
                 @if(Session::has("employee"))
                     <div class="d-flex">				
-                        <a class="btn btn-colored" href="{{route('logout')}}" style="padding: 10px 20px;">Logout</a>
+                        <a class="btn btn-colored" href="{{route('logout')}}" style="padding: 10px 20px; margin-right: 20px;">Logout</a>
                     </div>
                 @else
                     <div class="d-flex">				
-                        <a class="btn btn-colored" href="{{route('login')}}" style="padding: 10px 20px;">Login</a>
+                        <a class="btn btn-colored" href="{{route('login')}}" style="padding: 10px 20px; margin-right: 20px;">Login</a>
                     </div>
                 @endif
 
