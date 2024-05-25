@@ -61,7 +61,7 @@
                     <h1 class="modal-title fs-5" id="editDataModalLabel">Update Employee Data</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="cost-centers">
+                <div class="modal-body">
                     <form id="update-form" method="post" action="">
                         {{ csrf_field() }}
                         <div class="form-group mt-3">
@@ -88,7 +88,6 @@
                             <label for="amount">Benefit Amount:</label>
                             <input type="text" class="form-control" name="amount" id="amount" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6" required>
                         </div>
-                        <input type="hidden" id="emp-id" value=""/>
                     </form>
                 </div>
                 <div class="modal-footer">
