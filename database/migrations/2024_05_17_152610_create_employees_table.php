@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string("designation",50)->nullable(false);
             $table->string("company",10)->nullable(false);
             $table->foreign("company")->references("pan")->on("companies");
+            $table->string("password",80)->default("")->nullable(false);
             $table->integer("benefit_amount")->autoincrement(false)->nullable(false);
             $table->timestamp("from_date")->useCurrent();
             $table->timestamp("to_date")->nullable(true);
