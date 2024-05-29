@@ -45,7 +45,7 @@ class BenefitController extends Controller
                 $benefit->image_name = $fileName;
             }
             else{
-                return redirect()->back()->with("errors","Photo couldn't be uploaded");
+                return redirect()->back()->with("error","Photo couldn't be uploaded");
             }
             $benefit->save();
             return redirect("/benefit-details");

@@ -14,8 +14,8 @@
                     $("#otpModal").modal("show");
                 });
             </script>
-        @elseif(session()->has("errors"))
-            <div class="error mb-3">{!!session()->get("errors")!!}</div>
+        @elseif(session()->has("error"))
+            <div class="error mb-3">{!!session()->get("error")!!}</div>
         @endif
         <form id="login-form" method="post" action="{{route('send-otp')}}">
             {{ csrf_field() }}

@@ -47,7 +47,7 @@ class BrandController extends Controller
                 $brand->image_name = $fileName;
             }
             else{
-                return redirect()->back()->with("errors","Photo couldn't be uploaded");
+                return redirect()->back()->with("error","Photo couldn't be uploaded");
             }
             $brand->save();
             return redirect("/brand-details");

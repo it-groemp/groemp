@@ -8,11 +8,11 @@
         <div class="form p-4 mx-auto" style="width: 70%">
         <form id="edit-brand" method="post" action="{{route('update-brand')}}" enctype="multipart/form-data">
             {{ csrf_field() }}
-            @if($errors->any())
+            @if($error->any())
                 <div class="alert error mt-3">
                     <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                        @foreach ($error->all() as $err)
+                            <li>{{ $err }}</li>
                         @endforeach
                     </ul>
                 </div>

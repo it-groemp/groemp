@@ -29,7 +29,7 @@ class EmployeeController extends Controller
         $mobile = request("mobile");
         $employee = Employee::where("mobile",$mobile)->first();
         if($employee==null){
-            return redirect()->back()->with("errors","Employee doesn't exists");
+            return redirect()->back()->with("error","Employee doesn't exists");
         }
         $this->generateOtp($mobile);
         return redirect()->back();
