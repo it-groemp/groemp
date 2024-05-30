@@ -11,7 +11,7 @@ use App\Models\Employee;
 use App\Models\Company;
 use App\Models\ResetPassword;
 
-use App\Imports\EmployeeImport;
+use App\Imports\EmployeeAddImport;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
@@ -267,7 +267,7 @@ class AdminController extends Controller
         $request->validate([
             'uploadFile' => 'required|mimes:xlsx,xls',
         ]);
-        Excel::import(new EmployeeImport, $request->file("uploadFile"));
+        Excel::import(new EmployeeAddImport, $request->file("uploadFile"));
         return redirect("/employee-details");
     }
 

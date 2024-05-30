@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Employee;
 use App\Models\Otp;
 
-use App\Imports\EmployeeImport;
+use App\Imports\EmployeeAddImport;
 
 use Excel;
 

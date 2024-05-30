@@ -32,9 +32,9 @@
                         <td id="{{'designation'.$id}}">{{$employee->designation}}</td>
                         <td id="{{'amount'.$id}}">{{$employee->benefit_amount}}</td>
                         <td>
-                            <a class="btn btn-outline" id="{{'view'.$id}}" href="">
+                            <!-- <a class="btn btn-outline" id="{{'view'.$id}}" href="">
                                 View
-                            </a>
+                            </a> -->
                             <button class="btn btn-outline edit" id="{{'edit'.$id}}">
                                 Edit
                             </button>
@@ -49,7 +49,7 @@
         <div class="text-right my-5 pr-3 align-right">
 			<a class="btn btn-outline" href="{{asset('files/Employee_Data.xlsx')}}">Download Employee Data Sheet</a>
 			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModal">
-                Upload Employee Data
+                Upload Employee Data To Add
             </button>
 		</div>
     </div>
@@ -160,7 +160,6 @@
             $("#amount").prop("value",$("#amount"+$id).html());
             $action="/update-employee-details/"+$id;
             $("#update-form").attr("action",$action);
-            alert($("#pan"+$id).html());
             $("#editDataModal").modal("show");
         });
 
