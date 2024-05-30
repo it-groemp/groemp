@@ -30,8 +30,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 "mobile" => $row["mobile"],
                 "email" => $row["email"],
                 "designation" => $row["designation"],
-                "company" => Str::upper($row["company"]),
-                "benefit_amount" => $row["benefit_amount"]
+                "company" => Str::upper($row["company"])
             ]);
         }
     }

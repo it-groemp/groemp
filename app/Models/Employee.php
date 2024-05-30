@@ -16,7 +16,6 @@ class Employee extends Model
         'mobile',
         'email',
         'designation',
-        'company',
-        'benefit_amount'
+        'company'
     ];
 }

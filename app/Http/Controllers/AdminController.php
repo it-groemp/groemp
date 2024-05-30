@@ -265,7 +265,7 @@ class AdminController extends Controller
                             ->orWhere("companies.group_company_code",$company)
                             ->where("companies.to_date",null)
                             ->where("employees.to_date",null)
-                            ->get(["employees.id","employees.pan_number","employees.company","employees.name","employees.mobile","employees.email","employees.designation","employees.benefit_amount"]);
+                            ->get(["employees.id","employees.pan_number","employees.company","employees.name","employees.mobile","employees.email","employees.designation"]);
                 //dd($employees);
             }
             return view("/admin/employee/list-employees")->with("employees",$employees);
@@ -326,7 +326,6 @@ class AdminController extends Controller
             $employee->mobile = $mobile;
             $employee->email = $email;
             $employee->designation = $designation;
-            $employee->benefit_amount = $amount;
             $employee->updated_by = $admin->email;
             $employee->update();
             return redirect("/employee-details");

@@ -15,7 +15,6 @@
                     <th scope="col">Mobile</th>
                     <th scope="col">Email</th>
                     <th scope="col">Designation</th>
-                    <th scope="col">Benefit Amount</th>
                     <th scope="col">View Details</th>
                 </tr>
                 @foreach($employees as $employee)
@@ -30,7 +29,6 @@
                         <td id="{{'mobile'.$id}}">{{$employee->mobile}}</td>
                         <td id="{{'email'.$id}}">{{$employee->email}}</td>
                         <td id="{{'designation'.$id}}">{{$employee->designation}}</td>
-                        <td id="{{'amount'.$id}}">{{$employee->benefit_amount}}</td>
                         <td>
                             <!-- <a class="btn btn-outline" id="{{'view'.$id}}" href="">
                                 View
