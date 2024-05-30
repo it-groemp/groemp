@@ -53,6 +53,7 @@ Route::post("/admin/save-admin", [AdminController::class,"saveAdmin"])->name("sa
 Route::get("/employee-details", [AdminController::class,"employeeDetails"])->name("employee-details");
 Route::post("/save-employee-details", [AdminController::class,"saveEmployeeDetails"])->name("save-employee-details");
 Route::post("/update-employee-details/{id}", [AdminController::class,"updateEmployeeDetails"])->name("update-employee-details");
+Route::post("/update-employee-details-bulk", [AdminController::class,"updateEmployeeDetailsBulk"])->name("update-employee-details-bulk");
 Route::get("/freeze-employee/{id}", [AdminController::class,"freezeEmployee"])->name("freeze-employee");
 
 Route::get("/upload", [PagesController::class, "upload"])->name("upload");

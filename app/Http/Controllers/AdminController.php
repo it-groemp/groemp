@@ -12,6 +12,7 @@ use App\Models\Company;
 use App\Models\ResetPassword;
 
 use App\Imports\EmployeeAddImport;
+use App\Imports\EmployeeUpdateImport;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
@@ -29,7 +30,7 @@ class AdminController extends Controller
         $email = request("email");
         $name = request("name");
         $mobile = request("mobile");
-        $pan_number = request("pan");
+        $pan_number = Str::upper(request("pan"));
         $role = request("role");
         $error = "";
         if($name=="" || !preg_match ("/^[a-zA-Z .]+$/",$name)){
@@ -66,7 +67,7 @@ class AdminController extends Controller
     }
 
     public function verifyAdmin(Request $request){
-        $pan = request("pan");
+        $pan = Str::upper(request("pan"));
         $password = request("password");
         $error="";
         if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
@@ -126,7 +127,7 @@ class AdminController extends Controller
     }
 
     public function sendPasswordLink($function){
-        $pan = request("pan");
+        $pan = Str::upper(request("pan"));
         $error=null;
         if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
             $error = $error."Please enter a valid PAN";
@@ -181,7 +182,7 @@ class AdminController extends Controller
     }
 
     public function updatePassword(){
-        $company = request("pan");
+        $company = Str::upper(request("pan"));
         $password = request("password");
         $cnfm_password = request("cnfm_password");
         $error="";
@@ -265,9 +266,17 @@ class AdminController extends Controller
 
     public function saveEmployeeDetails(Request $request){
         $request->validate([
-            'uploadFile' => 'required|mimes:xlsx,xls',
+            'uploadFileAdd' => 'required|mimes:xlsx,xls',
         ]);
-        Excel::import(new EmployeeAddImport, $request->file("uploadFile"));
+        Excel::import(new EmployeeAddImport, $request->file("uploadFileAdd"));
+        return redirect("/employee-details");
+    }
+
+    public function updateEmployeeDetailsBulk(Request $request){
+        $request->validate([
+            'uploadFileEdit' => 'required|mimes:xlsx,xls',
+        ]);
+        Excel::import(new EmployeeUpdateImport, $request->file("uploadFileEdit"));
         return redirect("/employee-details");
     }
 

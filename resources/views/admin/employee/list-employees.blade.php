@@ -48,8 +48,11 @@
         @endif
         <div class="text-right my-5 pr-3 align-right">
 			<a class="btn btn-outline" href="{{asset('files/Employee_Data.xlsx')}}">Download Employee Data Sheet</a>
-			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModal">
+			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalAdd">
                 Upload Employee Data To Add
+            </button>
+            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalEdit">
+                Upload Employee Data To Edit
             </button>
 		</div>
     </div>
@@ -116,24 +119,47 @@
 		</div>
 	</div>
     
-    <div class="modal fade" id="uploadDataModal" tabindex="-1" aria-labelledby="uploadDataModalLabel" aria-hidden="true">
+    <div class="modal fade" id="uploadDataModalAdd" tabindex="-1" aria-labelledby="uploadDataModalAddLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="uploadDataModalLabel">Upload Employee Data Excel</h1>
+                    <h1 class="modal-title fs-5" id="uploadDataModalAddLabel">Upload Employee Data Excel To Add</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">                    
-                    <form id="upload-form" method="post" action="{{route('save-employee-details')}}" enctype="multipart/form-data">
+                    <form id="upload-form-add" method="post" action="{{route('save-employee-details')}}" enctype="multipart/form-data">
             			{{ csrf_field() }}
 						<div class="form-group mt-3">
-                            <input type="file" id="uploadFile" name="uploadFile" accept=".xlsx" required/>
+                            <input type="file" id="uploadFileAdd" name="uploadFileAdd" accept=".xlsx" required/>
                         </div>
 					</form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <input type="submit" class="btn btn-outline" id="upload-btn" value="Upload Data"/>
+                    <input type="submit" class="btn btn-outline" id="upload-btn-add" value="Upload Data"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="uploadDataModalEdit" tabindex="-1" aria-labelledby="uploadDataModalEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="uploadDataModalEditLabel">Upload Employee Data Excel To Edit</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">                    
+                    <form id="upload-form-edit" method="post" action="{{route('update-employee-details-bulk')}}" enctype="multipart/form-data">
+            			{{ csrf_field() }}
+						<div class="form-group mt-3">
+                            <input type="file" id="uploadFileEdit" name="uploadFileEdit" accept=".xlsx" required/>
+                        </div>
+					</form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-outline" id="upload-btn-edit" value="Upload Data"/>
                 </div>
             </div>
         </div>
@@ -141,12 +167,21 @@
 @stop   
 @section("js")
     <script>
-        $("#upload-btn").click(function(){
-            if($("#uploadFile").val()==""){
+        $("#upload-btn-add").click(function(){
+            if($("#uploadFileAdd").val()==""){
                 $(".error").html("Please upload the file");
             }
             else{
-                $("#upload-form").submit();
+                $("#upload-form-add").submit();
+            }
+        });
+
+        $("#upload-btn-edit").click(function(){
+            if($("#uploadFileEdit").val()==""){
+                $(".error").html("Please upload the file");
+            }
+            else{
+                $("#upload-form-edit").submit();
             }
         });
 
