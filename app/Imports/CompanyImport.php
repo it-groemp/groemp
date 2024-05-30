@@ -4,6 +4,8 @@ namespace App\Imports;
 
 use App\Models\Company;
 use App\Models\Address;
+
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -27,11 +29,11 @@ class CompanyImport implements ToCollection, WithHeadingRow
     {
         $prev_pan="";
         foreach ($collection as $row){
-            $curr_pan = $row["pan"];
+            $curr_pan = Str::upper($row["pan"]);
             if($prev_pan!=$curr_pan){
                 Company::create([
                     "name" => $row["name"] ?? "",
-                    "group_company_code" => $row["group_company_code"] ?? null,
+                    "group_company_code" => Str::upper($row["group_company_code"]) ?? null,
                     "pan" => $curr_pan ?? "",
                     "mobile" => $row["mobile"] ?? "",
                     "email" => $row["email"] ?? ""

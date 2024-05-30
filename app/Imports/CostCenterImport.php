@@ -18,7 +18,7 @@ class CostCenterImport implements ToCollection, WithHeadingRow
     {
         foreach($collection as $row){
             CostCenter::create([
-                "company" => $row["company"],
+                "company" => Str::upper($row["company"]),
                 "cc1" => $row["cc1"],
                 "cc2" => $row["cc2"] ?? "",
                 "cc3" => $row["cc3"] ?? "",
