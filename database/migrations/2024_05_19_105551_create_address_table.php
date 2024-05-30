@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string("state",50)->nullable(false);
             $table->string("city",255)->nullable(false);
             $table->string("pincode",6)->nullable(false);
+            $table->string("created_by",100)->nullable(false);
+            $table->string("updated_by",100)->nullable(false);
             $table->timestamps();
         });
     }

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string("email",100)->nullable(false);
             $table->timestamp("from_date")->useCurrent();
             $table->timestamp("to_date")->nullable(true);
+            $table->string("created_by",100)->nullable(false);
+            $table->string("updated_by",100)->nullable(false);
             $table->timestamps();
         });
     }

@@ -103,9 +103,9 @@ class CompanyController extends Controller
         }
         else if((new AdminController())->checkEmployerSession()){
             $id = Session::get("admin_id");
-            $user = Admin::where("id",$id)->first();
+            $admin = Admin::where("id",$id)->first();
             $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
-            ->where("companies.pan",$user->company)->orWhere("companies.group_company_code",$user->company)
+            ->where("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
             ->get(["id","company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
             return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
         }
@@ -115,14 +115,14 @@ class CompanyController extends Controller
     }
 
     public function updateCCDetails($id){
-        //$admin_id = Session::get("admin_id");
-        //$user = Admin::where("id",$admin_id)->first();
+        $id = Session::get("admin_id");
+        $admin = Admin::where("id",$id)->first();
         $cost_center = CostCenter::where("id",$id)->first();
         for($i=1;$i<=10;$i++){
             $name = "CC".$i;
             $cost_center->$name = request("CC".$i);
         }  
-        //$cost_center->updated_by = $user->email; 
+        $cost_center->updated_by = $admin->email; 
         $cost_center->update();     
         return redirect("/cc-details");
     }

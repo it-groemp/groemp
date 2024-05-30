@@ -34,11 +34,13 @@ class BenefitController extends Controller
                 "amount" => "required|numeric",
                 "photo" => "required"
             ]);
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
             $benefit = new Benefit();
             $benefit->name = request("name");
             $benefit->amount = request("amount");
-            $benefit->created_by = "admin"; //need to update after login page
-            $benefit->updated_by = "admin"; //need to update after login page
+            $benefit->created_by = $admin->email;
+            $benefit->updated_by = $admin->email;
             if($files=$request->file("photo")){
                 $fileName=$files->getClientOriginalName();  
                 $files->move("images/benefits/",$fileName);
@@ -71,11 +73,13 @@ class BenefitController extends Controller
                 "name" => "required|max:50",
                 "amount" => "required|numeric"
             ]);
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
             $id=request("id");
             $benefit = Benefit::find($id);
             $benefit->name = request("name");
             $benefit->amount = request("amount");
-            $benefit->updated_by = "admin"; //need to update after login page        
+            $benefit->updated_by = $admin->email;       
             if($files=$request->file("photo")){
                 $fileName=$files->getClientOriginalName();  
                 $files->move("images/benefits/",$fileName);

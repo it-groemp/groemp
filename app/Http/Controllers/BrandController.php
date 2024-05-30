@@ -36,11 +36,13 @@ class BrandController extends Controller
                 "benefit" => "required",
                 "photo" => "required"
             ]);
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
             $brand = new Brand();
             $brand->name = request("name");
-            $brand->benefit_name = request("benefit");
-            $brand->created_by = "admin"; //need to update after login page
-            $brand->updated_by = "admin"; //need to update after login page
+            $brand->benefit_name = request("benefit");            
+            $brand->created_by = $admin->email;
+            $brand->updated_by = $admin->email;
             if($files=$request->file("photo")){
                 $fileName=$files->getClientOriginalName();  
                 $files->move("images/brands/",$fileName);
@@ -74,11 +76,13 @@ class BrandController extends Controller
                 "name" => "required|max:50",
                 "benefit" => "required"
             ]);
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
             $id=request("id");
             $brand = Brand::find($id);
             $brand->name = request("name");
-            $brand->benefit_name = request("benefit");;
-            $brand->updated_by = "admin"; //need to update after login page        
+            $brand->benefit_name = request("benefit");
+            $benefit->updated_by = $admin->email;       
             if($files=$request->file("photo")){
                 $fileName=$files->getClientOriginalName();  
                 $files->move("images/brands/",$fileName);

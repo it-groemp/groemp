@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger("benefit_id")->nullable(false);
             $table->foreign("benefit_id")->references("id")->on("benefits");
             $table->string("image_name",60)->nullable(false);
-            $table->string("created_by")->nullable(false);
-            $table->string("updated_by")->nullable(false);
+            $table->string("created_by",100)->nullable(false);
+            $table->string("updated_by",100)->nullable(false);
             $table->timestamps();
         });
     }

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string("cc8",20)->nullable(true);
             $table->string("cc9",20)->nullable(true);
             $table->string("cc10",20)->nullable(true);
+            $table->string("created_by",100)->nullable(false);
+            $table->string("updated_by",100)->nullable(false);
             $table->timestamps();
         });
     }

@@ -46,12 +46,16 @@ class AdminController extends Controller
             $error = $error."<br/> Please enter a valid PAN";
         }
         if($error==""){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
             $admin = new Admin();
             $admin->name = $name;
             $admin->mobile = $mobile;
             $admin->email = $email;
             $admin->company = $pan_number;
             $admin->role = $role;
+            $admin->created_by = $admin->email;
+            $admin->updated_by = $admin->email;
             $admin->save();
             return redirect("/admin/add-admin");
         }
@@ -241,14 +245,14 @@ class AdminController extends Controller
         if($this->checkAdminSession() || $this->checkEmployerSession()){
             $role = Session::get("role");
             $id = Session::get("admin_id");
-            $user = Admin::where("id",$id)->first();
-            $mobile = $user->mobile;
+            $admin = Admin::where("id",$id)->first();
+            $mobile = $admin->mobile;
             $employees = [];
             if($role == "Admin"){
                 $employees = Employee::all();
             }
             else if($role == "Employer"){
-                $company = $user->company;
+                $company = $admin->company;
                 $employees = Employee::join("companies","employees.company","=","companies.pan")
                             ->where("employees.company",$company)
                             ->orWhere("companies.group_company_code",$company)
@@ -307,8 +311,8 @@ class AdminController extends Controller
             $error = $error."<br/> Please enter a valid Amount";
         }
         if($error==""){
-            //$admin_id = Session::get("admin_id");
-            //$user = Admin::where("id",$admin_id)->first();
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
             $employee = Employee::where("id",$id)->first();
             $employee->pan_number = $pan;
             $employee->name = $name;
@@ -316,7 +320,7 @@ class AdminController extends Controller
             $employee->email = $email;
             $employee->designation = $designation;
             $employee->benefit_amount = $amount;
-            //$employee->updated_by = $user->email;
+            $employee->updated_by = $admin->email;
             $employee->update();
             return redirect("/employee-details");
         }
@@ -326,8 +330,11 @@ class AdminController extends Controller
     }
 
     public function freezeEmployee($id){
+        $id = Session::get("admin_id");
+        $admin = Admin::where("id",$id)->first();
         $employee = Employee::where("id",$id)->first();
         $employee->to_date = Carbon::now()->toDateTimeString();
+        $employee->updated_by = $admin->email;
         $employee->update();
         return redirect("/employee-details");
     }

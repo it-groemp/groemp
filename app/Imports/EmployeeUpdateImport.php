@@ -24,6 +24,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
     public function collection(Collection $collection)
     {
         $id = Session::get("admin_id");
+        $admin = Admin::where("id",$id)->first();
         foreach ($collection as $row){
             $pan = Str::upper($row["pan_number"]);
             $employee = Employee::where("pan_number",$pan)->first();
@@ -43,7 +44,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
                 $employee->company = Str::upper($row["company"]);
             }
             $employee->updated_at = Carbon::now()->toDateTimeString();
-            //$employee->updated_by = $id;
+            $employee->updated_by = $admin->email;
             $employee->update();
         }
     }
