@@ -57,7 +57,7 @@ class AdminController extends Controller
             $admin->created_by = $admin->email;
             $admin->updated_by = $admin->email;
             $admin->save();
-            return redirect("/admin/add-admin");
+            return redirect("/admin/display-admin");
         }
         else{
             return redirect()->back()->with("error",$error);
@@ -233,6 +233,13 @@ class AdminController extends Controller
 
     public function adminLogin(){     
         return view("admin.employee.login");
+    }
+
+    public function displayAdmin(){
+        if($this->checkAdminSession()){
+            $admins = Admin::all();
+            return view("admin.employee.display-admin")->with("admins",$admins);
+        }
     }
 
     public function addAdmin(){

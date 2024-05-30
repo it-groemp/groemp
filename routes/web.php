@@ -48,6 +48,7 @@ Route::get("/display-change-password", [AdminController::class,"displayChangePas
 Route::post("/update-password", [AdminController::class,"updatePassword"])->name("update-password");
 
 Route::post("/admin/verify-admin", [AdminController::class,"verifyAdmin"])->name("verify-admin");
+Route::get("/admin/display-admin", [AdminController::class,"displayAdmin"])->name("display-admin");
 Route::get("/admin/add-admin", [AdminController::class,"addAdmin"])->name("add-admin");
 Route::post("/admin/save-admin", [AdminController::class,"saveAdmin"])->name("save-admin");
 Route::get("/employee-details", [AdminController::class,"employeeDetails"])->name("employee-details");
