@@ -9,8 +9,15 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Admin;
 use App\Models\Employee;
 use App\Models\Company;
+use App\Models\ResetPassword;
 
 use App\Imports\EmployeeImport;
+
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SetPasswordMail;
+use App\Mail\ResetPasswordMail;
+use App\Mail\UpdatePasswordAdminMail;
 
 use Carbon\Carbon;
 
@@ -58,20 +65,35 @@ class AdminController extends Controller
         return redirect("/admin/login");
     }
 
-    public function sendAdminOtp(){
-        $mobile = request("mobile");
-        $admin = Admin::where("mobile",$mobile)->first();
-        if($admin==null){
-            return redirect()->back()->with("errors","Employee doesn't exists");
+    public function verifyAdmin(Request $request){
+        $pan = request("pan");
+        $password = request("password");
+        $error="";
+        if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
+            $error = $error."<br/> Please enter a valid PAN";
         }
-        (new EmployeeController())->generateOtp($mobile);
-        return redirect()->back();
-    }
+        if($password==null || !preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",$password)){
+            $error = $error."<br/> Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
+        }
+        if($error==""){
+            $admin = Admin::where("company", $pan)->first();
+            if($admin==null) {
+                $error="Admin does not exists. Please register first.";
+            }
+            else if (password_verify($password,$admin->password)){
+                Session::put("user_id",$admin->id);
+                Session::put("role",$admin->role);
+                return redirect("/employee-details");
+            }
+            else{
+                $error="PAN and Password doesn't match. Please try again";
+            }
+        }
+        else{
+            return redirect()->back()->with("error",$error);
+        }
 
-    public function verifyAdminOtp(Request $request){
-        $this->validate($request, [
-            "otp" => "required|numeric|digits:6",
-        ]);
+        
         $mobile = Session::get("mobile");
         $otp = request("otp");
         //$row=(new EmployeeController())->checkOtp($mobile, $otp);
@@ -96,6 +118,93 @@ class AdminController extends Controller
             Session::put("user_id",$admin->id);
             Session::put("role",$admin->role);
             return redirect("/employee-details");
+        }
+    }
+
+    public function setPassword($function){
+        return view("admin.employee.set-password")->with("function",$function);
+    }
+
+    public function sendPasswordLink($function){
+        $pan = request("pan");
+        $error=null;
+        if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
+            $error = $error."Please enter a valid PAN";
+        }
+        if($error==null){
+            $admin = Admin::where("company", $pan)->first();
+            if($admin==null){
+                $error="Admin does not exists. Please register first.";
+            }
+            else{
+                $token = Str::random(20);
+                $email = $admin->email;
+                $resetPassword=ResetPassword::where("email", $email)->first();
+
+                if($resetPassword==null){
+                    $resetPassword = new ResetPassword();
+                    $resetPassword->email = $email;
+                    $resetPassword->token = $token;
+                    $resetPassword->save();
+                }
+                else{
+                    $resetPassword->token = $token;
+                    $resetPassword->update();
+                }
+
+                $link=env("APP_URL")."/reset-password/$token";
+                if($function=="forgot"){
+                    Mail::to($email)->send(new ResetPasswordMail($admin->name,$link));
+                }
+                else{
+                    Mail::to($email)->send(new SetPasswordMail($admin->name,$link));
+                }                
+                return redirect()->back()->with("success","Reset password link has been sent to the email id");
+            }
+        }
+        return redirect()->back()->with("error",$error);     
+    }
+
+    public function resetPassword($token){
+        $resetPassword = ResetPassword::where("token",$token)->first();
+        if($resetPassword!=null){
+            $email = $resetPassword->email;
+            $company = Admin::where("email",$email)->first()->value("company");
+            //$resetPassword->delete();
+            Session::put("company",$company);
+            return redirect("/display-change-password");
+        }
+    }
+
+    public function displayChangePassword(){
+        return view("admin.employee.change-password");
+    }
+
+    public function updatePassword(){
+        $company = request("pan");
+        $password = request("password");
+        $cnfm_password = request("cnfm_password");
+        $error="";
+        if($password==null || !preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",$password)){
+            $error = "Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
+        }
+        else if($cnfm_password==null || !preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",$cnfm_password)){
+            $error = "Confirm Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
+        }
+        else if($password!=$cnfm_password){
+            $error = "Both the passwords do not match";
+        }
+        else{
+            $admin = Admin::where("company",$company)->first();
+            $admin->password = password_hash($password,PASSWORD_DEFAULT);
+            $admin->update();
+            $email=$admin->email;
+            Session::forget("company");
+            Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
+            return redirect("/admin/login");
+        }
+        if($error!=null){
+            return redirect()->back()->with("error",$error);
         }
     }
 

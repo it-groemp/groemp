@@ -39,54 +39,7 @@
             </div>
         </form>
 @stop
-
 @section("js")
     <script link="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-    <script>
-        $("#register-form").validate({
-            rules:{
-                name: {
-                    alpha: true
-                },
-                email: {
-                    email: true
-                },
-                mobile: {
-                    checkMobile: true
-                }
-                pan: {
-                    checkPan: true
-                }
-            },
-            messages:{
-                email: {
-                    email: "Please enter a Valid Email Id"
-                }
-            },
-            submitHandler : function(form) {
-                form.submit();
-            }   
-        });
-
-        $.validator.addMethod("alpha", function (value, elem) {
-                var re = /^[a-zA-Z .]+$/;
-                return re.test(value);
-            },
-            "Only Capital, Small Letters, Spaces and Dot Allowed"
-        );
-
-        $.validator.addMethod("checkMobile", function (value, elem) {
-                var re = /[6-9]{1}[0-9]{9}/;
-                return re.test(value);
-            },
-            "Please enter a valid mobile number"
-        );
-
-        $.validator.addMethod("checkPan", function (value, elem) {
-                var re = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-                return re.test(value);
-            },
-            "Please enter a valid PAN"
-        );
-    </script>
+    <script link="{{asset('js/validation-admin.js')}}"></script>
 @stop

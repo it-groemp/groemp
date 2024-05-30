@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BenefitController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers;
 
 /*
@@ -40,9 +41,13 @@ Route::get("/profile",[EmployeeController::class,"profile"])->name("profile");
 
 Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
-Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
-Route::post("/admin/send-otp", [AdminController::class,"sendAdminOtp"])->name("admin-send-otp");
-Route::post("/admin/verify-otp", [AdminController::class,"verifyAdminOtp"])->name("admin-verify-otp");
+Route::get("/set-password-admin/{function}", [AdminController::class, "setPassword"])->name("set-password-admin");
+Route::post("/send-password-link/{function}", [AdminController::class,"sendPasswordLink"])->name("send-password-link");
+Route::get("/reset-password/{token}", [AdminController::class,"resetPassword"])->name("reset-password");
+Route::get("/display-change-password", [AdminController::class,"displayChangePassword"])->name("display-change-password");
+Route::post("/update-password", [AdminController::class,"updatePassword"])->name("update-password");
+
+Route::post("/admin/verify-admin", [AdminController::class,"verifyAdmin"])->name("verify-admin");
 Route::get("/admin/add-admin", [AdminController::class,"addAdmin"])->name("add-admin");
 Route::post("/admin/save-admin", [AdminController::class,"saveAdmin"])->name("save-admin");
 Route::get("/employee-details", [AdminController::class,"employeeDetails"])->name("employee-details");
@@ -66,3 +71,5 @@ Route::post("/save-brand", [BrandController::class, "saveBrand"])->name("save-br
 Route::get("/edit-brand/{id}", [BrandController::class, "editBrand"])->name("edit-brand");
 Route::post("/update-brand", [BrandController::class, "updateBrand"])->name("update-brand");
 Route::get("/delete-brand/{id}", [BrandController::class, "deleteBrand"])->name("delete-brand");
+
+Route::get("/testroute", [MailController::class, "sendmail"]);
