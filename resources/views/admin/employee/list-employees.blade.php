@@ -32,13 +32,13 @@
                         <td id="{{'designation'.$id}}">{{$employee->designation}}</td>
                         <td id="{{'amount'.$id}}">{{$employee->benefit_amount}}</td>
                         <td>
-                            <a class="btn btn-outline" id="{{'view'.$number}}" href="">
+                            <a class="btn btn-outline" id="{{'view'.$id}}" href="">
                                 View
                             </a>
-                            <button class="btn btn-outline edit" id="{{'edit'.$number}}">
+                            <button class="btn btn-outline edit" id="{{'edit'.$id}}">
                                 Edit
                             </button>
-                            <a class="btn btn-delete freeze" id="{{'freeze'.$number}}">
+                            <a class="btn btn-delete freeze" id="{{'freeze'.$id}}">
                                 Freeze Account
                             </a>
                         </td>
@@ -160,6 +160,7 @@
             $("#amount").prop("value",$("#amount"+$id).html());
             $action="/update-employee-details/"+$id;
             $("#update-form").attr("action",$action);
+            alert($("#pan"+$id).html());
             $("#editDataModal").modal("show");
         });
 
