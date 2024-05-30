@@ -33,7 +33,7 @@ class CompanyController extends Controller
 
     public function companyDetailsEmployer(){
         if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
-            $id = Session::get("user_id");
+            $id = Session::get("admin_id");
             $admin = Admin::find($id);
             $company_pan = $admin->company;
             $group_company = Company::where("pan",$company_pan)->first();
@@ -102,7 +102,7 @@ class CompanyController extends Controller
             return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
         }
         else if((new AdminController())->checkEmployerSession()){
-            $id = Session::get("user_id");
+            $id = Session::get("admin_id");
             $user = Admin::where("id",$id)->first();
             $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
             ->where("companies.pan",$user->company)->orWhere("companies.group_company_code",$user->company)
@@ -115,7 +115,7 @@ class CompanyController extends Controller
     }
 
     public function updateCCDetails($id){
-        //$admin_id = Session::get("user_id");
+        //$admin_id = Session::get("admin_id");
         //$user = Admin::where("id",$admin_id)->first();
         $cost_center = CostCenter::where("id",$id)->first();
         for($i=1;$i<=10;$i++){

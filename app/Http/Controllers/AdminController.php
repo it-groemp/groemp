@@ -60,7 +60,7 @@ class AdminController extends Controller
     }
 
     public function adminLogout(){      
-        Session::forget("user_id");
+        Session::forget("admin_id");
         Session::forget("role");
         return redirect("/admin/login");
     }
@@ -81,7 +81,7 @@ class AdminController extends Controller
                 $error="Admin does not exists. Please register first.";
             }
             else if (password_verify($password,$admin->password)){
-                Session::put("user_id",$admin->id);
+                Session::put("admin_id",$admin->id);
                 Session::put("role",$admin->role);
                 return redirect("/employee-details");
             }
@@ -115,7 +115,7 @@ class AdminController extends Controller
                 return redirect()->back()->with("error",$error);
             }
             $role=$admin->role;
-            Session::put("user_id",$admin->id);
+            Session::put("admin_id",$admin->id);
             Session::put("role",$admin->role);
             return redirect("/employee-details");
         }
@@ -209,7 +209,7 @@ class AdminController extends Controller
     }
 
     public function checkAdminSession(){
-        if(Session::get("user_id")!="" && Session::get("role")=="Admin"){
+        if(Session::get("admin_id")!="" && Session::get("role")=="Admin"){
             return true;
         }
         else{
@@ -218,7 +218,7 @@ class AdminController extends Controller
     }
 
     public function checkEmployerSession(){
-        if(Session::get("user_id")!="" && Session::get("role")=="Employer"){
+        if(Session::get("admin_id")!="" && Session::get("role")=="Employer"){
             return true;
         }
         else{
@@ -239,7 +239,7 @@ class AdminController extends Controller
     public function employeeDetails(){
         if($this->checkAdminSession() || $this->checkEmployerSession()){
             $role = Session::get("role");
-            $id = Session::get("user_id");
+            $id = Session::get("admin_id");
             $user = Admin::where("id",$id)->first();
             $mobile = $user->mobile;
             $employees = [];
@@ -298,7 +298,7 @@ class AdminController extends Controller
             $error = $error."<br/> Please enter a valid Amount";
         }
         if($error==""){
-            //$admin_id = Session::get("user_id");
+            //$admin_id = Session::get("admin_id");
             //$user = Admin::where("id",$admin_id)->first();
             $employee = Employee::where("id",$id)->first();
             $employee->pan_number = $pan;
@@ -318,7 +318,7 @@ class AdminController extends Controller
 
     public function freezeEmployee($id){
         $employee = Employee::where("id",$id)->first();
-        $employee->to_date = Carbon::now()->toDateTimeString();;
+        $employee->to_date = Carbon::now()->toDateTimeString();
         $employee->update();
         return redirect("/employee-details");
     }

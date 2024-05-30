@@ -11,7 +11,7 @@
             </div>
         @endif
     </nav>
-    @if(Session::has("user_id") && Session::get("role")=="Admin")
+    @if(Session::has("admin_id") && Session::get("role")=="Admin")
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='company-details-admin'?' active':''?>" aria-current="page" href="{{route('company-details-admin')}}">Company Details</a>
@@ -35,7 +35,7 @@
                 <a class="nav-link <?php echo Route::currentRouteName()=='benefit-details'?' active':''?>" aria-current="page" href="{{route('benefit-details')}}">Benefit Details</a>
             </li>
         </ul>
-    @elseif(Session::has("user_id") && Session::get("role")=="Employer")
+    @elseif(Session::has("admin_id") && Session::get("role")=="Employer")
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='company-details-employer'?' active':''?>" aria-current="page" href="{{route('company-details-employer')}}">Company Details</a>
