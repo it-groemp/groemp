@@ -29,20 +29,23 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
     {
         $id = Session::get("admin_id");
         $admin = Admin::where("id",$id)->first();
+        $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         foreach ($collection as $row){
-            $employee = new Employee();
-            $employee->pan_number = Str::upper($row["pan_number"]);
-            $employee->employee_code = $row["employee_id"];
-            $employee->name = $row["name"];
-            $employee->mobile = $row["mobile"];
-            $employee->email = $row["email"];
-            $employee->designation = $row["designation"];
-            $employee->company = Str::upper($row["company"]);
-            $employee->created_at = Carbon::now()->toDateTimeString();
-            $employee->created_by = $admin->email;
-            $employee->updated_at = Carbon::now()->toDateTimeString();
-            $employee->updated_by = $admin->email;
-            $employee->save();
+            if(in_array($row["company"], $company_list)){
+                $employee = new Employee();
+                $employee->pan_number = Str::upper($row["pan_number"]);
+                $employee->employee_code = $row["employee_id"];
+                $employee->name = $row["name"];
+                $employee->mobile = $row["mobile"];
+                $employee->email = $row["email"];
+                $employee->designation = $row["designation"];
+                $employee->company = Str::upper($row["company"]);
+                $employee->created_at = Carbon::now()->toDateTimeString();
+                $employee->created_by = $admin->email;
+                $employee->updated_at = Carbon::now()->toDateTimeString();
+                $employee->updated_by = $admin->email;
+                $employee->save();
+            }
         }
     }
 
