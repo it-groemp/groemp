@@ -3,6 +3,12 @@
 namespace App\Imports;
 
 use App\Models\Benefit;
+use App\Models\Admin;
+
+use Carbon\Carbon;
+
+use Illuminate\Support\Facades\Session;
+
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -16,14 +22,18 @@ class BenefitImport implements ToCollection, WithHeadingRow
     */
     public function Collection(Collection $collection)
     {
+        $id = Session::get("admin_id");
+        $admin = Admin::where("id",$id)->first();
         foreach ($collection as $row){
-            Benefit::create([
-                "name" => $row["name"],
-                "amount" => $row["amount"],
-                "image_name" => $row["image"],
-                "created_by" => $row["created_by"],
-                "updated_by" => $row["updated_by"]
-            ]);
+            $benefit = new Benefit();
+            $benefit->name = $row["name"];
+            $benefit->amount = $row["amount"];
+            $benefit->image_name = $row["image"];
+            $benefit->created_at = Carbon::now()->toDateTimeString();
+            $benefit->created_by = $admin->email;
+            $benefit->updated_at = Carbon::now()->toDateTimeString();
+            $benefit->updated_by = $admin->email;
+            $benefit->save();
         }
     }
 }

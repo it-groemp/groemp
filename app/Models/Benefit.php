@@ -9,11 +9,4 @@ class Benefit extends Model
 {
     use HasFactory;
     protected $table = "benefits";
-    protected $fillable = [
-        "name",
-        "amount",
-        "image_name",
-        "created_by",
-        "updated_by"
-    ];
 }

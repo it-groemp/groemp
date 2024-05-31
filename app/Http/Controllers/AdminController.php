@@ -344,4 +344,45 @@ class AdminController extends Controller
         $employee->update();
         return redirect("/employee-details");
     }
+    
+    public function sendAdminOtp(){
+        $mobile = request("mobile");
+        $admin = Admin::where("mobile",$mobile)->first();
+        if($admin==null){
+            return redirect()->back()->with("errors","Employee doesn't exists");
+        }
+        (new EmployeeController())->generateOtp($mobile);
+        return redirect()->back();
+    }
+    
+    public function verifyAdminOtp(Request $request){
+        $this->validate($request, [
+            "otp" => "required|numeric|digits:6",
+        ]);
+        $mobile = Session::get("mobile");
+        $otp = request("otp");
+        //$row=(new EmployeeController())->checkOtp($mobile, $otp);
+        //update on live
+        $row=null;
+        if($otp=="123456"){            
+            $row="yes";
+        }
+        if($row==null){
+            $error = "OTP Invalid";
+            return redirect()->back()->with("error",$error);
+        }
+        else{
+            Session::forget("otpModal");
+            $admin = Admin::where("mobile",$mobile)->first();
+            $company = Company::where("pan",$admin->company)->where("to_date","!=",null)->exists();
+            if($company){
+                $error = "The company has ceased its operations with us.";
+                return redirect()->back()->with("error",$error);
+            }
+            $role=$admin->role;
+            Session::put("admin_id",$admin->id);
+            Session::put("role",$admin->role);
+            return redirect("/employee-details");
+        }
+    }
 }

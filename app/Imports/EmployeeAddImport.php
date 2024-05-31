@@ -3,6 +3,11 @@
 namespace App\Imports;
 
 use App\Models\Employee;
+use App\Models\Admin;
+
+use Carbon\Carbon;
+
+use Illuminate\Support\Facades\Session;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
@@ -22,16 +27,22 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
     */
     public function collection(Collection $collection)
     {
+        $id = Session::get("admin_id");
+        $admin = Admin::where("id",$id)->first();
         foreach ($collection as $row){
-            Employee::create([
-                "pan_number" => Str::upper($row["pan_number"]),
-                "employee_code" => $row["employee_id"],
-                "name" => $row["name"],
-                "mobile" => $row["mobile"],
-                "email" => $row["email"],
-                "designation" => $row["designation"],
-                "company" => Str::upper($row["company"])
-            ]);
+            $employee = new Employee();
+            $employee->pan_number = Str::upper($row["pan_number"]);
+            $employee->employee_code = $row["employee_id"];
+            $employee->name = $row["name"];
+            $employee->mobile = $row["mobile"];
+            $employee->email = $row["email"];
+            $employee->designation = $row["designation"];
+            $employee->company = Str::upper($row["company"]);
+            $employee->created_at = Carbon::now()->toDateTimeString();
+            $employee->created_by = $admin->email;
+            $employee->updated_at = Carbon::now()->toDateTimeString();
+            $employee->updated_by = $admin->email;
+            $employee->save();
         }
     }
 

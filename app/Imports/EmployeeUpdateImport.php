@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Employee;
+use App\Models\Admin;
 
 use Carbon\Carbon;
 
