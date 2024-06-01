@@ -94,36 +94,7 @@ class AdminController extends Controller
                 $error="PAN and Password doesn't match. Please try again";
             }
         }
-        else{
-            return redirect()->back()->with("error",$error);
-        }
-
-        
-        $mobile = Session::get("mobile");
-        $otp = request("otp");
-        //$row=(new EmployeeController())->checkOtp($mobile, $otp);
-        //update on live
-        $row=null;
-        if($otp=="123456"){            
-            $row="yes";
-        }
-        if($row==null){
-            $error = "OTP Invalid";
-            return redirect()->back()->with("error",$error);
-        }
-        else{
-            Session::forget("otpModal");
-            $admin = Admin::where("mobile",$mobile)->first();
-            $company = Company::where("pan",$admin->company)->where("to_date","!=",null)->exists();
-            if($company){
-                $error = "The company has ceased its operations with us.";
-                return redirect()->back()->with("error",$error);
-            }
-            $role=$admin->role;
-            Session::put("admin_id",$admin->id);
-            Session::put("role",$admin->role);
-            return redirect("/employee-details");
-        }
+        return redirect()->back()->with("error",$error);
     }
 
     public function setPassword($function){
