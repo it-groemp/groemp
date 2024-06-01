@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
-@section('pageTitle','Employee Details')
+@section('pageTitle','Admin Details')
 @section("css")
     <link href="{{asset('css/admin-home.css')}}" rel="stylesheet">
 @stop
 @section('content')
     <div class="container my-5">
-        <h2 class="text-center mb-3">Employee Details</h2>
+        <h2 class="text-center mb-3">Admin Details</h2>
         @if(count($admins)>0)
             <table class="table">
                 <tr>

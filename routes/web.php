@@ -41,6 +41,8 @@ Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
 Route::post("/send-otp", [EmployeeController::class,"sendOtp"])->name("send-otp");
 Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
 Route::get("/profile",[EmployeeController::class,"profile"])->name("profile");
+Route::get("/employee-benefits-admin",[EmployeeController::class,"employeeBenefitsAdmin"])->name("employee-benefits-admin");
+Route::post("/upload-employee-benefits",[EmployeeController::class,"uploadEmployeeBenefits"])->name("upload-employee-benefits");
 
 Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");

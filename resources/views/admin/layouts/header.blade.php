@@ -29,6 +29,9 @@
                 <a class="nav-link <?php echo Route::currentRouteName()=='employee-details'?' active':''?>" aria-current="page" href="{{route('employee-details')}}">Employee Details</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='employee-benefits-admin'?' active':''?>" aria-current="page" href="{{route('employee-benefits-admin')}}">Employee Benefits Details</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='voucher-details'?' active':''?>" aria-current="page" href="">Voucher Details</a>
             </li>
             <li class="nav-item">
@@ -51,6 +54,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='employee-details'?' active':''?>" aria-current="page" href="{{route('employee-details')}}">Employee Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo Route::currentRouteName()=='employee-benefits-admin'?' active':''?>" aria-current="page" href="{{route('employee-benefits-admin')}}">Employee Benefits Details</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='voucher-details'?' active':''?>" aria-current="page" href="">Voucher Details</a>

@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Session;
 
 use App\Models\Employee;
 use App\Models\Otp;
+use App\Models\EmployeeBenefit;
 
 use App\Imports\EmployeeAddImport;
-
+use App\Imports\EmployeeBenefitImport;
 use Excel;
 
 class EmployeeController extends Controller
@@ -82,5 +83,32 @@ class EmployeeController extends Controller
     public function checkOtp($mobile, $otp){
         $row = Otp::where("type", $mobile)->where("otp", $otp)->first();
         return $row;
+    }
+
+    public function employeeBenefitsAdmin(){
+        $employee_benefits=[];
+        if((new AdminController())->checkAdminSession()){
+            $employee_benefits = EmployeeBenefit::join("employees","employee_benefits.pan_number","employees.pan_number")
+                                ->get(["employee_benefits.pan_number","company","current_benefit","previous_benefit","availed_benefit"]);
+            return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits);
+        }
+        else if((new AdminController())->checkEmployerSession()){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
+            $company_pan = $admin->company;
+            $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
+            $employee_benefits = EmployeeBenefit::join("employees","employee_benefits.pan_number","employees.pan_number") 
+                                ->whereIn("company",$company_list)
+                                ->get(["employee_benefits.pan_number","company","current_benefit","previous_benefit","availed_benefit"]);
+            return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits);
+        }
+    }
+
+    public function uploadEmployeeBenefits(Request $request){
+        $request->validate([
+            'uploadFile' => 'required|mimes:xlsx,xls',
+        ]);
+        Excel::import(new EmployeeBenefitImport, $request->file("uploadFile"));
+        return redirect("/employee-benefits-admin");
     }
 }
