@@ -35,10 +35,11 @@ class CompanyImport implements ToCollection, WithHeadingRow
         $id = Session::get("admin_id");
         $admin = Admin::where("id",$id)->first();
         $company_pan = $admin->company;
+        $role = $admin->role;
         $prev_pan="";
         foreach ($collection as $row){
             $curr_pan = Str::upper($row["pan"]);
-            if(($curr_pan == $company_pan) || ($row["group_company_code"] == $company_pan)){
+            if(($curr_pan == $company_pan) || (($row["group_company_code"] == $company_pan) || $role=="Admin")){
                 if($prev_pan!=$curr_pan){
                     $company = new Company();
                     $company->name = $row["name"] ?? "";

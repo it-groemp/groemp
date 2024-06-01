@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Employee;
 use App\Models\Admin;
+use App\Models\Company;
 
 use Carbon\Carbon;
 
@@ -29,9 +30,11 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
     {
         $id = Session::get("admin_id");
         $admin = Admin::where("id",$id)->first();
+        $company_pan = $admin->company;
+        $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         foreach ($collection as $row){
-            if(in_array($row["company"], $company_list)){
+            if(in_array($row["company"], $company_list) || $role=="Admin"){
                 $employee = new Employee();
                 $employee->pan_number = Str::upper($row["pan_number"]);
                 $employee->employee_code = $row["employee_id"];

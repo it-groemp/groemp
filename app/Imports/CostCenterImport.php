@@ -26,9 +26,10 @@ class CostCenterImport implements ToCollection, WithHeadingRow
         $id = Session::get("admin_id");
         $admin = Admin::where("id",$id)->first();
         $company_pan = $admin->company;
+        $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         foreach($collection as $key => $row){
-            if(in_array($row["company"], $company_list)){
+            if(in_array($row["company"], $company_list) || $role=="Admin"){
                 $cost_center = new CostCenter();
                 $cost_center->company = Str::upper($row["company"]);
                 $cost_center->cc1 = $row["cc1"];
