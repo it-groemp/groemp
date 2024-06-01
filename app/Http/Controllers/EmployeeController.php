@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Employee;
 use App\Models\Otp;
 use App\Models\EmployeeBenefit;
+use App\Models\Admin;
+use App\Models\Company;
 
 use App\Imports\EmployeeAddImport;
 use App\Imports\EmployeeBenefitImport;
