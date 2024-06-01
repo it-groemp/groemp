@@ -32,6 +32,9 @@ Route::post("/save-company-details", [CompanyController::class,"saveCompanyDetai
 Route::get("/cc-details", [CompanyController::class,"ccDetails"])->name("cc-details");
 Route::post("/save-cc-details", [CompanyController::class,"saveCCDetails"])->name("save-cc-details");
 Route::post("/update-cc-details/{id}", [CompanyController::class,"updateCCDetails"])->name("update-cc-details");
+Route::get("/workflow-details", [CompanyController::class,"workflowDetails"])->name("workflow-details");
+Route::post("/save-workflow", [CompanyController::class,"saveWorkflow"])->name("save-workflow");
+Route::post("/update-workflow/{id}", [CompanyController::class,"updateWorkflow"])->name("update-workflow");
 
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");

@@ -11,6 +11,7 @@ use App\Models\Admin;
 use App\Models\Company;
 use App\Models\Address;
 use App\Models\CostCenter;
+use App\Models\Workflow;
 
 use App\Imports\CompanyImport;
 use App\Imports\CostCenterImport;
@@ -131,9 +132,98 @@ class CompanyController extends Controller
         $request->validate([
             'uploadFile' => 'required|mimes:xlsx,xls',
         ]);
-
         Excel::import(new CostCenterImport, $request->file("uploadFile"));
-
         return redirect("/cc-details");
+    }
+
+    public function workflowDetails(){
+        if((new AdminController())->checkAdminSession()){
+            $workflow = Workflow::join("companies","workflows.company","companies.pan")
+                        ->where("companies.to_date",null)
+                        ->get(["id","company","approver1","approver2","approver3","admin"]);
+            $company_list = Company::all()->pluck("pan")->toArray();
+            $admin_list = Admin::where("role","Admin")->pluck("email")->toArray();
+            return view("admin.company.workflow-details")->with("workflow",$workflow)->with("company_list",$company_list)->with("admin_list",$admin_list);
+        }
+        else if((new AdminController())->checkEmployerSession()){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
+            $workflow = Workflow::join("companies","workflows.company","companies.pan")
+                        ->where("companies.to_date",null)
+                        ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
+                        ->get(["id","company","approver1","approver2","approver3","admin"]);
+            $company_list = Company::all()->pluck("pan")->toArray();
+            $admin_list = Admin::where("role","Admin")->pluck("email")->toArray();
+            return view("admin.company.workflow-details")->with("workflow",$workflow)->with("company_list",$company_list)->with("admin_list",$admin_list);
+        }
+        else{
+            return redirect("/admin/login");
+        }   
+    }
+
+    public function saveWorkflow(){
+        $company = request("company");
+        $approver1 = request("approver1");
+        $approver2 = request("approver2");
+        $approver3 = request("approver3");
+        $approver_admin = request("admin");
+        $errors="";
+        if($approver1=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver1)){
+            $errors = $errors."<br/> Please enter a valid email address";
+        }
+        if($approver2=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver2)){
+            $errors = $errors."<br/> Please enter a valid email address";
+        }
+        if($approver3=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver3)){
+            $errors = $errors."<br/> Please enter a valid email address";
+        }
+        if($errors!=""){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
+            $workflow = new Workflow();
+            $workflow->company = $company;
+            $workflow->approver1 = $approver1;
+            $workflow->approver2 = $approver2;
+            $workflow->approver3 = $approver3;
+            $workflow->admin = $approver_admin;
+            $workflow->created_by = $admin->email;
+            $workflow->updated_by = $admin->email;
+            $workflow->save();
+            return redirect("/workflow-details");
+        }
+        else{
+            return redirect()->back()->with("errors",$errors);
+        }
+    }
+
+    public function updateWorkflow(){
+        $company = request("company-edit");
+        $approver1 = request("approver1-edit");
+        $approver2 = request("approver2-edit");
+        $approver3 = request("approver3-edit");
+        $errors="";
+        if($approver1=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver1)){
+            $errors = $errors."<br/> Please enter a valid email address";
+        }
+        if($approver2=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver2)){
+            $errors = $errors."<br/> Please enter a valid email address";
+        }
+        if($approver3=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver3)){
+            $errors = $errors."<br/> Please enter a valid email address";
+        }
+        if($errors!=""){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
+            $workflow = Workflow::where("company",$company)->first();
+            $workflow->approver1 = $approver1;
+            $workflow->approver2 = $approver2;
+            $workflow->approver3 = $approver3;
+            $workflow->updated_by = $admin->email;
+            $workflow->update();
+            return redirect("/workflow-details");
+        }
+        else{
+            return redirect()->back()->with("errors",$errors);
+        }
     }
 }
