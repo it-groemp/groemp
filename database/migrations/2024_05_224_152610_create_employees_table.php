@@ -26,7 +26,8 @@ return new class extends Migration
             $table->timestamp("to_date")->nullable(true);
             $table->string("created_by",100)->nullable(false);
             $table->string("updated_by",100)->nullable(false);
-            $table->timestamps();
+            $table->timestamp("created_at")->nullable(false)->useCurrent();
+            $table->timestamp("updated_at")->nullable(false)->useCurrent();
         });
     }
 
