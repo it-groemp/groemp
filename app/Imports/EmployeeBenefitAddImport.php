@@ -17,7 +17,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 
-class EmployeeBenefitImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
     /**
     * @param Collection $collection
@@ -38,8 +38,10 @@ class EmployeeBenefitImport implements ToCollection, WithHeadingRow, WithCalcula
             if(in_array($company, $company_list) || $role=="Admin"){
                 $month = str_pad($row["month"], 2, "0", STR_PAD_LEFT);
                 $employee_benefit = EmployeeBenefit::where("pan_number",$pan)->where("month",$month)->first();
+                
                 if($employee_benefit==null){
                     $employee_benefit = EmployeeBenefit::where("pan_number",$pan)->first();
+                    
                     $employee_benefit_backup = new EmployeeBenefitBackup();
                     $employee_benefit_backup->pan_number = $employee_benefit->pan_number;
                     $employee_benefit_backup->company = $employee_benefit->company;
@@ -50,7 +52,7 @@ class EmployeeBenefitImport implements ToCollection, WithHeadingRow, WithCalcula
                     $employee_benefit_backup->created_by = $admin->email;
                     $employee_benefit_backup->save();
 
-                    $employee_benefit->previous_balance = $employee_benefit->current_benefit - $employee_benefit->availed_benefit;
+                    $employee_benefit->previous_balance = $employee_benefit->current_benefit + $employee_benefit->previous_balance- $employee_benefit->availed_benefit;
                     $employee_benefit->month = $month;
                     $employee_benefit->current_benefit = $row["benefit_amount"];
                     $employee_benefit->availed_benefit = 0;
@@ -58,14 +60,14 @@ class EmployeeBenefitImport implements ToCollection, WithHeadingRow, WithCalcula
                     $employee_benefit->created_by = $admin->email;
                     $employee_benefit->updated_at = $today->toDateTimeString();
                     $employee_benefit->updated_by = $admin->email;
-                    $employee_benefit->save();
-                }
-                else{
-                    $employee_benefit->current_benefit = $row["benefit_amount"];
-                    $employee_benefit->updated_at = $today->toDateTimeString();
-                    $employee_benefit->updated_by = $admin->email;
                     $employee_benefit->update();
                 }
+                // else{
+                //     $employee_benefit->current_benefit = $row["benefit_amount"];
+                //     $employee_benefit->updated_at = $today->toDateTimeString();
+                //     $employee_benefit->updated_by = $admin->email;
+                //     $employee_benefit->update();
+                // }
             }
         }
     }

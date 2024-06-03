@@ -13,7 +13,8 @@ use App\Models\Admin;
 use App\Models\Company;
 
 use App\Imports\EmployeeAddImport;
-use App\Imports\EmployeeBenefitImport;
+use App\Imports\EmployeeBenefitAddImport;
+use App\Imports\EmployeeBenefitUpdateImport;
 use Excel;
 
 class EmployeeController extends Controller
@@ -105,9 +106,18 @@ class EmployeeController extends Controller
 
     public function uploadEmployeeBenefits(Request $request){
         $request->validate([
-            'uploadFile' => 'required|mimes:xlsx,xls',
+            'uploadAddFile' => 'required|mimes:xlsx,xls',
         ]);
-        Excel::import(new EmployeeBenefitImport, $request->file("uploadFile"));
+        dd("hello");
+        Excel::import(new EmployeeBenefitAddImport, $request->file("uploadAddFile"));
+        return redirect("/employee-benefits-admin");
+    }
+
+    public function updateEmployeeBenefits(Request $request){
+        $request->validate([
+            'uploadEditFile' => 'required|mimes:xlsx,xls',
+        ]);
+        Excel::import(new EmployeeBenefitUpdateImport, $request->file("uploadEditFile"));
         return redirect("/employee-benefits-admin");
     }
 }
