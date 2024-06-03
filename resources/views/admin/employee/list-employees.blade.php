@@ -6,6 +6,15 @@
 @section('content')
     <div class="container my-5">
         <h2 class="text-center mb-3">Employee Details</h2>
+        <div class="text-right my-5 pr-3 align-right">
+			<a class="btn btn-outline" href="{{asset('files/Employee_Data.xlsx')}}">Download Employee Data Sheet</a>
+			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalAdd">
+                Upload Employee Data To Add
+            </button>
+            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalEdit">
+                Upload Employee Data To Edit
+            </button>
+		</div>
         @if(count($employees)>0)
             <table class="table">
                 <tr>
@@ -44,15 +53,6 @@
                 @endforeach
             </table>
         @endif
-        <div class="text-right my-5 pr-3 align-right">
-			<a class="btn btn-outline" href="{{asset('files/Employee_Data.xlsx')}}">Download Employee Data Sheet</a>
-			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalAdd">
-                Upload Employee Data To Add
-            </button>
-            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalEdit">
-                Upload Employee Data To Edit
-            </button>
-		</div>
     </div>
 
     <div class="modal fade" id="editDataModal" tabindex="-1" aria-labelledby="editDataModalLabel" aria-hidden="true">

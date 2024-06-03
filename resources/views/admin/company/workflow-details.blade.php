@@ -6,8 +6,13 @@
         @if(session("error"))
             <div class="error mb-3">{!!session("error")!!}</div>
         @endif
+        <div class="text-right my-5 pr-3 align-right">
+            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#addWorkflowModal">
+                Add Workflow Details
+            </button>
+		</div>
         @if(count($workflow)>0)
-        <table class="table">
+            <table class="table">
                 <tr>
                     <th scope="col">Sr. No.</th>
                     <th scope="col">Company PAN</th>
@@ -37,11 +42,6 @@
                 @endforeach
             </table>
         @endif
-        <div class="text-right my-5 pr-3 align-right">
-            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#addWorkflowModal">
-                Add Workflow Details
-            </button>
-		</div>
     </div>
     <div class="modal fade" id="addWorkflowModal" tabindex="-1" aria-labelledby="addWorkflowModalLabel" aria-hidden="true">
         <div class="modal-dialog">

@@ -3,6 +3,15 @@
 @section('content')
     <div class="container my-5">
         <h2 class="text-center mb-3">Employee Benefit Details</h2>
+        <div class="text-right my-5 pr-3 align-right">
+			<a class="btn btn-outline" href="{{asset('files/Benefit_Data.xlsx')}}">Download Employee Benefits Data Sheet</a>
+			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadBenefitAddData">
+                Upload Employee Benefits Data
+            </button>
+            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadBenefitEditData">
+                Update Employee Benefits Data
+            </button>
+		</div>
         @if(count($employee_benefits)>0)
             <table class="table">
                 <tr>
@@ -30,16 +39,6 @@
                 @endforeach
             </table>
         @endif
-
-        <div class="text-right my-5 pr-3 align-right">
-			<a class="btn btn-outline" href="{{asset('files/Benefit_Data.xlsx')}}">Download Employee Benefits Data Sheet</a>
-			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadBenefitAddData">
-                Upload Employee Benefits Data
-            </button>
-            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadBenefitEditData">
-                Update Employee Benefits Data
-            </button>
-		</div>
     </div>
 
     <div class="modal fade" id="uploadBenefitAddData" tabindex="-1" aria-labelledby="uploadBenefitAddDataLabel" aria-hidden="true">

@@ -6,6 +6,9 @@
 @section('content')
     <div class="container my-5">
         <h2 class="text-center mb-3">Company Details</h2>
+        <div class="text-right my-5 pr-3 align-right">
+            <a class="btn btn-outline" href="{{route('register-company')}}">Register Company</a>
+        </div>
         @if(count($companies)>0)
             <table class="table">
                 <tr>
@@ -26,8 +29,5 @@
                 @endforeach
             </table>
         @endif
-        <div class="text-right my-5 pr-3 align-right">
-            <a class="btn btn-outline" href="{{route('register-company')}}">Register Company</a>
-        </div>
     </div>
 @stop

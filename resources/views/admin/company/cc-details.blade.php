@@ -6,6 +6,14 @@
 @section("content")
 <div class="container my-5">
         <h2 class="text-center mb-3">Cost Center Details</h2>
+        @if(Session::get("role")=="Employer")
+            <div class="text-right my-5 pr-3 align-right">
+            <a class="btn btn-outline" href="{{asset('files/Cost_Center.xlsx')}}">Download Cost Center Data Sheet</a>
+                <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModal">
+                    Upload Cost Center Data
+                </button>
+            </div>
+        @endif
         @if(count($ccDetails)>0)
             <table class="table">
                 <tr>
@@ -36,14 +44,6 @@
                     </tr>
                 @endforeach
             </table>
-        @endif
-        @if(Session::get("role")=="Employer")
-            <div class="text-right my-5 pr-3 align-right">
-            <a class="btn btn-outline" href="{{asset('files/Cost_Center.xlsx')}}">Download Cost Center Data Sheet</a>
-                <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModal">
-                    Upload Cost Center Data
-                </button>
-            </div>
         @endif
     </div>
 
