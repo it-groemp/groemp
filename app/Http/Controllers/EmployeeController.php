@@ -90,8 +90,7 @@ class EmployeeController extends Controller
     public function employeeBenefitsAdmin(){
         $employee_benefits=[];
         if((new AdminController())->checkAdminSession()){
-            $employee_benefits = EmployeeBenefit::join("employees","employee_benefits.pan_number","employees.pan_number")
-                                ->get(["employee_benefits.pan_number","company","current_benefit","previous_benefit","availed_benefit"]);
+            $employee_benefits = EmployeeBenefit::all();
             return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits);
         }
         else if((new AdminController())->checkEmployerSession()){
@@ -99,9 +98,7 @@ class EmployeeController extends Controller
             $admin = Admin::where("id",$id)->first();
             $company_pan = $admin->company;
             $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
-            $employee_benefits = EmployeeBenefit::join("employees","employee_benefits.pan_number","employees.pan_number") 
-                                ->whereIn("company",$company_list)
-                                ->get(["employee_benefits.pan_number","company","current_benefit","previous_benefit","availed_benefit"]);
+            $employee_benefits = EmployeeBenefit::whereIn("company",$company_list)->get();
             return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits);
         }
     }

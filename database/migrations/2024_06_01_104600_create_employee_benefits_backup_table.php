@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string("pan_number",10)->nullable(false);
             $table->foreign("pan_number")->references("pan_number")->on("employees");
+            $table->string("company",10)->nullable(false);
+            $table->foreign("company")->references("pan")->on("companies");
             $table->string("month",4)->nullable(false); 
             $table->integer("current_benefit")->nullable(false);
             $table->integer("availed_benefit")->nullable(false);
             $table->string("created_by",100)->nullable(false);
             $table->timestamp("created_at")->nullable(false)->useCurrent();
+            $table->timestamp("updated_at")->nullable(false)->useCurrent();
         });
     }
 

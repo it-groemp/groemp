@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('employee_benefits', function (Blueprint $table) {
             $table->id();
-            $table->string("pan_number",10)->unique(true)->nullable(false);
+            $table->string("pan_number",10)->nullable(false);
             $table->foreign("pan_number")->references("pan_number")->on("employees");
+            $table->string("company",10)->nullable(false);
+            $table->foreign("company")->references("pan")->on("companies");
             $table->string("month",4)->nullable(false);
             $table->integer("current_benefit")->nullable(false)->default(0);
             $table->integer("previous_balance")->nullable(false)->default(0);

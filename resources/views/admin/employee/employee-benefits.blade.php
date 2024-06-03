@@ -9,6 +9,7 @@
                     <th scope="col">Sr. No.</th>
                     <th scope="col">Pan Number</th>
                     <th scope="col">Company</th>
+                    <th scope="col">Month</th>
                     <th scope="col">Current Benefit</th>
                     <th scope="col">Previous Benefit</th>
                     <th scope="col">Availed Benefit</th>
@@ -20,9 +21,10 @@
                     <tr>
                         <td>{{$number}}</td>
                         <td>{{$employee_benefit->pan_number}}</td>
-                        <td >{{$employee_benefit->company}}</td>
+                        <td>{{$employee_benefit->company}}</td>
+                        <td>{{$employee_benefit->month}}</td>
                         <td>{{$employee_benefit->current_benefit}}</td>
-                        <td>{{$employee_benefit->previous_benefit}}</td>
+                        <td>{{$employee_benefit->previous_balance}}</td>
                         <td>{{$employee_benefit->availed_benefit}}</td>
                     </tr>
                 @endforeach

@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Employee;
+use App\Models\EmployeeBenefit;
 use App\Models\Admin;
 use App\Models\Company;
 
@@ -28,6 +29,8 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
     */
     public function collection(Collection $collection)
     {
+        $today = Carbon::now();
+        $month = (str_pad($today->month, 2, "0", STR_PAD_LEFT).($today->format('y')));
         $id = Session::get("admin_id");
         $admin = Admin::where("id",$id)->first();
         $company_pan = $admin->company;
@@ -43,11 +46,35 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 $employee->email = $row["email"];
                 $employee->designation = $row["designation"];
                 $employee->company = Str::upper($row["company"]);
-                $employee->created_at = Carbon::now()->toDateTimeString();
+                $employee->created_at = $today->toDateTimeString();
                 $employee->created_by = $admin->email;
-                $employee->updated_at = Carbon::now()->toDateTimeString();
+                $employee->updated_at = $today->toDateTimeString();
                 $employee->updated_by = $admin->email;
                 $employee->save();
+
+                $benefit_amount = $row["benefit_amount"];
+
+                if($benefit_amount!=null || $benefit_amount!=""){
+                    $employee_benefit = EmployeeBenefit::where("pan_number",Str::upper($row["pan_number"]))->where("month",$month)->first();
+                    if($employee_benefit!=null){
+                        $employee_benefit->current_benefit = $benefit_amount;
+                        $employee_benefit->updated_at = $today->toDateTimeString();
+                        $employee_benefit->updated_by = $admin->email;
+                        $employee_benefit->update();
+                    }
+                    else{
+                        $employee_benefit = new EmployeeBenefit();
+                        $employee_benefit->pan_number = $row["pan_number"];
+                        $employee_benefit->company = Str::upper($row["company"]);
+                        $employee_benefit->current_benefit = intval($row["benefit_amount"]);
+                        $employee_benefit->month = $month;
+                        $employee_benefit->created_at = $today->toDateTimeString();
+                        $employee_benefit->created_by = $admin->email;
+                        $employee_benefit->updated_at = $today->toDateTimeString();
+                        $employee_benefit->updated_by = $admin->email;
+                        $employee_benefit->save();
+                    }
+                }                
             }
         }
     }
