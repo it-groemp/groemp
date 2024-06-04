@@ -35,7 +35,7 @@
                 <a class="nav-link <?php echo Route::currentRouteName()=='voucher-details'?' active':''?>" aria-current="page" href="">Voucher Details</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo Route::currentRouteName()=='brand-details'?' active':''?>" aria-current="page" href="{{route('brand-details')}}">Brand Details</a>
+                <a class="nav-link <?php echo Route::currentRouteName()=='benefit-details'?' active':''?>" aria-current="page" href="{{route('benefit-details')}}">Benefit Details</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php echo Route::currentRouteName()=='category-details'?' active':''?>" aria-current="page" href="{{route('category-details')}}">Category Details</a>

@@ -6,7 +6,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\BrandController;
+use App\Http\Controllers\BenefitController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers;
@@ -23,7 +23,7 @@ use App\Http\Controllers;
 */
 
 Route::get("/", [PagesController::class,"index"])->name("home");
-Route::get("/our-brands", [PagesController::class,"ourBrands"])->name("our-brands");
+Route::get("/our-Benefits", [PagesController::class,"ourBenefits"])->name("our-Benefits");
 
 Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAdmin"])->name("company-details-admin");
 Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");
@@ -74,11 +74,11 @@ Route::get("/edit-category/{id}", [CategoryController::class, "editCategory"])->
 Route::post("/update-category", [CategoryController::class, "updateCategory"])->name("update-category");
 Route::get("/delete-category/{id}", [CategoryController::class, "deleteCategory"])->name("delete-category");
 
-Route::get("/brand-details", [BrandController::class, "brandDetails"])->name("brand-details");
-Route::get("/add-brand", [BrandController::class, "addBrand"])->name("add-brand");
-Route::post("/save-brand", [BrandController::class, "saveBrand"])->name("save-brand");
-Route::get("/edit-brand/{id}", [BrandController::class, "editBrand"])->name("edit-brand");
-Route::post("/update-brand", [BrandController::class, "updateBrand"])->name("update-brand");
-Route::get("/delete-brand/{id}", [BrandController::class, "deleteBrand"])->name("delete-brand");
+Route::get("/benefit-details", [BenefitController::class, "benefitDetails"])->name("benefit-details");
+Route::get("/add-benefit", [BenefitController::class, "addBenefit"])->name("add-benefit");
+Route::post("/save-benefit", [BenefitController::class, "saveBenefit"])->name("save-benefit");
+Route::get("/edit-benefit/{id}", [BenefitController::class, "editBenefit"])->name("edit-benefit");
+Route::post("/update-benefit", [BenefitController::class, "updateBenefit"])->name("update-benefit");
+Route::get("/delete-benefit/{id}", [BenefitController::class, "deleteBenefit"])->name("delete-benefit");
 
 Route::get("/testroute", [MailController::class, "sendmail"]);

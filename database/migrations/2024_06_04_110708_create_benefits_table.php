@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('brands', function (Blueprint $table) {
+        Schema::create('benefits', function (Blueprint $table) {
             $table->id();
             $table->string("name",50)->nullable(false);
-            $table->unsignedBigInteger("benefit_id")->nullable(false);
-            $table->foreign("benefit_id")->references("id")->on("benefits");
+            $table->unsignedBigInteger("category_id")->nullable(false);
+            $table->foreign("category_id")->references("id")->on("categories");
             $table->string("image_name",60)->nullable(false);
             $table->string("created_by",100)->nullable(false);
             $table->string("updated_by",100)->nullable(false);
-            $table->timestamps();
+            $table->timestamp("created_at")->nullable(false)->useCurrent();
+            $table->timestamp("updated_at")->nullable(false)->useCurrent();
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brand');
+        Schema::dropIfExists('benefits');
     }
 };
