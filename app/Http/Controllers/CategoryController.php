@@ -58,7 +58,7 @@ class CategoryController extends Controller
                 }
             }
             else{
-                $values=null;
+                $values=NULL;
             }
             $category = new Category();
             $category->name = request("name");
@@ -121,7 +121,7 @@ class CategoryController extends Controller
                 }
             }
             else{
-                $values=null;
+                $values=NULL;
             }
             $category = Category::find($id);
             $category->name = request("name");

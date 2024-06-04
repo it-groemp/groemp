@@ -20,7 +20,7 @@
             @php
                 $values=array();
                 $count=0;
-                if($category->values!="null"){
+                if($category->values!=null){
                     $values = json_decode($category->values);
                     $count = count($values);
                 }
