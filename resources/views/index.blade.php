@@ -27,22 +27,22 @@
 		    </ul>
         </div>
 
-        <div class="pb-5">
+        <!-- <div class="pb-5">
             <h1 class="mb-3 text-center section-title">Benefits You Can Avail With Us</h1>
             <div class="row">
-                @foreach($benefits as $benefit)
+                @foreach($categories as $category)
                     @php
                         $image = $benefit->image_name
                     @endphp
                     <div class="span3 col-lg-3 col-md-6 col-12 mt-4">
                         <div class="box border">
-                            <img src="{{asset('images/benefits/'.$image)}}" class="p-2 mx-auto benefit-img" alt="{{$benefit->name}}"/>
-                            <h4 class="text-center"><b>{{$benefit->name}}</b></h3>
+                            <img src="{{asset('images/categories/'.$image)}}" class="p-2 mx-auto category-img" alt="{{$category->name}}"/>
+                            <h4 class="text-center"><b>{{$category->name}}</b></h3>
                         </div>
                     </div>
                 @endforeach
             </div>
-        </div>
+        </div> -->
 
         <div class="about-us pb-5">
             <h1 class="mb-3 text-center section-title">About Us</h1>
