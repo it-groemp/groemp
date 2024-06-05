@@ -23,7 +23,7 @@ use App\Http\Controllers;
 */
 
 Route::get("/", [PagesController::class,"index"])->name("home");
-Route::get("/our-Benefits", [PagesController::class,"ourBenefits"])->name("our-Benefits");
+Route::get("/our-benefits", [PagesController::class,"ourBenefits"])->name("our-benefits");
 
 Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAdmin"])->name("company-details-admin");
 Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");

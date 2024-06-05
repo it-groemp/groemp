@@ -27,12 +27,12 @@
 		    </ul>
         </div>
 
-        <!-- <div class="pb-5">
+        <div class="pb-5">
             <h1 class="mb-3 text-center section-title">Benefits You Can Avail With Us</h1>
             <div class="row">
                 @foreach($categories as $category)
                     @php
-                        $image = $benefit->image_name
+                        $image = $category->image_name
                     @endphp
                     <div class="span3 col-lg-3 col-md-6 col-12 mt-4">
                         <div class="box border">
@@ -42,7 +42,7 @@
                     </div>
                 @endforeach
             </div>
-        </div> -->
+        </div>
 
         <div class="about-us pb-5">
             <h1 class="mb-3 text-center section-title">About Us</h1>

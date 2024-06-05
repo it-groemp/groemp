@@ -7,34 +7,26 @@ use Illuminate\Support\Facades\Session;
 
 use Excel;
 
-use App\Imports\BenefitImport;
-use App\Imports\BrandImport;
-
+use App\Models\Category;
 use App\Models\Benefit;
-use App\Models\Brand;
 
 class PagesController extends Controller
 {
     public function index(){
-        $benefits = Benefit::all();
-        return view("index")->with("benefits",$benefits);
+        $categories = Category::all();
+        return view("index")->with("categories",$categories);
     }
 
-    public function ourBrands(){
-        $brands = Session::get("brands");
-        if($brands==null){
-            $brands = Brand::join("benefits","brands.benefit_id","=","benefits.id")->orderBy("benefits.name")->orderBy("brands.name")->get(['brands.id as id','brands.name as name','benefits.name as benefit_name','brands.image_name as image_name']);
-            Session::put("brands",$brands);
+    public function ourBenefits(){
+        $benefits = Session::get("benefits");
+        if($benefits==null){
+            $benefits = Benefit::join("categories","benefits.category_id","=","categories.id")->orderBy("categories.name")->orderBy("benefits.name")->get(['benefits.id as id','benefits.name as name','categories.name as category_name','benefits.image_name as image_name']);
+            Session::put("benefits",$benefits);
         }        
-        return view("company.our-brands")->with("brands",$brands);
+        return view("company.our-benefits")->with("benefits",$benefits);
     }
     
     public function upload(){
         return view("upload");
-    }
-
-    public function save(Request $request){
-        Excel::import(new BenefitImport, $request->file("uploadFile"));
-        //Excel::import(new BrandImport, $request->file("uploadFile"));
     }
 }

@@ -16,7 +16,7 @@
                         <a class="nav-link<?php echo Route::currentRouteName()=='contact-us'?' active':''?>" href="">Contact Us</a>
                     </li>
                     <li class="nav-item" id="our-brands">
-                        <a class="nav-link<?php echo Route::currentRouteName()=='our-brands'?' active':''?>" href="{{route('our-brands')}}">Our Brands</a>
+                        <a class="nav-link<?php echo Route::currentRouteName()=='our-benefits'?' active':''?>" href="{{route('our-benefits')}}">Our Benefits</a>
                     </li>
                 </ul>
                 @if(Session::has("employee"))
