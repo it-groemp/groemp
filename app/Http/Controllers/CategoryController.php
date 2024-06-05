@@ -64,7 +64,7 @@ class CategoryController extends Controller
             $category->name = request("name");
             $category->maximum_amount = request("amount");
             $category->type = $type;
-            $category->values = json_encode($values);
+            $category->values = $values==NULL? NULL : json_encode($values);
             $category->created_by = $admin->email;
             $category->updated_by = $admin->email;
             if($files=$request->file("photo")){
@@ -123,11 +123,12 @@ class CategoryController extends Controller
             else{
                 $values=NULL;
             }
+            
             $category = Category::find($id);
             $category->name = request("name");
             $category->maximum_amount = request("amount");
             $category->type = $type;
-            $category->values = $values;
+            $category->values = $values==NULL? NULL : json_encode($values);
             $category->updated_by = $admin->email;       
             if($files=$request->file("photo")){
                 $fileName=$files->getClientOriginalName();  

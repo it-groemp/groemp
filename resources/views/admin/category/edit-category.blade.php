@@ -20,7 +20,7 @@
             @php
                 $values=array();
                 $count=0;
-                if($category->values!=null){
+                if($category->values!=null || $category->values=="null"){
                     $values = json_decode($category->values);
                     $count = count($values);
                 }
@@ -66,7 +66,7 @@
                 </label>
             </div>
             <div class="form-check">
-                @if($category->type=="Free Number")
+                @if($category->type=="Text")
                     <input class="form-check-input" type="radio" name="type" id="free-text" value="Text" checked>
                 @else
                     <input class="form-check-input" type="radio" name="type" id="free-text" value="Text">
