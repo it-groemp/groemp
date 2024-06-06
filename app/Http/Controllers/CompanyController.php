@@ -12,6 +12,8 @@ use App\Models\Company;
 use App\Models\Address;
 use App\Models\CostCenter;
 use App\Models\Workflow;
+use App\Models\Benefit;
+use App\Models\CompanyBenefit;
 
 use App\Imports\CompanyImport;
 use App\Imports\CostCenterImport;
@@ -224,6 +226,89 @@ class CompanyController extends Controller
         }
         else{
             return redirect()->back()->with("errors",$errors);
+        }
+    }
+
+    public function companyBenefitsDetails(){
+        if((new AdminController())->checkAdminSession()){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
+            $benefits = CompanyBenefit::join("companies","company_benefits.company","companies.pan")
+                        ->where("companies.to_date",null)
+                        ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
+                        ->get();
+            $benefits_list = Benefit::all();       
+            return view("admin.company.company-benefits-details")->with("benefits",$benefits)->with("benefits_list",$benefits_list);
+        }
+        else if((new AdminController())->checkEmployerSession()){
+            $id = Session::get("admin_id");
+            $admin = Admin::where("id",$id)->first();
+            $benefits = CompanyBenefit::join("companies","company_benefits.company","companies.pan")
+                        ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
+                        ->get(["company_benefits.company","benefits"]);
+            $benefits_list = Benefit::all();         
+            return view("admin.company.company-benefits-details")->with("benefits",$benefits)->with("benefits_list",$benefits_list);
+        }
+    }
+
+    public function addCompanyBenefit(){
+        if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
+            $benefits = Benefit::join("categories","benefits.category_id","=","categories.id")
+                        ->orderBy("categories.name")
+                        ->orderBy("benefits.name")
+                        ->get(['benefits.id as id','benefits.name as name','categories.name as category_name']);
+            return view("admin.company.add-company-benefits")->with("benefits",$benefits);
+        }
+    }
+
+    public function saveCompanyBenefit(Request $request){
+        if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
+            $request->validate([
+                'benefit' => 'required',
+            ]); 
+            $benefits = request("benefit");
+            $id = Session::get("admin_id");
+            $admin = Admin::find($id);
+            $company_pan = $admin->company;
+            $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
+            foreach($company_list as $company){
+                $company_benefit = new CompanyBenefit();
+                $company_benefit->company = $company;
+                $company_benefit->benefits = json_encode($benefits);
+                $company_benefit->created_by = $admin->email;
+                $company_benefit->updated_by = $admin->email;
+                $company_benefit->save();
+            }
+            return redirect("/company-benefit-details");
+        }
+    }
+
+    public function editCompanyBenefit($id){
+        if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
+            $company_benefit = CompanyBenefit::find($id);
+            $benefits = Benefit::join("categories","benefits.category_id","=","categories.id")
+                        ->orderBy("categories.name")
+                        ->orderBy("benefits.name")
+                        ->get(['benefits.id as id','benefits.name as name','categories.name as category_name']);
+            return view("admin.company.edit-company-benefits")->with("company_benefit",$company_benefit)->with("benefits",$benefits);
+        }
+    }
+
+    public function updateCompanyBenefit(Request $request){
+        if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
+            $request->validate([
+                'benefit' => 'required',
+            ]); 
+            $benefits = request("benefit");
+            $id = request("id");
+            $id = Session::get("admin_id");
+            $admin = Admin::find($id);
+            $company_benefit = CompanyBenefit::find($id);
+            $company_benefit->benefits = json_encode($benefits);
+            $company_benefit->created_by = $admin->email;
+            $company_benefit->updated_by = $admin->email;
+            $company_benefit->update();
+            return redirect("/company-benefit-details");
         }
     }
 }

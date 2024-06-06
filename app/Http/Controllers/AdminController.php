@@ -127,7 +127,7 @@ class AdminController extends Controller
                     $resetPassword->token = $token;
                     $resetPassword->update();
                 }
-                $link=env("APP_URL")."/reset-password/$token";
+                $link=config("app.url")."/reset-password/$token";
                 if($function=="forgot"){
                     Mail::to($email)->send(new ResetPasswordMail($admin->name,$link));
                 }

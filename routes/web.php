@@ -36,6 +36,12 @@ Route::get("/workflow-details", [CompanyController::class,"workflowDetails"])->n
 Route::post("/save-workflow", [CompanyController::class,"saveWorkflow"])->name("save-workflow");
 Route::post("/update-workflow/{id}", [CompanyController::class,"updateWorkflow"])->name("update-workflow");
 
+Route::get("/company-benefit-details", [CompanyController::class,"companyBenefitsDetails"])->name("company-benefit-details");
+Route::get("/add-company-benefit", [CompanyController::class,"addCompanyBenefit"])->name("add-company-benefit");
+Route::post("/save-company-benefit", [CompanyController::class,"saveCompanyBenefit"])->name("save-company-benefit");
+Route::get("/edit-company-benefit/{id}", [CompanyController::class,"editCompanyBenefit"])->name("edit-company-benefit");
+Route::post("/update-company-benefit", [CompanyController::class,"updateCompanyBenefit"])->name("update-company-benefit");
+
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
 Route::post("/send-otp", [EmployeeController::class,"sendOtp"])->name("send-otp");
