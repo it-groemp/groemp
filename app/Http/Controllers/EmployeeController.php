@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use App\Models\Employee;
-use App\Models\Otp;
 use App\Models\EmployeeBenefit;
 use App\Models\Admin;
 use App\Models\Company;
@@ -29,35 +28,6 @@ class EmployeeController extends Controller
         return redirect("/");
     }
 
-    public function sendOtp(){
-        $mobile = request("mobile");
-        $employee = Employee::where("mobile",$mobile)->first();
-        if($employee==null){
-            return redirect()->back()->with("error","Employee doesn't exists");
-        }
-        $this->generateOtp($mobile);
-        return redirect()->back();
-    }
-
-    public function verifyOtp(Request $request){
-        $this->validate($request, [
-            "otp" => "required|numeric|digits:6",
-        ]);
-        $mobile = Session::get("mobile");
-        $otp = request("otp");
-        $row=$this->checkOtp($mobile, $otp);
-        if($row==null){
-            $error = "OTP Invalid";
-            return redirect()->back()->with("error",$error);
-        }
-        else{
-            $employee = Employee::where("mobile",$mobile)->where("to_date",null)->first()->pluck("id");
-            Session::put("emp-id",$employee->id);
-            Session::forget("otpModal");
-            return redirect("/profile");
-        }
-    }
-
     public function profile(){
         $mobile = Session::get("mobile");
         if($mobile!=null){
@@ -71,21 +41,6 @@ class EmployeeController extends Controller
         else{
             return redirect("/login");
         }
-    }
-
-    public function generateOtp($mobile){
-        $otp = new Otp();
-        $otp->type = $mobile;
-        $otp->otp = random_int(100000, 999999);
-        Otp::where("type", $mobile)->delete();
-        $otp->save();
-        Session::put("mobile",$mobile);
-        Session::put("otpModal","yes");
-    }
-
-    public function checkOtp($mobile, $otp){
-        $row = Otp::where("type", $mobile)->where("otp", $otp)->first();
-        return $row;
     }
 
     public function employeeBenefitsAdmin(){
