@@ -165,7 +165,8 @@ class CompanyController extends Controller
                         ->where("companies.to_date",null)
                         ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
                         ->get(["id","company","approver1","approver2","approver3","admin"]);
-            $company_list = Company::all()->pluck("pan")->toArray();
+            $company_list = Company::where("companies.to_date",null)
+                        ->where("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)->pluck("pan")->toArray();
             $admin_list = Admin::where("role","Admin")->pluck("email")->toArray();
             return view("admin.company.workflow-details")->with("workflow",$workflow)->with("company_list",$company_list)->with("admin_list",$admin_list);
         }
