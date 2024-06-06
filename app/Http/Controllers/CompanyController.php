@@ -245,7 +245,7 @@ class CompanyController extends Controller
             $admin = Admin::where("id",$id)->first();
             $benefits = CompanyBenefit::join("companies","company_benefits.company","companies.pan")
                         ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
-                        ->get(["company_benefits.company","benefits"]);
+                        ->get();
             $benefits_list = Benefit::all();         
             return view("admin.company.company-benefits-details")->with("benefits",$benefits)->with("benefits_list",$benefits_list);
         }

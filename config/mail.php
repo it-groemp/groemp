@@ -34,12 +34,16 @@ return [
     */
 
     'mailers' => [
+        'mailtrap' => [
+            'transport' => 'mailtrap'
+        ],
+
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'host' => env('MAIL_HOST', 'live.smtp.mailtrap.io'),
             'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
@@ -108,8 +112,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'mailtrap@demomailtrap.com'),
+        'name' => env('MAIL_FROM_NAME', 'Groemp'),
     ],
 
     /*
@@ -127,7 +131,7 @@ return [
         'theme' => 'default',
 
         'paths' => [
-            resource_path('views/vendor/mail'),
+            resource_path('views/mails'),
         ],
     ],
 
