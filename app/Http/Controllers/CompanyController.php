@@ -12,6 +12,7 @@ use App\Models\Company;
 use App\Models\Address;
 use App\Models\CostCenter;
 use App\Models\Workflow;
+use App\Models\WorkflowApproval;
 use App\Models\Benefit;
 use App\Models\CompanyBenefit;
 
@@ -107,10 +108,15 @@ class CompanyController extends Controller
         else if((new AdminController())->checkEmployerSession()){
             $id = Session::get("admin_id");
             $admin = Admin::where("id",$id)->first();
+            $approval_status = WorkflowApproval::join("companies","workflow_approval.company","companies.pan")
+                                ->where("companies.pan",$admin->company)
+                                ->orWhere("companies.group_company_code",$admin->company)
+                                ->where("approval_for","Cost Center")
+                                ->get(["companies.name as company_name","workflow_approval.approver_email as approver_email"]);
             $ccDetails = CostCenter::join("companies","cost_centers.company","companies.pan")
             ->where("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
             ->get(["id","company","name","cc1","cc2","cc3","cc4","cc5","cc6","cc7","cc8","cc9","cc10"]);
-            return view("admin.company.cc-details")->with("ccDetails",$ccDetails);
+            return view("admin.company.cc-details")->with("ccDetails",$ccDetails)->with("approval_status",$approval_status);
         }
         else{
             return redirect("/admin/login");
@@ -131,11 +137,16 @@ class CompanyController extends Controller
     }
 
     public function saveCCDetails(Request $request){
-        $request->validate([
-            'uploadFile' => 'required|mimes:xlsx,xls',
-        ]);
-        Excel::import(new CostCenterImport, $request->file("uploadFile"));
-        return redirect("/cc-details");
+        if((new AdminController())->checkEmployerSession()){
+            $request->validate([
+                'uploadFile' => 'required|mimes:xlsx,xls',
+            ]);
+            Excel::import(new CostCenterImport, $request->file("uploadFile"));
+            return redirect("/cc-details");
+        }
+        else{
+            return redirect("/admin/login");
+        }        
     }
 
     public function workflowDetails(){
