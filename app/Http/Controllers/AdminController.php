@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\Employee;
 use App\Models\Company;
 use App\Models\ResetPassword;
+use App\Models\WorkflowApproval;
 
 use App\Imports\EmployeeAddImport;
 use App\Imports\EmployeeUpdateImport;
@@ -225,10 +226,16 @@ class AdminController extends Controller
             $admin = Admin::where("id",$id)->first();
             $mobile = $admin->mobile;
             $employees = [];
+            $approval_status = null;
             if($role == "Admin"){
                 $employees = Employee::all();
             }
             else if($role == "Employer"){
+                $approval_status = WorkflowApproval::join("companies","workflow_approval.company","companies.pan")
+                                ->where("companies.pan",$admin->company)
+                                ->orWhere("companies.group_company_code",$admin->company)
+                                ->where("approval_for","Cost Center")
+                                ->get(["companies.name as company_name","workflow_approval.approver_email as approver_email"]);
                 $company = $admin->company;
                 $employees = Employee::join("companies","employees.company","=","companies.pan")
                             ->where("employees.company",$company)
@@ -238,7 +245,7 @@ class AdminController extends Controller
                             ->get(["employees.id","employees.pan_number","employees.company","employees.name","employees.mobile","employees.email","employees.designation"]);
                 //dd($employees);
             }
-            return view("/admin/employee/list-employees")->with("employees",$employees);
+            return view("/admin/employee/list-employees")->with("employees",$employees)->with("approval_status",$approval_status);
         }
         else{
             return redirect("/admin/login");

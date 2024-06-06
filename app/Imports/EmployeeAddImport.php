@@ -6,6 +6,11 @@ use App\Models\Employee;
 use App\Models\EmployeeBenefit;
 use App\Models\Admin;
 use App\Models\Company;
+use App\Models\Workflow;
+use App\Models\WorkflowApproval;
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ApproverEmployeeMail;
 
 use Carbon\Carbon;
 
@@ -36,6 +41,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
         $company_pan = $admin->company;
         $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
+        $approval_pan = [];
         foreach ($collection as $row){
             if(in_array($row["company"], $company_list) || $role=="Admin"){
                 $employee = new Employee();
@@ -74,7 +80,25 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                         $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->save();
                     }
-                }                
+                }
+                array_push($approval_pan,Str::upper($row["company"]));    
+            }
+        }
+
+        $approval_pan = array_unique($approval_pan);
+        foreach($approval_pan as $company){
+            $workflow = Workflow::where("company",$company)->first();
+            if($workflow!=null && $workflow->approver1!=null){
+                $workflow_approval = new WorkflowApproval();
+                $workflow_approval->company = $company;
+                $workflow_approval->type="approver1";
+                $workflow_approval->approver_email = $workflow->approver1;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeMail($link));
             }
         }
     }

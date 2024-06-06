@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 use App\Mail\ApproverCostCenterMail;
+use App\Mail\ApproverEmployeeMail;
 
 class ApprovalController extends Controller
 {
@@ -52,5 +53,42 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
         }
         return view("admin.approvals.cost-center");
+    }
+
+    public function approveEmployeeDetails($token){
+        $workflow_approval = WorkflowApproval::where("token",$token)->first();
+        $workflow = Workflow::where("company",$workflow_approval->company)->first();
+        if($workflow_approval->type == "approver1"){
+            $workflow_approval->delete();
+            if($workflow->approver2!=null){
+                $workflow_approval->company = $workflow->company;
+                $workflow_approval->type="approver2";
+                $workflow_approval->approver_email = $workflow->approver2;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeMail($link));
+            }
+        }
+        else if($workflow_approval->type == "approver2"){
+            $workflow_approval->delete();
+            if($workflow->approver3!=null){
+                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->type="approver3";
+                $workflow_approval->approver_email = $workflow->approver3;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeMail($link));
+            }
+        }
+        else{
+            $workflow_approval->delete();
+        }
+        return view("admin.approvals.employee");
     }
 }

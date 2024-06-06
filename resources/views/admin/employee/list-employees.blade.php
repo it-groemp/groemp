@@ -16,6 +16,15 @@
             </button>
 		</div>
         @if(count($employees)>0)
+            @if($approval_status!=null)
+                <ul class="error">
+                    @foreach($approval_status as $as)
+                        <li>
+                            Employees approval for {{$as->company_name}} is pending for approval with {{$as->approver_email}}
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
             <table class="table">
                 <tr>
                     <th scope="col">Sr. No.</th>

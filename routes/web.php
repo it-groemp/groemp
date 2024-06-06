@@ -44,6 +44,7 @@ Route::get("/edit-company-benefit/{id}", [CompanyController::class,"editCompanyB
 Route::post("/update-company-benefit", [CompanyController::class,"updateCompanyBenefit"])->name("update-company-benefit");
 
 Route::get("/approve-cc-details/{token}", [ApprovalController::class, "approveCCDetails"])->name("approve-cc-details");
+Route::get("/approve-employee-details/{token}", [ApprovalController::class, "approveEmployeeDetails"])->name("approve-employee-details");
 
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
