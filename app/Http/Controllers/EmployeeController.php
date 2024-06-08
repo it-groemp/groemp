@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\EmployeeBenefit;
 use App\Models\Admin;
 use App\Models\Company;
+use App\Models\WorkflowApproval;
 
 use App\Imports\EmployeeAddImport;
 use App\Imports\EmployeeBenefitAddImport;
@@ -47,7 +48,7 @@ class EmployeeController extends Controller
         $employee_benefits=[];
         if((new AdminController())->checkAdminSession()){
             $employee_benefits = EmployeeBenefit::all();
-            return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits);
+            return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits)->with("approval_status",null);
         }
         else if((new AdminController())->checkEmployerSession()){
             $id = Session::get("admin_id");
@@ -55,7 +56,13 @@ class EmployeeController extends Controller
             $company_pan = $admin->company;
             $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
             $employee_benefits = EmployeeBenefit::whereIn("company",$company_list)->get();
-            return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits);
+            $approval_status = WorkflowApproval::join("companies","workflow_approval.company","companies.pan")
+                                ->where("companies.pan",$admin->company)
+                                ->orWhere("companies.group_company_code",$admin->company)
+                                ->where("approval_for","Employees")
+                                ->orWhere("approval_for","Employees Benefit")
+                                ->get(["companies.name as company_name","workflow_approval.approver_email as approver_email"]);
+            return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits)->with("approval_status",$approval_status);
         }
     }
 

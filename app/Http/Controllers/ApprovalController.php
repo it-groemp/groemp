@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 use App\Mail\ApproverCostCenterMail;
-use App\Mail\ApproverEmployeeMail;
+use App\Mail\ApproverEmployeeAddMail;
 
 class ApprovalController extends Controller
 {
@@ -55,7 +55,7 @@ class ApprovalController extends Controller
         return view("admin.approvals.cost-center");
     }
 
-    public function approveEmployeeDetails($token){
+    public function approveEmployeeAddDetails($token){
         $workflow_approval = WorkflowApproval::where("token",$token)->first();
         $workflow = Workflow::where("company",$workflow_approval->company)->first();
         if($workflow_approval->type == "approver1"){
@@ -68,8 +68,8 @@ class ApprovalController extends Controller
                 $workflow_approval->token = Str::random(20);
                 $workflow_approval->save();
                 $token = Str::random(20);
-                $link=config("app.url")."/approve-employee-details/$token";
-                Mail::to($workflow->approver1)->send(new ApproverEmployeeMail($link));
+                $link=config("app.url")."/approve-employee-add-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeAddMail($link));
             }
         }
         else if($workflow_approval->type == "approver2"){
@@ -82,8 +82,119 @@ class ApprovalController extends Controller
                 $workflow_approval->token = Str::random(20);
                 $workflow_approval->save();
                 $token = Str::random(20);
-                $link=config("app.url")."/approve-employee-details/$token";
-                Mail::to($workflow->approver1)->send(new ApproverEmployeeMail($link));
+                $link=config("app.url")."/approve-employee-add-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeAddMail($link));
+            }
+        }
+        else{
+            $workflow_approval->delete();
+        }
+        return view("admin.approvals.employee");
+    }
+
+    public function approveEmployeeEditDetails($token){
+        $workflow_approval = WorkflowApproval::where("token",$token)->first();
+        $workflow = Workflow::where("company",$workflow_approval->company)->first();
+        if($workflow_approval->type == "approver1"){
+            $workflow_approval->delete();
+            if($workflow->approver2!=null){
+                $workflow_approval->company = $workflow->company;
+                $workflow_approval->type="approver2";
+                $workflow_approval->approver_email = $workflow->approver2;
+                $workflow_approval->approval_for = "Employees Benefits";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-edit-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeEditMail($link));
+            }
+        }
+        else if($workflow_approval->type == "approver2"){
+            $workflow_approval->delete();
+            if($workflow->approver3!=null){
+                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->type="approver3";
+                $workflow_approval->approver_email = $workflow->approver3;
+                $workflow_approval->approval_for = "Employees Benefits";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-edit-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeEditMail($link));
+            }
+        }
+        else{
+            $workflow_approval->delete();
+        }
+        return view("admin.approvals.employee");
+    }
+
+    public function approveEmployeeBenefitAddDetails($token){
+        $workflow_approval = WorkflowApproval::where("token",$token)->first();
+        $workflow = Workflow::where("company",$workflow_approval->company)->first();
+        if($workflow_approval->type == "approver1"){
+            $workflow_approval->delete();
+            if($workflow->approver2!=null){
+                $workflow_approval->company = $workflow->company;
+                $workflow_approval->type="approver2";
+                $workflow_approval->approver_email = $workflow->approver2;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-benefit-add-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsAddMail($link));
+            }
+        }
+        else if($workflow_approval->type == "approver2"){
+            $workflow_approval->delete();
+            if($workflow->approver3!=null){
+                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->type="approver3";
+                $workflow_approval->approver_email = $workflow->approver3;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-benefit-add-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsAddMail($link));
+            }
+        }
+        else{
+            $workflow_approval->delete();
+        }
+        return view("admin.approvals.employee");
+    }
+
+    public function approveEmployeeBenefitEditDetails($token){
+        $workflow_approval = WorkflowApproval::where("token",$token)->first();
+        $workflow = Workflow::where("company",$workflow_approval->company)->first();
+        if($workflow_approval->type == "approver1"){
+            $workflow_approval->delete();
+            if($workflow->approver2!=null){
+                $workflow_approval->company = $workflow->company;
+                $workflow_approval->type="approver2";
+                $workflow_approval->approver_email = $workflow->approver2;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));
+            }
+        }
+        else if($workflow_approval->type == "approver2"){
+            $workflow_approval->delete();
+            if($workflow->approver3!=null){
+                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->type="approver3";
+                $workflow_approval->approver_email = $workflow->approver3;
+                $workflow_approval->approval_for = "Employees";
+                $workflow_approval->token = Str::random(20);
+                $workflow_approval->save();
+                $token = Str::random(20);
+                $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));
             }
         }
         else{

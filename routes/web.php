@@ -44,7 +44,11 @@ Route::get("/edit-company-benefit/{id}", [CompanyController::class,"editCompanyB
 Route::post("/update-company-benefit", [CompanyController::class,"updateCompanyBenefit"])->name("update-company-benefit");
 
 Route::get("/approve-cc-details/{token}", [ApprovalController::class, "approveCCDetails"])->name("approve-cc-details");
-Route::get("/approve-employee-details/{token}", [ApprovalController::class, "approveEmployeeDetails"])->name("approve-employee-details");
+Route::get("/approve-employee-add-details/{token}", [ApprovalController::class, "approveEmployeeAddDetails"])->name("approve-employee-add-details");
+Route::get("/approve-employee-edit-details/{token}", [ApprovalController::class, "approveEmployeeEditDetails"])->name("approve-employee-edit-details");
+Route::get("/approve-employee-benefit-add-details/{token}", [ApprovalController::class, "approveEmployeeBenefitAddDetails"])->name("approve-employee-benefit-add-details");
+Route::get("/approve-employee-benefit-edit-details/{token}", [ApprovalController::class, "approveEmployeeBenefitEditDetails"])->name("approve-employee-benefit-edit-details");
+
 
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");

@@ -10,7 +10,7 @@ use App\Models\Workflow;
 use App\Models\WorkflowApproval;
 
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ApproverEmployeeMail;
+use App\Mail\ApproverEmployeeAddMail;
 
 use Carbon\Carbon;
 
@@ -42,26 +42,31 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
         $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         $approval_pan = [];
-        foreach ($collection as $row){
-            if(in_array($row["company"], $company_list) || $role=="Admin"){
+        foreach($collection as $row){
+            $row = $row->toArray();
+            $company = array_key_exists("company_pan", $row) ? Str::upper($row["company_pan"]) : "";
+            if($company!="" && (in_array($company, $company_list)==true || $role=="Admin")){
                 $employee = new Employee();
-                $employee->pan_number = Str::upper($row["pan_number"]);
+                $employee->pan_number = Str::upper($row["employee_pan"]);
                 $employee->employee_code = $row["employee_id"];
-                $employee->name = $row["name"];
-                $employee->mobile = $row["mobile"];
-                $employee->email = $row["email"];
-                $employee->designation = $row["designation"];
-                $employee->company = Str::upper($row["company"]);
+                $employee->name = $row["employee_name"];
+                $employee->mobile = $row["employee_mobile"];
+                $employee->email = $row["employee_email"];
+                $employee->designation = $row["employee_designation"];
+                $employee->company = Str::upper($company);
                 $employee->created_at = $today->toDateTimeString();
                 $employee->created_by = $admin->email;
                 $employee->updated_at = $today->toDateTimeString();
                 $employee->updated_by = $admin->email;
+                if($employee->employee_code == null){
+                    dd(in_array($company, $company_list));
+                }
                 $employee->save();
-
+                
                 $benefit_amount = $row["benefit_amount"];
 
                 if($benefit_amount!=null || $benefit_amount!=""){
-                    $employee_benefit = EmployeeBenefit::where("pan_number",Str::upper($row["pan_number"]))->where("month",$month)->first();
+                    $employee_benefit = EmployeeBenefit::where("pan_number",Str::upper($row["employee_pan"]))->where("month",$month)->first();
                     if($employee_benefit!=null){
                         $employee_benefit->current_benefit = $benefit_amount;
                         $employee_benefit->updated_at = $today->toDateTimeString();
@@ -70,19 +75,18 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                     }
                     else{
                         $employee_benefit = new EmployeeBenefit();
-                        $employee_benefit->pan_number = $row["pan_number"];
-                        $employee_benefit->company = Str::upper($row["company"]);
+                        $employee_benefit->pan_number = $row["employee_pan"];
+                        $employee_benefit->company = Str::upper($company);
                         $employee_benefit->current_benefit = intval($row["benefit_amount"]);
                         $employee_benefit->month = $month;
                         $employee_benefit->created_at = $today->toDateTimeString();
                         $employee_benefit->created_by = $admin->email;
-                        $employee_benefit->updated_at = $today->toDateTimeString();
-                        $employee_benefit->updated_by = $admin->email;
+                        $employee_benefit->updated_at = $today->toDateTimeString();                            $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->save();
                     }
                 }
-                array_push($approval_pan,Str::upper($row["company"]));    
-            }
+                array_push($approval_pan,Str::upper($company));    
+            }           
         }
 
         $approval_pan = array_unique($approval_pan);
@@ -97,8 +101,8 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 $workflow_approval->token = Str::random(20);
                 $workflow_approval->save();
                 $token = Str::random(20);
-                $link=config("app.url")."/approve-employee-details/$token";
-                Mail::to($workflow->approver1)->send(new ApproverEmployeeMail($link));
+                $link=config("app.url")."/approve-employee-add-details/$token";
+                Mail::to($workflow->approver1)->send(new ApproverEmployeeAddMail($link));
             }
         }
     }

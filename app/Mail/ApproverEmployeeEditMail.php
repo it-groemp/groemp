@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ApproverEmployeeMail extends Mailable
+class ApproverEmployeeEditMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -25,6 +25,6 @@ class ApproverEmployeeMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Approve Employees')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.approver-employee-mail');
+        return $this->subject('Approve Employees')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.approver-employee-edit-mail');
     }
 }
