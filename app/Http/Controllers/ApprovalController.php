@@ -25,12 +25,12 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
             if($workflow->approver2!=null){
                 $workflow_approval->company = $workflow->company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver2";
                 $workflow_approval->approver_email = $workflow->approver2;
                 $workflow_approval->approval_for = "Cost Center";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-cc-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverCostCenterMail($link));
             }
@@ -38,13 +38,13 @@ class ApprovalController extends Controller
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
             if($workflow->approver3!=null){
-                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->company = $workflow->$company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver3";
                 $workflow_approval->approver_email = $workflow->approver3;
                 $workflow_approval->approval_for = "Cost Center";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-cc-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverCostCenterMail($link));
             }
@@ -62,12 +62,12 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
             if($workflow->approver2!=null){
                 $workflow_approval->company = $workflow->company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver2";
                 $workflow_approval->approver_email = $workflow->approver2;
                 $workflow_approval->approval_for = "Employees";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeAddMail($link));
             }
@@ -75,13 +75,13 @@ class ApprovalController extends Controller
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
             if($workflow->approver3!=null){
-                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->company = $workflow->$company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver3";
                 $workflow_approval->approver_email = $workflow->approver3;
                 $workflow_approval->approval_for = "Employees";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeAddMail($link));
             }
@@ -99,12 +99,12 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
             if($workflow->approver2!=null){
                 $workflow_approval->company = $workflow->company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver2";
                 $workflow_approval->approver_email = $workflow->approver2;
                 $workflow_approval->approval_for = "Employees Benefits";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeEditMail($link));
             }
@@ -112,13 +112,13 @@ class ApprovalController extends Controller
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
             if($workflow->approver3!=null){
-                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->company = $workflow->$company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver3";
                 $workflow_approval->approver_email = $workflow->approver3;
                 $workflow_approval->approval_for = "Employees Benefits";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeEditMail($link));
             }
@@ -136,12 +136,12 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
             if($workflow->approver2!=null){
                 $workflow_approval->company = $workflow->company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver2";
                 $workflow_approval->approver_email = $workflow->approver2;
                 $workflow_approval->approval_for = "Employees";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-benefit-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsAddMail($link));
             }
@@ -149,13 +149,13 @@ class ApprovalController extends Controller
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
             if($workflow->approver3!=null){
-                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->company = $workflow->$company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver3";
                 $workflow_approval->approver_email = $workflow->approver3;
                 $workflow_approval->approval_for = "Employees";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-benefit-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsAddMail($link));
             }
@@ -173,12 +173,12 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
             if($workflow->approver2!=null){
                 $workflow_approval->company = $workflow->company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver2";
                 $workflow_approval->approver_email = $workflow->approver2;
                 $workflow_approval->approval_for = "Employees";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));
             }
@@ -186,13 +186,13 @@ class ApprovalController extends Controller
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
             if($workflow->approver3!=null){
-                $workflow_approval->company = $$workflow->$company;
+                $workflow_approval->company = $workflow->$company;
+                $token = Str::random(20);
                 $workflow_approval->type="approver3";
                 $workflow_approval->approver_email = $workflow->approver3;
                 $workflow_approval->approval_for = "Employees";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));
             }

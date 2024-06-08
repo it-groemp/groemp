@@ -60,13 +60,13 @@ class CostCenterImport implements ToCollection, WithHeadingRow
             $workflow = Workflow::where("company",$company)->first();
             if($workflow!=null && $workflow->approver1!=null){
                 $workflow_approval = new WorkflowApproval();
+                $token = Str::random(20);
                 $workflow_approval->company = $company;
                 $workflow_approval->type="approver1";
                 $workflow_approval->approver_email = $workflow->approver1;
                 $workflow_approval->approval_for = "Cost Center";
-                $workflow_approval->token = Str::random(20);
+                $workflow_approval->token = $token;
                 $workflow_approval->save();
-                $token = Str::random(20);
                 $link=config("app.url")."/approve-cc-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverCostCenterMail($link));
             }
