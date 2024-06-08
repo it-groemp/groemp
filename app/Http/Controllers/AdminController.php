@@ -57,6 +57,7 @@ class AdminController extends Controller
             $admin->role = $role;
             $admin->created_by = $admin->email;
             $admin->updated_by = $admin->email;
+            $admin->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
             $admin->save();
             return redirect("/admin/display-admin");
         }
