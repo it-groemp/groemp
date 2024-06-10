@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Employee;
 use App\Models\EmployeeBenefit;
@@ -48,11 +49,12 @@ class EmployeeController extends Controller
         $employee_benefits=[];
         if((new AdminController())->checkAdminSession()){
             $employee_benefits = EmployeeBenefit::all();
+            Log::info("employeeBenefitsAdmin(): Employee Benefits view for all companies: ".$employee_benefits);
             return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits)->with("approval_status",null);
         }
         else if((new AdminController())->checkEmployerSession()){
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $company_pan = $admin->company;
             $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
             $employee_benefits = EmployeeBenefit::whereIn("company",$company_list)->get();
@@ -62,6 +64,8 @@ class EmployeeController extends Controller
                                 ->where("approval_for","Employees")
                                 ->orWhere("approval_for","Employees Benefit")
                                 ->get(["companies.name as company_name","workflow_approval.approver_email as approver_email"]);
+            Log::info("employeeBenefitsAdmin(): Employee Benefits view for company: ".$employee_benefits);
+            Log::info("employeeBenefitsAdmin(): Approval List: ".$approval_status);
             return view("admin.employee.employee-benefits")->with("employee_benefits",$employee_benefits)->with("approval_status",$approval_status);
         }
     }
@@ -70,7 +74,10 @@ class EmployeeController extends Controller
         $request->validate([
             'uploadAddFile' => 'required|mimes:xlsx,xls',
         ]);
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         Excel::import(new EmployeeBenefitAddImport, $request->file("uploadAddFile"));
+        Log::info("uploadEmployeeBenefits(): Employee Benefits added for employees by admin: ".$admin->email);
         return redirect("/employee-benefits-admin");
     }
 
@@ -78,7 +85,10 @@ class EmployeeController extends Controller
         $request->validate([
             'uploadEditFile' => 'required|mimes:xlsx,xls',
         ]);
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         Excel::import(new EmployeeBenefitUpdateImport, $request->file("uploadEditFile"));
+        Log::info("updateEmployeeBenefits(): Employee Benefits updated for employees by admin: ".$admin->email);
         return redirect("/employee-benefits-admin");
     }
 }

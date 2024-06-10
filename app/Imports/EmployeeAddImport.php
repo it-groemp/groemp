@@ -36,8 +36,8 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
     {
         $today = Carbon::now();
         $month = (str_pad($today->month, 2, "0", STR_PAD_LEFT).($today->format('y')));
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
@@ -58,10 +58,8 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 $employee->created_by = $admin->email;
                 $employee->updated_at = $today->toDateTimeString();
                 $employee->updated_by = $admin->email;
-                if($employee->employee_code == null){
-                    dd(in_array($company, $company_list));
-                }
                 $employee->save();
+                Log::info("EmployeeAddImport: ".$employee);
                 
                 $benefit_amount = $row["benefit_amount"];
 
@@ -72,6 +70,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                         $employee_benefit->updated_at = $today->toDateTimeString();
                         $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->update();
+                        Log::info("AddEmployeeImport: Update employee benefit:".$employee_benefit);
                     }
                     else{
                         $employee_benefit = new EmployeeBenefit();
@@ -81,8 +80,10 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                         $employee_benefit->month = $month;
                         $employee_benefit->created_at = $today->toDateTimeString();
                         $employee_benefit->created_by = $admin->email;
-                        $employee_benefit->updated_at = $today->toDateTimeString();                            $employee_benefit->updated_by = $admin->email;
+                        $employee_benefit->updated_at = $today->toDateTimeString();                            
+                        $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->save();
+                        Log::info("AddEmployeeImport: Add employee benefit:".$employee_benefit);
                     }
                 }
                 array_push($approval_pan,Str::upper($company));    
@@ -103,6 +104,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeAddMail($link));
+                Log::info("approveEmployeeAddDetails(): Mail sent for approving Employee Addition to ".$workflow->approver1);
             }
         }
     }

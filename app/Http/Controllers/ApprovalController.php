@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Str;
 
@@ -33,6 +34,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-cc-details/$token";
                 Mail::to($workflow->approver2)->send(new ApproverCostCenterMail($link));
+                Log::info("approveCCDetails(): Mail sent for approving Cost Centers to ".$workflow->approver2);
             }
         }
         else if($workflow_approval->type == "approver2"){
@@ -47,6 +49,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-cc-details/$token";
                 Mail::to($workflow->approver3)->send(new ApproverCostCenterMail($link));
+                Log::info("approveCCDetails(): Mail sent for approving Cost Centers to ".$workflow->approver3);
             }
         }
         else{
@@ -70,6 +73,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-add-details/$token";
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeAddMail($link));
+                Log::info("approveEmployeeAddDetails(): Mail sent for approving Employee Addition to ".$workflow->approver2);
             }
         }
         else if($workflow_approval->type == "approver2"){
@@ -84,6 +88,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-add-details/$token";
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeAddMail($link));
+                Log::info("approveEmployeeAddDetails(): Mail sent for approving Employee Addition to ".$workflow->approver3);
             }
         }
         else{
@@ -107,6 +112,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-edit-details/$token";
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeEditMail($link));
+                Log::info("approveEmployeeEditDetails(): Mail sent for approving Employee Updation to ".$workflow->approver2);
             }
         }
         else if($workflow_approval->type == "approver2"){
@@ -121,6 +127,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-edit-details/$token";
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeEditMail($link));
+                Log::info("approveEmployeeEditDetails(): Mail sent for approving Employee Updation to ".$workflow->approver3);
             }
         }
         else{
@@ -144,6 +151,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-add-details/$token";
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeBenefitsAddMail($link));
+                Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Employee Benefits Addition to ".$workflow->approver2);
             }
         }
         else if($workflow_approval->type == "approver2"){
@@ -158,6 +166,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-add-details/$token";
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeBenefitsAddMail($link));
+                Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Employee Benefits Addition to ".$workflow->approver3);
             }
         }
         else{
@@ -181,6 +190,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeBenefitsEditMail($link));
+                Log::info("approveEmployeeBenefitEditDetails(): Mail sent for approving Employee Benefits Updation to ".$workflow->approver2);
             }
         }
         else if($workflow_approval->type == "approver2"){
@@ -195,6 +205,7 @@ class ApprovalController extends Controller
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeBenefitsEditMail($link));
+                Log::info("approveEmployeeBenefitEditDetails(): Mail sent for approving Employee Benefits Updation to ".$workflow->approver3);
             }
         }
         else{

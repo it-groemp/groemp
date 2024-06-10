@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ class BenefitController extends Controller
     public function benefitDetails(){
         if((new AdminController)->checkAdminSession()){
             $benefits = Benefit::join("categories","benefits.category_id","=","categories.id")->get(['benefits.id as id','benefits.name as name','categories.name as category_name','benefits.image_name as image_name']);
+            Log::info("benefitDetails(): Get benefits details: ".$benefits);
             return view("admin.benefits.list-benefits")->with("benefits",$benefits);
         }
         else{
@@ -25,6 +27,7 @@ class BenefitController extends Controller
     public function addBenefit(){
         if((new AdminController)->checkAdminSession()){
             $categories = Category::all();
+            Log::info("addBenefit(): Add benefits details. ".$categories);
             return view("admin.benefits.add-benefit")->with("categories",$categories);
         }
         else{
@@ -39,8 +42,8 @@ class BenefitController extends Controller
                 "category" => "required",
                 "photo" => "required"
             ]);
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $benefit = new Benefit();
             $benefit->name = request("name");
             $benefit->category_id = request("category");
@@ -52,8 +55,10 @@ class BenefitController extends Controller
                 $benefit->image_name = $fileName;
             }
             else{
+                Log::error("saveBenefit(): Error occurred while saving details: Photo couldn't be uploaded by admin:".$admin->email);
                 return redirect()->back()->with("error","Photo couldn't be uploaded");
             }
+            Log::info("saveBenefit(): Save benefit: ".$benefit." Added by ".$admin->email);
             $benefit->save();
             return redirect("/benefit-details");
         }
@@ -66,6 +71,7 @@ class BenefitController extends Controller
         if((new AdminController)->checkAdminSession()){
             $benefit = Benefit::find($id);
             $categories = Category::all();
+            Log::info("editBenefit(): Edit benefits details for benefit: ".$benefit);
             return view("admin.benefits.edit-benefit",["benefit"=>$benefit, "categories"=>$categories]);
         }
         else{
@@ -79,8 +85,8 @@ class BenefitController extends Controller
                 "name" => "required|max:50",
                 "category" => "required"
             ]);
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $id=request("id");
             $benefit = Benefit::find($id);
             $benefit->name = request("name");
@@ -90,9 +96,11 @@ class BenefitController extends Controller
                 $fileName=$files->getClientOriginalName();  
                 $files->move("images/benefits/",$fileName);
                 $benefit->image_name = $fileName;
+                Log::info("updateBenefit(): update benefit with photo: ".$benefit->name." Added by ".$admin->email);
                 $benefit->update();
             }
             else{
+                Log::info("updateBenefit(): update benefit: ".$benefit." Added by ".$admin->email);
                 $benefit->update();
             }
             return redirect("/benefit-details");
@@ -104,8 +112,11 @@ class BenefitController extends Controller
 
     public function deleteBenefit($id){
         if((new AdminController)->checkAdminSession()){
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $benefit = Benefit::find($id);      
             $benefit->delete();
+            Log::info("deleteBenefit(): Delete benefit: ".$benefit." by ".$admin->company);
             return redirect("/benefit-details");
         }
         else{

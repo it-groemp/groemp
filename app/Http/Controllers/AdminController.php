@@ -21,6 +21,8 @@ use App\Mail\SetPasswordMail;
 use App\Mail\ResetPasswordMail;
 use App\Mail\UpdatePasswordAdminMail;
 
+use Illuminate\Support\Facades\Log;
+
 use Carbon\Carbon;
 
 use Excel;
@@ -34,6 +36,7 @@ class AdminController extends Controller
         $pan_number = Str::upper(request("pan"));
         $role = request("role");
         $error = "";
+
         if($name=="" || !preg_match ("/^[a-zA-Z .]+$/",$name)){
             $error = "Name should contain only Capital, Small Letters, Spaces and Dot Allowed";
         }
@@ -47,21 +50,23 @@ class AdminController extends Controller
             $error = $error."<br/> Please enter a valid PAN";
         }
         if($error==""){
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $old_admin = Admin::where("id",$id)->first();
             $admin = new Admin();
             $admin->name = $name;
             $admin->mobile = $mobile;
             $admin->email = $email;
             $admin->company = $pan_number;
             $admin->role = $role;
-            $admin->created_by = $admin->email;
-            $admin->updated_by = $admin->email;
+            $admin->created_by = $old_admin->email;
+            $admin->updated_by = $old_admin->email;
             $admin->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
             $admin->save();
+            Log::info("saveAdmin(): New admin created email: ".$admin." by admin: ".$old_admin->company);
             return redirect("/admin/display-admin");
         }
         else{
+            Log::error("saveAdmin(): Error occurred while creating new admin email: ".$email."   Error: ".$error);
             return redirect()->back()->with("error",$error);
         }
     }
@@ -76,6 +81,9 @@ class AdminController extends Controller
         $pan = Str::upper(request("pan"));
         $password = request("password");
         $error="";
+        
+        Log::info("verifyAdmin(): Login for ".$pan);
+        
         if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
             $error = $error."<br/> Please enter a valid PAN";
         }
@@ -90,12 +98,14 @@ class AdminController extends Controller
             else if (password_verify($password,$admin->password)){
                 Session::put("admin_id",$admin->id);
                 Session::put("role",$admin->role);
+                Log::info("verifyAdmin(): Logging successful for admin: ".$admin->company);
                 return redirect("/employee-details");
             }
             else{
                 $error="PAN and Password doesn't match. Please try again";
             }
         }
+        Log::error("verifyAdmin(): Error has occurred while logging for ".$pan." Error: ".$error);
         return redirect()->back()->with("error",$error);
     }
 
@@ -106,6 +116,7 @@ class AdminController extends Controller
     public function sendPasswordLink($function){
         $pan = Str::upper(request("pan"));
         $error=null;
+        Log::info("sendPasswordLink(): Send Password Link for: ".$pan);
         if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
             $error = $error."Please enter a valid PAN";
         }
@@ -132,10 +143,13 @@ class AdminController extends Controller
                 $link=config("app.url")."/reset-password/$token";
                 if($function=="forgot"){
                     Mail::to($email)->send(new ResetPasswordMail($admin->name,$link));
+                    Log::info("sendPasswordLink(): Reset password Link sent to ".$email);
                 }
                 else{
                     Mail::to($email)->send(new SetPasswordMail($admin->name,$link));
-                }                
+                    Log::info("sendPasswordLink(): Set password Link sent to ".$email);
+                }      
+                Log::error("sendPasswordLink(): Error occurred while sending link to ".$email." Error: ".$error);          
                 return redirect()->back()->with("success","Reset password link has been sent to the email id");
             }
         }
@@ -147,8 +161,9 @@ class AdminController extends Controller
         if($resetPassword!=null){
             $email = $resetPassword->email;
             $company = Admin::where("email",$email)->first()->value("company");
-            //$resetPassword->delete();
+            $resetPassword->delete();
             Session::put("company",$company);
+            Log::info("resetPassword(): Password reset link successful for ".$email);
             return redirect("/display-change-password");
         }
     }
@@ -178,9 +193,11 @@ class AdminController extends Controller
             $email=$admin->email;
             Session::forget("company");
             Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
+            Log::info("updatePassword(): Password updated for company ".$admin." and mail sent to ".$email);
             return redirect("/admin/login");
         }
-        if($error!=null){
+        if($error!=""){
+            Log::error("updatePassword(): Error occurred while updating password for ".$company." Error: ".$error);
             return redirect()->back()->with("error",$error);
         }
     }
@@ -223,13 +240,14 @@ class AdminController extends Controller
     public function employeeDetails(){
         if($this->checkAdminSession() || $this->checkEmployerSession()){
             $role = Session::get("role");
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $mobile = $admin->mobile;
             $employees = [];
             $approval_status = null;
             if($role == "Admin"){
                 $employees = Employee::all();
+                Log::info("employeeDetails(): Employee Details: ".$employees." admin: ".$admin->company);
             }
             else if($role == "Employer"){
                 $approval_status = WorkflowApproval::join("companies","workflow_approval.company","companies.pan")
@@ -244,7 +262,7 @@ class AdminController extends Controller
                             ->where("companies.to_date",null)
                             ->where("employees.to_date",null)
                             ->get(["employees.id","employees.pan_number","employees.company","employees.name","employees.mobile","employees.email","employees.designation"]);
-                //dd($employees);
+                Log::info("employeeDetails(): Employee Details: ".$employees." for employer admin:".$admin->company);
             }
             return view("/admin/employee/list-employees")->with("employees",$employees)->with("approval_status",$approval_status);
         }
@@ -258,6 +276,8 @@ class AdminController extends Controller
             'uploadFileAdd' => 'required|mimes:xlsx,xls',
         ]);
         Excel::import(new EmployeeAddImport, $request->file("uploadFileAdd"));
+        $admin_id = Session::get("admin_id");
+        Log::info("saveEmployeeDetails(): Excel Employee add import done by admin: ".$admin->company);
         return redirect("/employee-details");
     }
 
@@ -266,6 +286,8 @@ class AdminController extends Controller
             'uploadFileEdit' => 'required|mimes:xlsx,xls',
         ]);
         Excel::import(new EmployeeUpdateImport, $request->file("uploadFileEdit"));
+        $admin_id = Session::get("admin_id");
+        Log::info("updateEmployeeDetailsBulk(): Excel Employee update import done by admin: ".$admin->id);
         return redirect("/employee-details");
     }
 
@@ -296,8 +318,8 @@ class AdminController extends Controller
             $error = $error."<br/> Please enter a valid Amount";
         }
         if($error==""){
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $employee = Employee::where("id",$id)->first();
             $employee->pan_number = $pan;
             $employee->name = $name;
@@ -306,20 +328,24 @@ class AdminController extends Controller
             $employee->designation = $designation;
             $employee->updated_by = $admin->email;
             $employee->update();
+            $admin_id = Session::get("admin_id");
+            Log::info("updateEmployeeDetails(): Update employee details for employee: ".$employee." by admin: ".$admin->company);
             return redirect("/employee-details");
         }
         else{
+            Log::error("updateEmployeeDetails(): Error occurred while updating employee: ".$id." Error: ".$error);
             return redirect()->back()->with("error",$error);
         }
     }
 
     public function freezeEmployee($id){
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $employee = Employee::where("id",$id)->first();
         $employee->to_date = Carbon::now()->toDateTimeString();
         $employee->updated_by = $admin->email;
         $employee->update();
+        Log::info("freezeEmployee(): Employee: ".$employee." freezed by admin:".$admin->company);
         return redirect("/employee-details");
     }
 }

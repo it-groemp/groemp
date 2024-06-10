@@ -14,6 +14,7 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
@@ -28,8 +29,8 @@ class CostCenterImport implements ToCollection, WithHeadingRow
     */
     public function collection(Collection $collection)
     {
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
@@ -53,6 +54,7 @@ class CostCenterImport implements ToCollection, WithHeadingRow
                 $cost_center->updated_at = Carbon::now()->toDateTimeString();
                 $cost_center->updated_by = $admin->email;
                 $cost_center->save();
+                Log::info("CostCenterImport: ".$cost_center." added by admin: ".$admin->email);
                 array_push($approval_pan,Str::upper($row["company"]));
             }
         }
@@ -69,6 +71,7 @@ class CostCenterImport implements ToCollection, WithHeadingRow
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-cc-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverCostCenterMail($link));
+                Log::info("CostCenterImport: Mail sent for approving Cost Centers to ".$workflow->approver2);
             }
         }
     }

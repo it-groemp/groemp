@@ -30,8 +30,8 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
     */
     public function collection(Collection $collection)
     {
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
         $today = Carbon::now();
@@ -42,7 +42,6 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
             $row = $row->toArray();
             $pan = array_key_exists("employee_pan", $row) ? Str::upper($row["employee_pan"]) : "";
             if($pan!=""){
-                //dd($pan);
                 $employee = Employee::where("pan_number",$pan)->first();
                 $company = $employee==null ? "" : $employee->company;
                 if(in_array($company, $company_list) || $role=="Admin"){
@@ -52,6 +51,7 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
                     $employee_benefit->updated_at = $today->toDateTimeString();
                     $employee_benefit->updated_by = $admin->email;
                     $employee_benefit->update();
+                    Log::info("EmployeeBenefitUpdateImport: Employee Benefit: ".$employee_benefit);
                 }
             }          
         }
@@ -69,6 +69,7 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));
+                Log::info("EmployeeBenefitUpdateImport: Mail sent for approving Employee Benefits Updation to ".$workflow->approver1);
             }
         }
     }

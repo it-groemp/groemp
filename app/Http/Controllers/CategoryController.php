@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Category;
 use App\Models\Admin;
@@ -14,6 +15,7 @@ class CategoryController extends Controller
     public function categoryDetails(){
         if((new AdminController)->checkAdminSession()){
             $categories = Category::all();
+            Log::info("categoryDetails(): Get categories details. ".$categories);
             return view("/admin/category/list-categories")->with("categories",$categories);
         }
         else{
@@ -23,6 +25,7 @@ class CategoryController extends Controller
 
     public function addCategory(){
         if((new AdminController)->checkAdminSession()){
+            Log::info("addCategory(): Add category details.");
             return view("admin.category.add-category");
         }
         else{
@@ -30,8 +33,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function saveCategory(Request $request){
-        
+    public function saveCategory(Request $request){        
         if((new AdminController)->checkAdminSession()){
             $this->validate($request, [
                 "name" => "required|max:50",
@@ -39,8 +41,8 @@ class CategoryController extends Controller
                 "type" => "required",
                 "count" => "nullable|numeric"
             ]);
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $id=request("id");
             $type = $request->type;
             $values = array();
@@ -73,8 +75,10 @@ class CategoryController extends Controller
                 $category->image_name = $fileName;
             }
             else{
+                Log::error("saveCategory(): Error occurred while saving details: Photo couldn't be uploaded by admin:".$admin->email);
                 return redirect()->back()->with("error","Photo couldn't be uploaded");
             }
+            Log::info("saveCategory(): Save category: ".$category." Added by ".$admin->email);
             $category->save();
             return redirect("/category-details");
         }
@@ -86,6 +90,7 @@ class CategoryController extends Controller
     public function editCategory($id){
         if((new AdminController)->checkAdminSession()){
             $category = Category::find($id);
+            Log::info("editCategory(): Edit category details for category: ".$category);
             return view("admin.category.edit-category",["category"=>$category]);
         }
         else{
@@ -102,8 +107,8 @@ class CategoryController extends Controller
                 "count" => "nullable|numeric"
             ]);
 
-            $id = Session::get("admin_id");
-            $admin = Admin::where("id",$id)->first();
+            $admin_id = Session::get("admin_id");
+            $admin = Admin::where("id",$admin_id)->first();
             $id=request("id");
             $type = $request->type;
             $values = array();
@@ -134,9 +139,11 @@ class CategoryController extends Controller
                 $fileName=$files->getClientOriginalName();  
                 $files->move("images/categories/",$fileName);
                 $category->image_name = $fileName;
+                Log::info("updateCategory(): update category with photo: ".$category." Added by ".$admin->email);
                 $category->update();
             }
             else{
+                Log::info("updateCategory(): update category: ".$category." Added by ".$admin->email);
                 $category->update();
             }
             return redirect("/category-details");
@@ -150,6 +157,7 @@ class CategoryController extends Controller
         if((new AdminController)->checkAdminSession()){
             $category = Category::find($id);      
             $category->delete();
+            Log::info("deleteCategory(): Delete benefit: ".$category." by ".$admin->company);
             return redirect("/category-details");
         }
         else{

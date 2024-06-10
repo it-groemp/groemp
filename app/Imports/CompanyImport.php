@@ -9,6 +9,7 @@ use App\Models\Admin;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
@@ -33,8 +34,8 @@ class CompanyImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
 
     public function Collection(Collection $collection)
     {
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
         $prev_pan="";
@@ -56,6 +57,7 @@ class CompanyImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                         $company->updated_at = Carbon::now()->toDateTimeString();
                         $company->updated_by = $admin->email;
                         $company->save();
+                        Log::info("CompanyImport: Added company details of ".$compa." added by admin: ".$admin->email);
                     }
                     $prev_pan = $curr_pan;         
                     $address = new Address();
@@ -68,6 +70,7 @@ class CompanyImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                     $address->updated_at = Carbon::now()->toDateTimeString();
                     $address->updated_by = $admin->email;
                     $address->save();
+                    Log::info("CompanyImport: Added address details of ".$address." added by admin: ".$admin->email);
                 }
             }                 
         }

@@ -30,8 +30,8 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
     */
     public function collection(Collection $collection)
     {
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
         $today = Carbon::now();
@@ -59,6 +59,7 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
                         $employee_benefit_backup->created_at = $today->toDateTimeString();
                         $employee_benefit_backup->created_by = $admin->email;
                         $employee_benefit_backup->save();
+                        Log::info("EmployeeBenefitAddImport: Backup done: ".$employee_benefit_backup);
 
                         $employee_benefit->previous_balance = $employee_benefit->current_benefit + $employee_benefit->previous_balance- $employee_benefit->availed_benefit;
                         $employee_benefit->month = $month;
@@ -69,6 +70,7 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
                         $employee_benefit->updated_at = $today->toDateTimeString();
                         $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->update();
+                        Log::info("EmployeeBenefitAddImport: Employee Benefit: ".$employee_benefit);
                     }
                     array_push($approval_pan,Str::upper($company));
                 }
@@ -89,6 +91,7 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsAddMail($link));
+                Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Employee Benefits Addition to ".$workflow->approver1);
             }
         }
     }

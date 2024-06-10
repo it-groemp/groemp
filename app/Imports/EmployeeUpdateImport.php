@@ -28,8 +28,8 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
     */
     public function collection(Collection $collection)
     {
-        $id = Session::get("admin_id");
-        $admin = Admin::where("id",$id)->first();
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
@@ -58,6 +58,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
                 $employee->updated_at = Carbon::now()->toDateTimeString();
                 $employee->updated_by = $admin->email;
                 $employee->update();
+                Log::info("EmployeeUpdateImport: ".$employee);
                 array_push($approval_pan,Str::upper($company));   
             }
         }
@@ -76,6 +77,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeEditMail($link));
+                Log::info("EmployeeUpdateImport: Mail sent for approving Employee Updation to ".$workflow->approver2);
             }
         }
     }
