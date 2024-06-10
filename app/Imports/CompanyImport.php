@@ -57,7 +57,7 @@ class CompanyImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                         $company->updated_at = Carbon::now()->toDateTimeString();
                         $company->updated_by = $admin->email;
                         $company->save();
-                        Log::info("CompanyImport: Added company details of ".$compa." added by admin: ".$admin->email);
+                        Log::info("CompanyImport: Added company details of ".$company." added by admin: ".$admin->email);
                     }
                     $prev_pan = $curr_pan;         
                     $address = new Address();

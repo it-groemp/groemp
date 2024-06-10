@@ -277,6 +277,7 @@ class AdminController extends Controller
         ]);
         Excel::import(new EmployeeAddImport, $request->file("uploadFileAdd"));
         $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
         Log::info("saveEmployeeDetails(): Excel Employee add import done by admin: ".$admin->company);
         return redirect("/employee-details");
     }

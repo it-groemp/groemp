@@ -40,7 +40,7 @@ class CompanyController extends Controller
     public function companyDetailsEmployer(){
         if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
             $admin_id = Session::get("admin_id");
-            $admin = Admin::find($id);
+            $admin = Admin::find($admin_id);
             $company_pan = $admin->company;
             $group_company = Company::where("pan",$company_pan)->first();
             if($group_company==null){
@@ -62,8 +62,8 @@ class CompanyController extends Controller
                         array_push($arr,$address);
                     }
                     $address_company = array_merge($address_company,array($sis_pan=>$arr));
+                    Log::info("companyDetailsEmployer(): Sister company address details: ".$sis_pan);
                 }
-                Log::info("companyDetailsEmployer(): Sister company address details: ".$address_company);
                 
                 return view("admin.company.company-details-employer")
                     ->with("admin",$admin)
@@ -176,7 +176,6 @@ class CompanyController extends Controller
             $workflow_list = $workflow->pluck("company")->toArray();
             $company_list = Company::whereNotIn("pan",$workflow_list)->pluck("pan")->toArray();
             $admin_list = Admin::where("role","Admin")->pluck("email")->toArray();
-            Log::info("workflowDetails(): Workflow details for admin: ".$workflow_list);
             return view("admin.company.workflow-details")->with("workflow",$workflow)->with("company_list",$company_list)->with("admin_list",$admin_list);
         }
         else if((new AdminController())->checkEmployerSession()){
@@ -185,7 +184,9 @@ class CompanyController extends Controller
             $workflow = Workflow::join("companies","workflows.company","companies.pan")
                         ->where("companies.to_date",null)
                         ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
-                        ->get(["id","company","approver1","approver2","approver3","admin"]);
+                        ->get(["id","company","approver1","approver2","approver3","admin"]);                        
+            $workflow_list = $workflow->pluck("company")->toArray();
+            $admin_list = Admin::where("role","Admin")->pluck("email")->toArray();
             $company_list = Company::where("companies.to_date",null)->whereNotIn("pan",$workflow_list)
                         ->where("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)->pluck("pan")->toArray();
             $admin_list = Admin::where("role","Admin")->pluck("email")->toArray();
