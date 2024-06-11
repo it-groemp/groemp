@@ -25,6 +25,6 @@ class ApproverEmployeeBenefitsUpdateMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Approve Employees')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.approver-employee-benefits-updated-mail.blade');
+        return $this->subject('Approve Employee\'s Benefits')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.approver-employee-benefits-updated-mail.blade');
     }
 }

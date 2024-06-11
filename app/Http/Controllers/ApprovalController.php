@@ -16,6 +16,10 @@ use Illuminate\Support\Str;
 
 use App\Mail\ApproverCostCenterMail;
 use App\Mail\ApproverEmployeeAddMail;
+use App\Mail\ApproverEmployeeEditMail;
+use App\Mail\ApproverEmployeeBenefitsAddMail;
+use App\Mail\ApproverEmployeeBenefitsEditMail;
+
 
 class ApprovalController extends Controller
 {
