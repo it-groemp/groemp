@@ -3,11 +3,12 @@
 @section('css')
     <style>
         .home{
-             background: #3572EF;
+             background: #FF914D;
+             color: black;
         }
 
         .problems{
-            background: #f8ffbc;
+            background: #cdf2e0;
         }
 
         .problem-box{
@@ -19,45 +20,47 @@
         .problems .section-title{
             color:#FF5F1F;
         }
-        .problem-box h2{
-            color: #FF5F1F;
-            font-weight: bolder;
-        }
-        .problem-box h4{
-            font-weight: bold;
-        }
 
-        .solutions{
-            background: #A7E6FF;
+        .problems li{
+            font-weight:normal;
         }
-
-        .sol-img{
-            width: 80% !important;
-            height: 80% !important;
-            display: block;
-        }
-
-        .sol-desc{
-            font-size: 150% !important;
+        
+        .problems li::marker{
+            content: "₹  ";
+            font-size: 20px;
+            color: green;
         }
 
         .benefits{
-            background: #FFFAA0;
+            background: #dbf0f9;
+        }
+
+        .benefits h5{
+            padding-left: 30px;
+            font-weight: bold;
         }
 
         .benefit-box{
             background:white;
         }
 
-        .why-us{
-            background: #FDFFE2;
+        .problems {
+            background: #cdf2e0;
+        }
+
+        .about-us{
+            background: #cdf2e0;
         }
 
         .reason {
             height: 200px;
             font-size: 150%;
-            background: yellow;
+            background: #68c096;
             border-radius: 20px;    
+        }
+
+        .about-us a, .about-us a:hover{
+            color: #039650;
         }
     </style>
 @stop
@@ -68,8 +71,9 @@
                 <div class="col-md-6 col-12">
                     <img src="{{asset('images/financial_growth.jpg')}}" class="mx-auto growth-img" alt="Financial Growth"/> 
                 </div>
-                <div class="col-md-6 col-12 text-center" style="color: white;">
-                    <h1 class="my-5 text-center"><b>Grow Your Wealth<b></h1>
+                <div class="col-md-6 col-12 text-center">
+                    <br/>
+                    <h1 class="my-5 text-center"><b>Value Creation<b></h1>
                     <h3><b>Unlock the power to save on your wealth and obtain great benefits with us.​</b></h3>
                 </div>
             </div>
@@ -77,55 +81,37 @@
 
         <div class="pt-5 problems">
             <h1 class="mb-3 text-center section-title">The Problems</h1>
-            <div class="row">
-                <div class="col-md-4 mb-5">
-                    <div class="mx-2 px-2 problem-box text-center">
-                        <h2 class="mt-2">Lower net pay</h2>
-                        <h4>Employees get low net pay as compared to gross pay due to deduction of tax</h4>
-                    </div>    
-                </div>
-                <div class="col-md-4 mb-5">
-                    <div class="mx-2 px-2 problem-box text-center">
-                        <h2 class="mt-2">Benefits not extended to all</h2>
-                        <h4>All employees cannot avail employee benefits such as car lease, fuel, mobile, etc.</h4>
-                    </div>    
-                </div>
-                <div class="col-md-4 mb-5">
-                    <div class="mx-2 px-2 problem-box text-center">
-                        <h2 class="mt-2">Benefits management is chaotic</h2>
-                        <h4>Need an entire team to manage employee benefits along with proper system and tools</h4>
-                    </div>    
-                </div>
-            </div>
-        </div>
-
-        <div class="py-5 solutions">
-            <h1 class="mb-3 text-center section-title">Our Solutions...</h1>
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-12 mt-4">
-                    <div class="mx-2">
-                        <img src="{{asset('images/solutions/incentive.jpg')}}" class="mx-auto pb-2 sol-img" alt="Incentive without incentive"/>
-                        <p class="text-center sol-desc">By availing Groemp services, employee will receive upto 30% incentive by saving against vouchers availed</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12 mt-4">
-                    <div class="mx-2">
-                        <img src="{{asset('images/solutions/employees.jpg')}}" class="mx-auto pb-2 sol-img" alt="Incentive without incentive"/>
-                        <p class="text-center sol-desc">Benefit of savings upto 30% can be extended to all employees as agreed by management</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-12 mt-4">
-                    <div class="mx-2">
-                        <img src="{{asset('images/solutions/hr.jpg')}}" class="mx-auto pb-2 sol-img" alt="Incentive without incentive"/>
-                        <p class="text-center sol-desc">HR can focus on core work and Groemp will manage the benefits with their technology and systems</p>
-                    </div>
-                </div>
+            <div class="row mx-5">
+                <ul>   
+                    <li class="mb-3">
+                        Most of companies face the issue at one point of time, it may be starting phase 
+                        or it may be later stage when the company grow up <b>significantly.</b> 
+                        Challenge is to keep the policy standardize and fit everyone in the world within 
+                        same policy.
+                    </li>
+                    <li class="mb-3">
+                        Keep every employee happy with the same standardize solution. Assume that 
+                        company has very good HR policy, whether is it possible to keep <b>CEO</b> of the 
+                        company and the <b>Executive</b> person happy with the same benefits. CEO may expect 
+                        the benefits of <b>Car lease</b> and Driver while executive will be expecting top up 
+                        insurance or <b>Transport</b> to the office.
+                    </li>
+                    <li class="mb-3">
+                        There are certain employees, who are lack the reach to certain benefits due to 
+                        various factors, it may be correct insurance plan, guidance in <b>tax planning </b>
+                        or may be good quality holidays on exotic location.
+                    </li>
+                </ul>                
             </div>
         </div>
 
         <div class="py-5 benefits">
             <h1 class="mb-3 text-center section-title">Benefits You Can Avail With Us</h1>
             <div class="row">
+                <h3 class="text-center"><b>Is there any place where all the problems can be addressed??? Currently not.</b></h3>
+                <h3 class="text-center mb-4"><b>To build the strong workplace culture, addressing the personal problem is also necessary.</b></h3>
+                <h5>Here we take provide these solutions, it can help the companies to find out the solution for their needs.</h5>
+                <h5>Have a look on below benefits and try to understand the benefits mentioned below:</h5>
                 @foreach($categories as $category)
                     @php
                         $image = $category->image_name
@@ -142,7 +128,7 @@
 
         <div class="who-are-you py-5">
             <div class="row">
-                <h1 class="mb-3 text-center section-title">Who are you</h1>
+                <h1 class="mb-3 text-center section-title">Employee or Employer? Let us know...</h1>
                 <div class="col-md-1 col-12"></div>
                 <div class="col-md-4 col-12">
                     <div id="person-box-employee" class="text-center">
@@ -164,10 +150,10 @@
             </div>
         </div>
 
-        <div class="why-us py-5">
+        <div class="about-us py-5">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="mb-3 text-center section-title">Why Us</h1>
+                    <h1 class="mb-3 text-center section-title">How Can We Help...</h1>
                 </div>
             </div>
             <div class="row">
@@ -186,8 +172,8 @@
                         <span>Free Tax consultation for first 1000 employees</span>
                     </div>
                 </div>
-                <div class="px-4 pt-2 pb-5 text-right" style="background: #FDFFE2; font-size:150%">
-                    <span>and many more....</span>
+                <div class="px-4 pt-2 pb-5 text-right" style="font-size:150%">
+                    <a href="{{route('about-us')}}">Know More About Us</a>
                 </div>
             </div>
 	    </div>
