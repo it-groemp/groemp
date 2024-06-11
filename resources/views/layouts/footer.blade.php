@@ -8,7 +8,7 @@
 					<div class="row">
 						<div class="col-md-6 col-12">
 							<p>
-								<a href="" class="footer-links<?php echo Route::currentRouteName()=='about-us'?' links-active':''?>">About Us</a>
+								<a href="{{route('about-us')}}" class="footer-links<?php echo Route::currentRouteName()=='about-us'?' links-active':''?>">About Us</a>
 							</p>	
 						</div>
 						<div class="col-md-6 col-12">
@@ -21,11 +21,6 @@
 						<div class="col-md-6 col-12">
 							<p>
 								<a href="" class="footer-links<?php echo Route::currentRouteName()=='our-brands'?' links-active':''?>">Our Brands</a>
-							</p>	
-						</div>
-						<div class="col-md-6 col-12">
-							<p>
-							<a href="" class="footer-links<?php echo Route::currentRouteName()=='our-team'?' links-active':''?>">Our Team</a>
 							</p>	
 						</div>
 					</div>

@@ -10,16 +10,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item" >
-                        <a class="nav-link<?php echo Route::currentRouteName()=='about-us'?' active':''?>" href="">About Us</a>
+                        <a class="nav-link<?php echo Route::currentRouteName()=='about-us'?' active':''?>" href="{{route('about-us')}}">About Us</a>
                     </li>
                     <li class="nav-item" id="contact-us">
                         <a class="nav-link<?php echo Route::currentRouteName()=='contact-us'?' active':''?>" href="">Contact Us</a>
                     </li>
                     <li class="nav-item" id="our-brands">
                         <a class="nav-link<?php echo Route::currentRouteName()=='our-benefits'?' active':''?>" href="{{route('our-benefits')}}">Our Partners</a>
-                    </li>
-                    <li class="nav-item" id="our-brands">
-                        <a class="nav-link<?php echo Route::currentRouteName()=='our-team'?' active':''?>" href="{{route('our-team')}}">Our Team</a>
                     </li>
                 </ul>
                 @if(Session::has("employee"))

@@ -25,6 +25,7 @@ use App\Http\Controllers;
 
 Route::get("/", [PagesController::class,"index"])->name("home");
 Route::get("/our-benefits", [PagesController::class,"ourBenefits"])->name("our-benefits");
+Route::get("/about-us", [PagesController::class,"aboutUs"])->name("about-us");
 
 Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAdmin"])->name("company-details-admin");
 Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");
@@ -49,8 +50,8 @@ Route::get("/approve-employee-edit-details/{token}", [ApprovalController::class,
 Route::get("/approve-employee-benefit-add-details/{token}", [ApprovalController::class, "approveEmployeeBenefitAddDetails"])->name("approve-employee-benefit-add-details");
 Route::get("/approve-employee-benefit-edit-details/{token}", [ApprovalController::class, "approveEmployeeBenefitEditDetails"])->name("approve-employee-benefit-edit-details");
 
-
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
+Route::get("/employee-login", [EmployeeController::class,"employeeLogin"])->name("employee-login");
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
 Route::post("/send-otp", [EmployeeController::class,"sendOtp"])->name("send-otp");
 Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
@@ -95,4 +96,4 @@ Route::get("/edit-benefit/{id}", [BenefitController::class, "editBenefit"])->nam
 Route::post("/update-benefit", [BenefitController::class, "updateBenefit"])->name("update-benefit");
 Route::get("/delete-benefit/{id}", [BenefitController::class, "deleteBenefit"])->name("delete-benefit");
 
-Route::get("/testroute", [MailController::class, "sendmail"]);
+Route::get("/testroute", [PagesController::class, "test"]);

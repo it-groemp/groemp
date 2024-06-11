@@ -16,7 +16,7 @@
         @endphp
         @if($prev!=$benefit->category_name)
             <div class="mt-4">
-                <h4><b>{{$benefit->category_name}}:</b></h4>
+                <h4 class="mb-3"><b>{{$benefit->category_name}}:</b></h4>
                 <div class="row">
         @endif
                     <div class="col-lg-4 col-md-6 col-12">
