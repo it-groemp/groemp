@@ -12,6 +12,7 @@
                 <tr>
                     <th scope="col">Sr. No.</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Description</th>
                     <th scope="col">Maximum Allowed Amount</th>
                     <th scope="col">Type</th>
                     <th scope="col">Values</th>
@@ -27,6 +28,7 @@
                     <tr>
                         <td scope="row">{{$number}}</td>
                         <td id="{{'name'.$id}}">{{$category->name}}</td>
+                        <td id="{{'desc'.$id}}">{{$category->description}}</td>
                         <td id="{{'amount'.$id}}">{{$category->maximum_amount}}</td>
                         <td id="{{'amount'.$id}}">{{$category->type}}</td>
                         <td id="{{'amount'.$id}}">{{$category->values=="null"?"" : $category->values}}</td>

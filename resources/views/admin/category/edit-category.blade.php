@@ -76,6 +76,10 @@
                 </label>
             </div>
             <div class="form-group mt-3">
+                <label for="description">Description:</label>
+                <textarea class="form-control" name="description" id="description" required></textarea>
+            </div>
+            <div class="form-group mt-3">
                 <label for="amount">Maximum Allowed Amount:</label>
                 <input type="text" class="form-control" name="amount" id="amount" value="{{$category->amount}}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6">
             </div>

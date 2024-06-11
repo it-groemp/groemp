@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer("maximum_amount")->nullable(true);
             $table->string("type",10)->nullable(true);
             $table->json("values")->default()->nullable(true);
+            $table->string("description",10000)->nullable(true);
             $table->string("image_name",60)->nullable(false);
             $table->string("created_by",100)->nullable(false);
             $table->string("updated_by",100)->nullable(false);

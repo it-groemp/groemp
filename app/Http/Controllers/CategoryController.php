@@ -39,7 +39,8 @@ class CategoryController extends Controller
                 "name" => "required|max:50",
                 "amount" => "nullable|numeric",
                 "type" => "required",
-                "count" => "nullable|numeric"
+                "count" => "nullable|numeric",
+                "description" => "required",
             ]);
             $admin_id = Session::get("admin_id");
             $admin = Admin::where("id",$admin_id)->first();
@@ -67,6 +68,7 @@ class CategoryController extends Controller
             $category->maximum_amount = request("amount");
             $category->type = $type;
             $category->values = $values==NULL? NULL : json_encode($values);
+            $category->description = request("description");
             $category->created_by = $admin->email;
             $category->updated_by = $admin->email;
             if($files=$request->file("photo")){
@@ -104,7 +106,8 @@ class CategoryController extends Controller
                 "name" => "required|max:50",
                 "amount" => "nullable|numeric",
                 "type" => "required",
-                "count" => "nullable|numeric"
+                "count" => "nullable|numeric",
+                "description" => "required"
             ]);
 
             $admin_id = Session::get("admin_id");
@@ -134,6 +137,7 @@ class CategoryController extends Controller
             $category->maximum_amount = request("amount");
             $category->type = $type;
             $category->values = $values==NULL? NULL : json_encode($values);
+            $category->description = request("description");
             $category->updated_by = $admin->email;       
             if($files=$request->file("photo")){
                 $fileName=$files->getClientOriginalName();  
