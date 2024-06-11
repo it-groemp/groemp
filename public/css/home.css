@@ -83,7 +83,7 @@ footer{
 }
 
 .section-title{
-    color: #04bc64;
+    color: #039650;
     font-size: 3rem;
     font-weight: 700;
     font-style: italic;
@@ -141,4 +141,40 @@ footer{
 .login-link a{
     text-decoration: none;
     color: #04bc64;
+}
+
+.text-right{
+    text-align: right;
+}
+
+.who-are-you{
+    background: #FFBF78;
+}
+
+#person-box-employee:hover{
+    cursor: pointer;
+}
+
+#person-box-company:hover{
+    cursor: pointer;
+}
+
+#person-box-employee{
+    border: 5px solid #8C52FF;
+    background: white;
+    height: 450px;
+}
+
+#person-box-company{
+    border: 5px solid #38B6FF;
+    background: white;
+    height: 450px;
+}
+
+#employee{
+    background: #8C52FF;
+}
+
+#company{
+    background: #38B6FF;
 }

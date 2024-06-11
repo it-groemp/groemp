@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('pageTitle','Our Brands')
+@section('pageTitle','Our Partners')
 @section('css')
 @stop
 @section("content")
 <div class="container box mb-5">
-    <h1 class="mb-3 text-center"><strong><i>OUR BRANDS</i></strong></h1>
+    <h1 class="mb-3 text-center"><strong><i>OUR PARTNERS</i></strong></h1>
     <h4>Have a look at our partners...</h4>
     @php
         $prev="";

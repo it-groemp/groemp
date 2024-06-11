@@ -21,6 +21,10 @@ use Excel;
 class EmployeeController extends Controller
 {
     public function login(){
+        return view("login");
+    }
+    
+    public function employeeLogin(){
         return view("employee.login");
     }
 
@@ -41,7 +45,7 @@ class EmployeeController extends Controller
             return view("employee.profile")->with("employee",$employee);
         }
         else{
-            return redirect("/login");
+            return redirect("/employee-login");
         }
     }
 
