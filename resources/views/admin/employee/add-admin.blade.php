@@ -9,7 +9,7 @@
         @if(session("error"))
             <div class="error mb-3">{!!session("error")!!}</div>
         @endif
-        <form id="login-form" method="post" action="{{route('save-admin')}}">
+        <form id="add-admin-form" method="post" action="{{route('save-admin')}}">
             {{ csrf_field() }}
             <div class="form-group">
                 <label for="name">Name:</label>
@@ -41,5 +41,32 @@
 @stop
 @section("js")
     <script link="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-    <script link="{{asset('js/validation-admin.js')}}"></script>
+    <script link="{{asset('js/validation.js')}}"></script>
+    <script>
+        $("#add-admin-form").validate({
+            rules:{
+                name: {
+                    alpha: true
+                },
+                email: {
+                    email: true
+                },
+                mobile: {
+                    checkMobile: true
+                },
+                pan: {
+                    checkPan: true
+                }
+            },
+            messages:{
+                email: {
+                    email: "Please enter a Valid Email Id"
+                }
+            },
+            submitHandler : function(form) {
+                form.submit();
+            }   
+        });
+
+    </script>
 @stop

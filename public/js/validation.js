@@ -1,64 +1,3 @@
-$("#register-form").validate({
-    rules:{
-        name: {
-            alpha: true
-        },
-        email: {
-            email: true
-        },
-        mobile: {
-            checkMobile: true
-        },
-        pan: {
-            checkPan: true
-        }
-    },
-    messages:{
-        email: {
-            email: "Please enter a Valid Email Id"
-        }
-    },
-    submitHandler : function(form) {
-        form.submit();
-    }   
-});
-
-$("#login-form").validate({
-    rules:{
-        pan: {
-            checkPan: true
-        },
-        password: {
-            checkPassword: true,
-            equalPassword: true
-        }
-    },
-    messages:{
-        email: {
-            email: "Please enter a Valid Email Id"
-        }
-    },
-    submitHandler : function(form) {
-        form.submit();
-    }   
-});
-
-$("#reset-password-form").validate({
-    rules:{
-        pan: {
-            checkPan: true
-        }
-    },
-    messages:{
-        email: {
-            email: "Please enter a Valid Email Id"
-        }
-    },
-    submitHandler : function(form) {
-        form.submit();
-    }   
-});
-
 $.validator.addMethod("checkPassword", function (value, elem) {
     hasFocus = document.activeElement === elem;
     if (hasFocus === false) {
@@ -108,4 +47,18 @@ $.validator.addMethod("equalPassword", function (value, elem, param) {
         }
     },
     "Both the password should match"
+);
+
+$.validator.addMethod("alphaNum", function (value, elem) {
+        var re = /^([a-zA-Z0-9]+)$/;
+        return re.test(value);
+    },
+    "Only Capital, Small Letters and Numbers Allowed"
+);
+
+$.validator.addMethod("numeric", function (value, elem) {
+        var re = /^[0-9]*$/;
+        return re.test(value);
+    },
+    "Only Numbers Allowed"
 );

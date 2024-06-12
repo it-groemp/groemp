@@ -98,65 +98,6 @@
     </div>
 </div>
 @stop
-@section("content")
-    <div class="p-2 my-5 form-container mx-auto">
-	    <h1 class="mb-3 text-center section-title">Add Category</h1>
-        <div class="form p-4 mx-auto" style="width: 70%">
-        <form id="add-category-form" method="post" action="{{route('update-category')}}" enctype="multipart/form-data">
-            {{ csrf_field() }}
-            @if(session()->has("errors"))
-                <div class="alert error mt-3">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" class="form-control" name="name" id="name" maxlength="50" required>
-            </div>
-            <div class="form-group mt-3">
-                <label>Type of Voucher:</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="type" id="dropdown" value="Dropdown">
-                    <label class="form-check-label" for="dropdown">
-                        Dropdown
-                    </label>      
-                    <span class="fa fa-plus add mx-3" style="visibility: hidden;"></span>
-                    <span class="fa fa-minus" style="visibility: hidden;"></span>              
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="type" id="number-field" value="Free Number" checked>
-                    <label class="form-check-label" for="number-field">
-                        Number Field
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="type" id="free-text" value="Text">
-                    <label class="form-check-label" for="free-text">
-                        Free Text
-                    </label>
-                </div>
-            </div>
-            <div class="form-group mt-3" id="values" style="display: none;">
-                
-            </div>
-            <div class="form-group mt-3">
-                <label for="amount">Maximum Allowed Amount:</label>
-                <input type="text" class="form-control" name="amount" id="amount" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6">
-            </div>
-            <div class="form-group mt-3">
-                <label for="photo" class="form-label">Category Photo:</label>
-                <input type="file" class="form-control form-control-sm" name="photo" id="photo" accept=".jpg, .jpeg, .png" required>
-            </div>
-            <div class="form-group mt-3">
-                <input type="submit" class="btn btn-outline" value="Save Category"/>
-            </div>
-        </form>
-</div>
-@stop
 @section("js")
     <script>
         $i=parseInt($("#count").val())+1;
@@ -190,7 +131,7 @@
             }
         });
 
-        $("form").submit(function(e){
+        $("#edit-category-form").submit(function(e){
             $error=false;
             if($("#dropdown").is(":checked")){
                 $count=$("#count").val();
