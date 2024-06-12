@@ -77,7 +77,7 @@
             </div>
             <div class="form-group mt-3">
                 <label for="description">Description:</label>
-                <textarea class="form-control" name="description" id="description" required></textarea>
+                <textarea class="form-control" name="description" id="description" required>{{$category->description}}</textarea>
             </div>
             <div class="form-group mt-3">
                 <label for="amount">Maximum Allowed Amount:</label>
