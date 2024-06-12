@@ -178,3 +178,7 @@ footer{
 #company{
     background: #38B6FF;
 }
+
+.text-left{
+    text-align: left;
+}

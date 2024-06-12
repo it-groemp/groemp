@@ -10,20 +10,10 @@ use Excel;
 
 use App\Models\Category;
 use App\Models\Benefit;
-
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ApproverCostCenterMail;
 use Illuminate\Support\Str;
 
 class PagesController extends Controller
 {
-    public function test(){
-        dd(password_hash("Groemp@1234",PASSWORD_DEFAULT));
-        // $token = Str::random(20);
-        // $link=config("app.url")."/approve-cc-details/$token";
-        //         Mail::to("ktmehta1999@gmail.com")->send(new ApproverCostCenterMail($link));
-        return view("test-mail");
-    }
 
     public function index(){
         $categories = Category::all();
@@ -41,6 +31,10 @@ class PagesController extends Controller
 
     public function aboutUs(){
         return view("company.about-us");
+    }
+
+    public function contactUs(){
+        return view("company.contact-us");
     }
     
     public function upload(){

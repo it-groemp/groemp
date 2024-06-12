@@ -20,6 +20,9 @@ use App\Models\CompanyBenefit;
 use App\Imports\CompanyImport;
 use App\Imports\CostCenterImport;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\QueryMail;
+
 use Excel;
 
 class CompanyController extends Controller
@@ -375,5 +378,19 @@ class CompanyController extends Controller
             Log::info("updateCompanyBenefit(): Save company benefits for company ".$company_benefit." by employer:".$admin->email);
             return redirect("/company-benefit-details");
         }
+    }
+
+    public function submitQuery(Request $request){
+        $this->validate($request, [
+            "name" => "required|regex:/^[a-zA-Z ]+$/",
+            "email" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+            "query" => "required"
+        ]);
+        $name = request("name");
+        $email = request("email");
+        $query = request("query");
+        Mail::to(config("app.contact"))->send(new QueryMail($name,$email,$query));
+        Session::put("success","Your query has been sent successfully to our team. They will contact you shortly.");
+        return redirect("/contact-us");
     }
 }

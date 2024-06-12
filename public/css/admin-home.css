@@ -84,3 +84,18 @@ table, th, td {
     text-decoration: none;
     color: #04bc64;
 }
+
+.text-left{
+    text-align: left;
+}
+
+@media only screen and (max-width: 600px){
+    .form-container{
+        width: 95%;
+    }
+
+    .form{
+        padding: 0 !important;
+        width: 90% !important;
+    }
+}

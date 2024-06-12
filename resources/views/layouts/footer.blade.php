@@ -13,7 +13,7 @@
 						</div>
 						<div class="col-md-6 col-12">
 							<p>
-							<a href="" class="footer-links<?php echo Route::currentRouteName()=='contact-us'?' links-active':''?>">Contact Us</a>
+							<a href="{{route('contact-us')}}" class="footer-links<?php echo Route::currentRouteName()=='contact-us'?' links-active':''?>">Contact Us</a>
 							</p>	
 						</div>
 					</div>

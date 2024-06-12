@@ -26,6 +26,7 @@ use App\Http\Controllers;
 Route::get("/", [PagesController::class,"index"])->name("home");
 Route::get("/our-benefits", [PagesController::class,"ourBenefits"])->name("our-benefits");
 Route::get("/about-us", [PagesController::class,"aboutUs"])->name("about-us");
+Route::get("/contact-us", [PagesController::class,"contactUs"])->name("contact-us");
 
 Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAdmin"])->name("company-details-admin");
 Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");
@@ -37,6 +38,7 @@ Route::post("/update-cc-details/{id}", [CompanyController::class,"updateCCDetail
 Route::get("/workflow-details", [CompanyController::class,"workflowDetails"])->name("workflow-details");
 Route::post("/save-workflow", [CompanyController::class,"saveWorkflow"])->name("save-workflow");
 Route::post("/update-workflow/{id}", [CompanyController::class,"updateWorkflow"])->name("update-workflow");
+Route::post("/submit-query", [CompanyController::class,"submitQuery"])->name("submit-query");
 
 Route::get("/company-benefit-details", [CompanyController::class,"companyBenefitsDetails"])->name("company-benefit-details");
 Route::get("/add-company-benefit", [CompanyController::class,"addCompanyBenefit"])->name("add-company-benefit");

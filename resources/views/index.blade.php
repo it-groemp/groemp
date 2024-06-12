@@ -33,6 +33,8 @@
 
         .benefits{
             background: #dbf0f9;
+            display: table;
+            width: 100%;
         }
 
         .benefits h5{
@@ -42,6 +44,20 @@
 
         .benefit-box{
             background:white;
+            text-align: justify;
+            height: 100%;
+        }
+
+        .benefit-box img{            
+            float: left;
+        }
+
+        .benefit-box p{
+            font-weight: normal;
+        }
+
+        .benefits .row{
+            overflow: hidden; 
         }
 
         .problems {
@@ -107,19 +123,21 @@
 
         <div class="py-5 benefits">
             <h1 class="mb-3 text-center section-title">Benefits You Can Avail With Us</h1>
-            <div class="row">
+            <div class="row mx-0">
                 <h3 class="text-center"><b>Is there any place where all the problems can be addressed??? Currently not.</b></h3>
                 <h3 class="text-center mb-4"><b>To build the strong workplace culture, addressing the personal problem is also necessary.</b></h3>
                 <h5>Here we take provide these solutions, it can help the companies to find out the solution for their needs.</h5>
                 <h5>Have a look on below benefits and try to understand the benefits mentioned below:</h5>
+                
                 @foreach($categories as $category)
                     @php
                         $image = $category->image_name
                     @endphp
-                    <div class="span3 col-lg-3 col-md-6 col-12 mt-4">
-                        <div class="benefit-box border">
-                            <img src="{{asset('images/categories/'.$image)}}" class="p-2 mx-auto category-img" alt="{{$category->name}}"/>
-                            <h4 class="text-center"><b>{{$category->name}}</b></h3>
+                    <div class="span3 col-md-6 col-12 mt-4">
+                        <div class="benefit-box border">                            
+                            <img src="{{asset('images/categories/'.$image)}}" width="100px" height="100px" class="p-2" alt="{{$category->name}}"/>
+                            <h3 class="text-center mt-2"><b>{{$category->name}}</b></h3>
+                            <p class="p-2">{{$category->description}}</p>
                         </div>
                     </div>
                 @endforeach

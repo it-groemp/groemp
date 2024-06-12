@@ -57,6 +57,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'contact' => env('APP_CONTACT',"contactus@groemp.com"),
+
     'asset_url' => env('ASSET_URL'),
 
     /*
