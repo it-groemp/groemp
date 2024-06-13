@@ -11,9 +11,9 @@
                 @if(Session::has("role"))
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         @php
-                            $company = ["company-details-admin","company-details-employer","cc-details","workflow-details", "display-admin","company-benefit-details"];
+                            $company = ["company-details-admin","company-details-employer","register-company","cc-details","workflow-details", "display-admin","add-admin","company-benefit-details",""];
                             $employee = ["employee-details","employee-benefits-admin"];
-                            $admin = ["benefit-details","category-details"];
+                            $admin = ["benefit-details","add-benefit","edit-benefit","category-details","add-category","edit-category"];
                             $route = Route::currentRouteName();
                         @endphp
                         <li class="nav-item" >
