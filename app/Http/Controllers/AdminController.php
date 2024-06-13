@@ -17,8 +17,8 @@ use App\Imports\EmployeeUpdateImport;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\SetPasswordMail;
-use App\Mail\ResetPasswordMail;
+use App\Mail\SetPasswordAdminMail;
+use App\Mail\ResetPasswordAdminMail;
 use App\Mail\UpdatePasswordAdminMail;
 
 use Illuminate\Support\Facades\Log;
@@ -140,13 +140,13 @@ class AdminController extends Controller
                     $resetPassword->token = $token;
                     $resetPassword->update();
                 }
-                $link=config("app.url")."/reset-password/$token";
+                $link=config("app.url")."/reset-password-admin/$token";
                 if($function=="forgot"){
-                    Mail::to($email)->send(new ResetPasswordMail($admin->name,$link));
+                    Mail::to($email)->send(new ResetPasswordAdminMail($admin->name,$link));
                     Log::info("sendPasswordLink(): Reset password Link sent to ".$email);
                 }
                 else{
-                    Mail::to($email)->send(new SetPasswordMail($admin->name,$link));
+                    Mail::to($email)->send(new SetPasswordAdminMail($admin->name,$link));
                     Log::info("sendPasswordLink(): Set password Link sent to ".$email);
                 }      
                 Log::error("sendPasswordLink(): Error occurred while sending link to ".$email." Error: ".$error);          
@@ -164,7 +164,7 @@ class AdminController extends Controller
             $resetPassword->delete();
             Session::put("company",$company);
             Log::info("resetPassword(): Password reset link successful for ".$email);
-            return redirect("/display-change-password");
+            return redirect("/display-change-password-admin");
         }
     }
 

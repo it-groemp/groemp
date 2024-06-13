@@ -1,18 +1,28 @@
 @extends('admin.layouts.app')
-@section('pageTitle', 'Set Password')
+{{$function=="forgot"}}
+@if($function=="forgot")
+    @section('pageTitle', 'Forgot Password')    
+@else
+    @section('pageTitle', 'Set Password')
+@endif
 @section('css')
     <link href="{{asset('css/register.css')}}" rel="stylesheet">
 @stop
 @section('content')
     <div class="container box">
-        <h1 class="mb-3 text-center"><strong><i>Forgot Password</i></strong></h1>
+        @if($function=="forgot")
+            <h1 class="mb-3 text-center"><strong><i>Forgot Password</i></strong></h1>
+        @else
+            <h1 class="mb-3 text-center"><strong><i>Set Password</i></strong></h1>
+        @endif
+        
         @if(session("success"))
             <div class="success mb-3 p-3">{{session("success")}}</div>
         @elseif(session("error"))
             <div class="error mb-3 p-3">{{session("error")}}</div>
         @endif
         <div class="form p-4 mb-5">
-        <form id="reset-password-form" method="post" action="{{route('send-password-link',$function)}}">
+        <form id="reset-password-form" method="post" action="{{route('send-password-link-admin',$function)}}">
                 {{ csrf_field() }}
                 <div class="form-group mt-3">
                     <label for="pan">Company PAN:</label>

@@ -9,13 +9,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ResetPasswordMail extends Mailable
+class SetPasswordAdminMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
+
     public $name;
     public $link;
 
@@ -27,6 +28,6 @@ class ResetPasswordMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Set Password Link')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.reset-password-mail');
+        return $this->subject('Set Password Link')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.set-password-admin-mail');
     }
 }

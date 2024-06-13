@@ -57,20 +57,20 @@ Route::get("/employee-login", [EmployeeController::class,"employeeLogin"])->name
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
 Route::post("/send-otp", [EmployeeController::class,"sendOtp"])->name("send-otp");
 Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
+Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
 Route::get("/profile",[EmployeeController::class,"profile"])->name("profile");
 Route::get("/employee-benefits-admin",[EmployeeController::class,"employeeBenefitsAdmin"])->name("employee-benefits-admin");
 Route::post("/upload-employee-benefits",[EmployeeController::class,"uploadEmployeeBenefits"])->name("upload-employee-benefits");
-Route::post("/update-employee-benefits",[EmployeeController::class,"updateEmployeeBenefits"])->name("update-employee-benefits");
 
 Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
 Route::post("/admin/send-otp", [AdminController::class,"sendAdminOtp"])->name("admin-send-otp");
 Route::post("/admin/verify-otp", [AdminController::class,"verifyAdminOtp"])->name("admin-verify-otp");
 Route::get("/set-password-admin/{function}", [AdminController::class, "setPassword"])->name("set-password-admin");
-Route::post("/send-password-link/{function}", [AdminController::class,"sendPasswordLink"])->name("send-password-link");
-Route::get("/reset-password/{token}", [AdminController::class,"resetPassword"])->name("reset-password");
-Route::get("/display-change-password", [AdminController::class,"displayChangePassword"])->name("display-change-password");
-Route::post("/update-password", [AdminController::class,"updatePassword"])->name("update-password");
+Route::post("/send-password-link-admin/{function}", [AdminController::class,"sendPasswordLink"])->name("send-password-link-admin");
+Route::get("/reset-password-admin/{token}", [AdminController::class,"resetPassword"])->name("reset-password-admin");
+Route::get("/display-change-password-admin", [AdminController::class,"displayChangePassword"])->name("display-change-password-admin");
+Route::post("/update-password-admin", [AdminController::class,"updatePassword"])->name("update-password-admin");
 Route::post("/admin/verify-admin", [AdminController::class,"verifyAdmin"])->name("verify-admin");
 Route::get("/admin/display-admin", [AdminController::class,"displayAdmin"])->name("display-admin");
 Route::get("/admin/add-admin", [AdminController::class,"addAdmin"])->name("add-admin");

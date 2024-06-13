@@ -15,7 +15,7 @@
             $company = Session::get("company");
         @endphp
         <div class="form p-4 mb-5">
-            <form id="change-password-form" method="post" action="{{route('update-password')}}">
+            <form id="change-password-form" method="post" action="{{route('update-password-admin')}}">
                 {{ csrf_field() }}
                 <div class="form-group mt-3">
                     <label for="pan">Company PAN:</label>
