@@ -24,7 +24,7 @@
                         $id = $benefit->id;
                         $company_benefits = json_decode($benefit->benefits);
                         foreach($company_benefits as $cb){
-                            array_push($cbList,$benefits_list[$cb]->name);
+                            array_push($cbList,$benefits_list[$cb-1]->name);
                         }                        
                     @endphp
                     <tr>

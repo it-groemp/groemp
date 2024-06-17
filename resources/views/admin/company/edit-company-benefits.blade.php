@@ -12,7 +12,7 @@
                 @php
                     $prev="";
                     $count = count($benefits);
-                    $benefits_list = json_decode($company_benefit->benefits)
+                    $benefits_list = json_decode($company_benefit->benefits);
                 @endphp
                 @for($i=0;$i<$count;$i++)
                     @php
@@ -35,7 +35,7 @@
                     @endif                
                                 <li>
                                     <div class="form-check">
-                                        @if(in_array($i+1,$benefits_list))
+                                        @if(in_array($benefit->id,$benefits_list))
                                             <input class="form-check-input benefit {{$category}}" type="checkbox" name="benefit[]" value="{{$benefit->id}}" id="{{$benefit_name}}" checked>
                                         @else
                                             <input class="form-check-input benefit {{$category}}" type="checkbox" name="benefit[]" value="{{$benefit->id}}" id="{{$benefit_name}}">
