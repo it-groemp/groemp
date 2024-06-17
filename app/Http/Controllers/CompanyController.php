@@ -331,7 +331,7 @@ class CompanyController extends Controller
             ]); 
             $benefits = request("benefit");
             $admin_id = Session::get("admin_id");
-            $admin = Admin::find($id);
+            $admin = Admin::find($admin_id);
             $company_pan = $admin->company;
             $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
             foreach($company_list as $company){
