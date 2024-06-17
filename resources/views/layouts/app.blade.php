@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<intuist-chat-widget channelId="666c79559a197e3f30dad462" fullPageMode="false" userId=null userPictureURL=null widgetPosition="bottom-right" topMargin="4" bottomMargin="4" leftMargin="4" rightMargin="4" zIndex="9999" minimized="true" sleepMode="true"></intuist-chat-widget>
+		<script async src='https://app.intuist.ai/widgets/intuist-chat-bundle.js'></script>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -70,9 +72,9 @@
 	</head>
     <body>
         @include('layouts.header')		
-			<button type="button" class="btn btn-floating btn-lg" id="btn-back-to-top">
+			<!-- <button type="button" class="btn btn-floating btn-lg" id="btn-back-to-top">
 				<i class="fa fa-angle-up"></i>
-			</button>
+			</button> -->
 		@yield('content')
 		@include('layouts.footer')
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
