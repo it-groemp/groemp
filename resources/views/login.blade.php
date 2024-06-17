@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="who-are-you py-5">
             <div class="row">
-                <h1 class="mb-3 text-center section-title">Who are you</h1>
+                <h1 class="mb-3 text-center section-title">Employee or Employer? Let us know...</h1>
                 <div class="col-md-1 col-12"></div>
                 <div class="col-md-4 col-12">
                     <div id="person-box-employee" class="text-center">

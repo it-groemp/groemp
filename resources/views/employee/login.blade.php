@@ -2,72 +2,58 @@
 @section('pageTitle','Login')
 @section('css')
     <link href="{{asset('css/register.css')}}" rel="stylesheet">
+    <style>
+        .login-img{
+            max-width:100%;
+            max-height:100%;
+            vertical-align: middle; 
+        }
+    </style>
 @stop
 @section("content")
-<div class="container box mb-5">
-    <h1 class="mb-3 text-center"><strong><i>LOGIN</i></strong></h1>
-    <div class="form p-4">          
-        @if(session()->has("error"))
-            <div class="error mb-3">{!!session()->get("error")!!}</div>
-        @endif
-        <form id="login-form" method="post" action="{{route('send-otp')}}">
-            {{ csrf_field() }}
-            <div class="form-group mt-3">
-                <label for="mobile">Mobile:</label>
-                <input type="tel" class="form-control" name="mobile" id="mobile" pattern="[6-9]{1}[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" minlength=10 maxlength=10 required>
+<div class="container mb-5">
+    <div class="row">
+                <div class="col-md-6 col-12">
+                    <img src="{{asset('images/employee.jpg')}}" class="mx-auto login-img" alt="Financial Growth"/> 
+                </div>
+        <div class="col-md-6 col-12">
+            <h1 class="mb-3 text-center"><strong><i>LOGIN</i></strong></h1>
+            <div class="form p-4">
+                @if ($errors->any())
+                    <div class="alert error">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form id="login-form" method="post" action="{{route('verify-employee')}}">
+                    {{ csrf_field() }}
+                    <div class="form-group mt-3">
+                        <label for="pan">Your PAN:</label>
+                        <input type="text" class="form-control" name="pan" id="pan" maxlength=10 required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" name="password" id="password" minlength=8 maxlength=20 required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="submit" class="btn btn-outline" value="Login">
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group mt-3">
-                <button type="submit" class="btn btn-colored">Send OTP</button>
+            <div class="login-link text-center my-5">
+                <strong>
+                    <a href="{{route('forgot-password')}}">Forgot Password</a>
+                    <br/><br/>
+                    Don't Have An Account? Click 
+                    <a href="">Register</a> to create one
+                </strong>
             </div>
-        </form>
-    </div>
+        </div>
+    </div>    
 </div>
 
-<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-				<h5 class="modal-title" id="otpModal"><b>Verify OTP</b></h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="form p-4">
-                    @if(session()->get("error"))
-                        <div class="error mb-3 p-3">{!!session()->get("error")!!}</div>
-                    @elseif(session("successResend"))
-                        <div class="success mb-3 p-3"></div>
-                    @endif
-					<form id="otp-form" method="post" action="{{route('verify-otp')}}">
-            			{{ csrf_field() }}
-						<div class="form-group mt-3">
-							<label for="name">Enter OTP:</label>
-							<input type="text" class="form-control" name="otp" id="otp" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" required>
-                            <span class="error mobile"></span>
-                        </div>
-                        
-					</form>
-				</div>
-            </div>
-            <div class="modal-footer">
-				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-				<input type="submit" class="btn btn-outline" id="verify-otp" value="Verify OTP"/>
-			</div>
-        </div>
-    </div>
-</div>
-@stop
-@section("js")
-    <script style="text/javascript">
-        $("#verify-otp").click(function(){
-            $(".mobile").html("");
-            $otp=$("#otp").val()+"";
-            if($otp.length<6){
-                $(".mobile").html("Please enter 6 digits OTP.");
-            }
-            else{
-                $("#otp-form").submit();
-            }
-        });
-    </script>
+
 @stop

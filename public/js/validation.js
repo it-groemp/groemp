@@ -1,14 +1,3 @@
-$.validator.addMethod("checkPassword", function (value, elem) {
-    hasFocus = document.activeElement === elem;
-    if (hasFocus === false) {
-        var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
-        return re.test(value);
-    }
-    return true;
-},
-"Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters"
-);
-
 $.validator.addMethod("alpha", function (value, elem) {
         var re = /^[a-zA-Z .]+$/;
         return re.test(value);
