@@ -19,7 +19,7 @@
         <div class="col-md-6 col-12">
             <h1 class="mb-3 text-center"><strong><i>LOGIN</i></strong></h1>
             <div class="form p-4">
-                @if ($errors->any())
+                @if($errors->any())
                     <div class="alert error">
                         <ul>
                             @foreach ($errors->all() as $error)
@@ -46,9 +46,6 @@
             <div class="login-link text-center my-5">
                 <strong>
                     <a href="{{route('forgot-password')}}">Forgot Password</a>
-                    <br/><br/>
-                    Don't Have An Account? Click 
-                    <a href="">Register</a> to create one
                 </strong>
             </div>
         </div>
