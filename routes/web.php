@@ -57,10 +57,16 @@ Route::get("/employee-login", [EmployeeController::class,"employeeLogin"])->name
 Route::get("/logout", [EmployeeController::class,"logout"])->name("logout");
 Route::post("/send-otp", [EmployeeController::class,"sendOtp"])->name("send-otp");
 Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
-Route::post("/verify-otp", [EmployeeController::class,"verifyOtp"])->name("verify-otp");
+Route::post("/verify-employee", [EmployeeController::class,"verifyEmployee"])->name("verify-employee");
+Route::get("/forgot-password", [EmployeeController::class, "forgotPassword"])->name("forgot-password");
+Route::post("/send-password-link", [EmployeeController::class,"sendPasswordLink"])->name("send-password-link");
+Route::get("/reset-password/{token}", [EmployeeController::class,"resetPassword"])->name("reset-password");
+Route::get("/display-change-password", [EmployeeController::class,"displayChangePassword"])->name("display-change-password");
+Route::post("/update-password", [EmployeeController::class,"updatePassword"])->name("update-password");
 Route::get("/profile",[EmployeeController::class,"profile"])->name("profile");
 Route::get("/employee-benefits-admin",[EmployeeController::class,"employeeBenefitsAdmin"])->name("employee-benefits-admin");
 Route::post("/upload-employee-benefits",[EmployeeController::class,"uploadEmployeeBenefits"])->name("upload-employee-benefits");
+Route::post("/update-employee-benefits",[EmployeeController::class,"updateEmployeeBenefits"])->name("update-employee-benefits");
 
 Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
@@ -99,3 +105,4 @@ Route::post("/update-benefit", [BenefitController::class, "updateBenefit"])->nam
 Route::get("/delete-benefit/{id}", [BenefitController::class, "deleteBenefit"])->name("delete-benefit");
 
 Route::get("/testroute", [PagesController::class, "test"]);
+Route::get("/mail", [MailController::class, "sendmail"]);
