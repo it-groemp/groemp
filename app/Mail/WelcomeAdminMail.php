@@ -9,25 +9,28 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SetPasswordAdminMail extends Mailable
+class WelcomeAdminMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-
     public $name;
     public $link;
 
+    /**
+     * Create a new message instance.
+     */
     public function __construct($name, $link)
     {
         $this->name = $name;
         $this->link = $link;
-    }    
+    }
 
-    public function build()
-    {
-        return $this->subject('Set Password Link')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.set-password-admin-mail');
+    public function build(){
+        return $this->subject("Welcome to Groemp")
+                    ->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))
+                    ->markdown("mails.welcome-admin-mail");
     }
 }

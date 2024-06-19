@@ -1,6 +1,6 @@
-@extends('admin.layouts.app')
-@section('pageTitle','Admin Login')
-@section('css')
+@extends("admin.layouts.app")
+@section("pageTitle","Admin Login")
+@section("css")
     <link href="{{asset('css/register.css')}}" rel="stylesheet">
 @stop
 @section("content")
@@ -27,10 +27,7 @@
     </div>
     <div class="login-link text-center my-5">
         <strong>
-            <a href="{{route('set-password-admin','forgot')}}">Forgot Password</a>
-            <br/><br/>
-            Don't Have An Password? Click to set it
-            <a href="{{route('set-password-admin','set')}}">Set Password</a>
+            <a href="{{route('forgot-password-admin')}}">Forgot Password</a>
         </strong>
     </div>
 </div>

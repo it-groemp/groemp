@@ -22,6 +22,6 @@ class UpdatePasswordAdminMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Welcome to Groemp')->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown('mails.welcome-admin-mail');
+        return $this->subject("Password Updated")->from(env("MAIL_FROM_ADDRESS"),env("MAIL_FROM_NAME"))->markdown("mails.change-password-admin-mail");
     }
 }

@@ -17,6 +17,8 @@ use App\Imports\EmployeeUpdateImport;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+
+use App\Mail\WelcomeAdminMail;
 use App\Mail\SetPasswordAdminMail;
 use App\Mail\ResetPasswordAdminMail;
 use App\Mail\UpdatePasswordAdminMail;
@@ -51,7 +53,7 @@ class AdminController extends Controller
         }
         if($error==""){
             $admin_id = Session::get("admin_id");
-            $old_admin = Admin::where("id",$id)->first();
+            $old_admin = Admin::where("id",$admin_id)->first();
             $admin = new Admin();
             $admin->name = $name;
             $admin->mobile = $mobile;
@@ -60,9 +62,19 @@ class AdminController extends Controller
             $admin->role = $role;
             $admin->created_by = $old_admin->email;
             $admin->updated_by = $old_admin->email;
-            $admin->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
             $admin->save();
             Log::info("saveAdmin(): New admin created email: ".$admin." by admin: ".$old_admin->company);
+            
+            $token = Str::random(20);
+
+            $resetPassword = new ResetPassword();
+            $resetPassword->email = $email;
+            $resetPassword->token = $token;
+            $resetPassword->save();
+
+            $link=config("app.url")."/reset-password-admin/$token";
+            Mail::to($email)->send(new WelcomeAdminMail($admin->name,$link));
+
             return redirect("/admin/display-admin");
         }
         else{
@@ -109,11 +121,11 @@ class AdminController extends Controller
         return redirect()->back()->with("error",$error);
     }
 
-    public function setPassword($function){
-        return view("admin.employee.set-password")->with("function",$function);
+    public function forgotPassword(){
+        return view("admin.employee.forgot-password");
     }
 
-    public function sendPasswordLink($function){
+    public function sendPasswordLink(){
         $pan = Str::upper(request("pan"));
         $error=null;
         Log::info("sendPasswordLink(): Send Password Link for: ".$pan);
@@ -141,15 +153,9 @@ class AdminController extends Controller
                     $resetPassword->update();
                 }
                 $link=config("app.url")."/reset-password-admin/$token";
-                if($function=="forgot"){
-                    Mail::to($email)->send(new ResetPasswordAdminMail($admin->name,$link));
-                    Log::info("sendPasswordLink(): Reset password Link sent to ".$email);
-                }
-                else{
-                    Mail::to($email)->send(new SetPasswordAdminMail($admin->name,$link));
-                    Log::info("sendPasswordLink(): Set password Link sent to ".$email);
-                }      
-                Log::error("sendPasswordLink(): Error occurred while sending link to ".$email." Error: ".$error);          
+                Mail::to($email)->send(new ResetPasswordAdminMail($admin->name,$link));
+                Log::info("sendPasswordLink(): Reset password Link sent to ".$email);     
+                
                 return redirect()->back()->with("success","Reset password link has been sent to the email id");
             }
         }
@@ -160,7 +166,7 @@ class AdminController extends Controller
         $resetPassword = ResetPassword::where("token",$token)->first();
         if($resetPassword!=null){
             $email = $resetPassword->email;
-            $company = Admin::where("email",$email)->first()->value("company");
+            $company = Admin::where("email",$email)->first()->company;
             $resetPassword->delete();
             Session::put("company",$company);
             Log::info("resetPassword(): Password reset link successful for ".$email);
@@ -192,9 +198,11 @@ class AdminController extends Controller
             $admin->update();
             $email=$admin->email;
             Session::forget("company");
+            Session::put("admin_id",$admin->id);
+            Session::put("role",$admin->role);
             Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
             Log::info("updatePassword(): Password updated for company ".$admin." and mail sent to ".$email);
-            return redirect("/admin/login");
+            return redirect("/employee-details");
         }
         if($error!=""){
             Log::error("updatePassword(): Error occurred while updating password for ".$company." Error: ".$error);
@@ -273,7 +281,7 @@ class AdminController extends Controller
 
     public function saveEmployeeDetails(Request $request){
         $request->validate([
-            'uploadFileAdd' => 'required|mimes:xlsx,xls',
+            "uploadFileAdd" => "required|mimes:xlsx,xls",
         ]);
         Excel::import(new EmployeeAddImport, $request->file("uploadFileAdd"));
         $admin_id = Session::get("admin_id");
@@ -284,7 +292,7 @@ class AdminController extends Controller
 
     public function updateEmployeeDetailsBulk(Request $request){
         $request->validate([
-            'uploadFileEdit' => 'required|mimes:xlsx,xls',
+            "uploadFileEdit" => "required|mimes:xlsx,xls",
         ]);
         Excel::import(new EmployeeUpdateImport, $request->file("uploadFileEdit"));
         $admin_id = Session::get("admin_id");

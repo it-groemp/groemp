@@ -77,8 +77,8 @@ Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-l
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
 Route::post("/admin/send-otp", [AdminController::class,"sendAdminOtp"])->name("admin-send-otp");
 Route::post("/admin/verify-otp", [AdminController::class,"verifyAdminOtp"])->name("admin-verify-otp");
-Route::get("/set-password-admin/{function}", [AdminController::class, "setPassword"])->name("set-password-admin");
-Route::post("/send-password-link-admin/{function}", [AdminController::class,"sendPasswordLink"])->name("send-password-link-admin");
+Route::get("/forgot-password-admin", [AdminController::class, "forgotPassword"])->name("forgot-password-admin");
+Route::post("/send-password-link-admin", [AdminController::class,"sendPasswordLink"])->name("send-password-link-admin");
 Route::get("/reset-password-admin/{token}", [AdminController::class,"resetPassword"])->name("reset-password-admin");
 Route::get("/display-change-password-admin", [AdminController::class,"displayChangePassword"])->name("display-change-password-admin");
 Route::post("/update-password-admin", [AdminController::class,"updatePassword"])->name("update-password-admin");
