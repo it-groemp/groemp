@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('pageTitle','Employee Details')
+@section('pageTitle','Company Details')
 @section("css")
     <link href="{{asset('css/admin-home.css')}}" rel="stylesheet">
 @stop
