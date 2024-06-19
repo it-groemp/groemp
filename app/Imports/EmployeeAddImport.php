@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Employee;
+use App\Models\EmployeeWelcomeMail;
 use App\Models\EmployeeBenefit;
 use App\Models\Admin;
 use App\Models\Company;
@@ -60,6 +61,11 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 $employee->updated_at = $today->toDateTimeString();
                 $employee->updated_by = $admin->email;
                 $employee->save();
+
+                $employee_mail = new EmployeeWelcomeMail();
+                $employee_mail->pan_number = Str::upper($row["employee_pan"]);
+                $employee_mail->save();
+
                 Log::info("EmployeeAddImport: ".$employee);
                 
                 $benefit_amount = $row["benefit_amount"];
