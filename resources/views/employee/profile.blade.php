@@ -87,38 +87,34 @@
                         </div>
                     </div>
                 </div>
-                @if($employee->num_of_kids>0)
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="kids">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKids" aria-expanded="false" aria-controls="collapseKids">
-                                Kids
-                            </button>
-                        </h2>
-                        <div id="collapseKids" class="accordion-collapse collapse" aria-labelledby="kids" data-bs-parent="#profile">
-                            <div class="accordion-body">
-                                <div class="row">
-                                    @php
-                                        $i=1;
-                                    @endphp
-                                    @foreach($family as $member)
-                                        @if($member["relation"]=="Kid")
-                                            <div class="col-md-4 col-12">
-                                                <p><b>Name: </b><span id="{{'emp_kid'.$i.'_name'}}">{{$member["name"]}}</span></p>
-                                                <p><b>Date Of Birth: </b><span id="{{'emp_kid'.$i.'_dob'}}">{{$member["date_of_birth"]}}</span></p>
-                                            </div>
-                                            @php
-                                                $i++;
-                                            @endphp
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <button id="kids_btn" class="btn btn-outline pr-3 align-right" data-bs-toggle="modal" data-bs-target="#editKidsModal">
-                                    Edit Kids Data
-                                </button>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="kids">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKids" aria-expanded="false" aria-controls="collapseKids">                                Kids
+                        </button>
+                    </h2>
+                    <div id="collapseKids" class="accordion-collapse collapse" aria-labelledby="kids" data-bs-parent="#profile">
+                        <div class="accordion-body">
+                            <div class="row">
+                                @php
+                                    $i=1;
+                                @endphp
+                                @foreach($family as $member)
+                                    @if($member["relation"]=="Kid")
+                                        <div class="col-md-4 col-12">
+                                            <p><b>Name: </b><span id="{{'emp_kid'.$i.'_name'}}">{{$member["name"]}}</span></p>                                                <p><b>Date Of Birth: </b><span id="{{'emp_kid'.$i.'_dob'}}">{{$member["date_of_birth"]}}</span></p>
+                                        </div>
+                                        @php
+                                            $i++;
+                                        @endphp
+                                    @endif
+                                @endforeach
                             </div>
+                            <button id="kids_btn" class="btn btn-outline pr-3 align-right" data-bs-toggle="modal" data-bs-target="#editKidsModal">
+                                Edit Kids Data
+                            </button>
                         </div>
                     </div>
-                @endif
+                </div>
             </div>                         
         </div>
     </div>
@@ -174,7 +170,9 @@
                                 <option value="Divorced">Divorced</option>
                             </select>
                         </div>
-                        <div id="spouse_details" style="display:none;">
+
+                        <div id="spouse_details" class="mt-4" style="display:none;">
+                            <p class="mb-1"><b>Spouse Details:</b></p>
                             <div class="form-group">
                                 <label for="spouse_name">Name:</label>
                                 <input type="text" class="form-control" name="spouse_name" id="spouse_name" maxlength=50 required>
