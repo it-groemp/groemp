@@ -67,6 +67,11 @@ Route::get("/profile",[EmployeeController::class,"profile"])->name("profile");
 Route::get("/employee-benefits-admin",[EmployeeController::class,"employeeBenefitsAdmin"])->name("employee-benefits-admin");
 Route::post("/upload-employee-benefits",[EmployeeController::class,"uploadEmployeeBenefits"])->name("upload-employee-benefits");
 Route::post("/update-employee-benefits",[EmployeeController::class,"updateEmployeeBenefits"])->name("update-employee-benefits");
+Route::post("/save-personal",[EmployeeController::class,"savePersonal"])->name("save-personal");
+Route::post("/save-marital",[EmployeeController::class,"saveMarital"])->name("save-marital");
+Route::post("/save-kids",[EmployeeController::class,"saveKids"])->name("save-kids");
+Route::post("/change-photo", [EmployeeController::class,"changePhoto"])->name("change-photo");
+Route::get("/delete-photo", [EmployeeController::class,"deletePhoto"])->name("delete-photo");
 
 Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");

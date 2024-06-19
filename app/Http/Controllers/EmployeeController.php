@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\File; 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Employee;
 use App\Models\EmployeeBenefit;
+use App\Models\EmployeeFamilyDetails;
 use App\Models\Admin;
 use App\Models\Company;
 use App\Models\ResetPassword;
@@ -27,6 +29,15 @@ use Excel;
 
 class EmployeeController extends Controller
 {
+    public function checkSession(){
+        if(Session::get("employee")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public function login(){
         return view("login");
     }
@@ -36,15 +47,14 @@ class EmployeeController extends Controller
     }
 
     public function logout(){
-        Session::forget("employee");
-        Session::forget("mobile");
+        Session::flush();
         return redirect("/");
     }
 
     public function verifyEmployee(Request $request){
         $request->validate([
-            'pan' => 'required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
-            'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/'
+            "pan" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/",
+            "password" => "required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/"
         ]);
 
         $pan = Str::upper(request("pan"));
@@ -73,7 +83,7 @@ class EmployeeController extends Controller
 
     public function sendPasswordLink(Request $request){
         $request->validate([
-            'pan' => 'required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/'
+            "pan" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/"
         ]);
         
         $pan = Str::upper($request->pan);
@@ -126,8 +136,8 @@ class EmployeeController extends Controller
 
     public function updatePassword(Request $request){
         $request->validate([
-            'password' => 'required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/',
-            'cnfm_password' => 'required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/'
+            "password" => "required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",
+            "cnfm_password" => "required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/"
         ]);
 
         $pan = Session::get("pan");
@@ -152,10 +162,21 @@ class EmployeeController extends Controller
     }
 
     public function profile(){
-        $id = Session::get("employee");
-        if($id!=null){
+        if($this->checkSession()){
+            $id = Session::get("employee");
             $employee = Employee::find($id);
-            return view("employee.profile")->with("employee",$employee);
+            $photo = $employee->photo;
+            if(is_null($photo) || empty($photo)){
+                $employee->photo = strtoupper($employee->name[0]).".png";
+                $photo=null;
+            }
+            $company = Company::where("pan",$employee->company)->first()->name;
+            $family = EmployeeFamilyDetails::where("pan_number",$employee->pan_number)->orderBy("relation","desc")->orderBy("id")->get()->toArray();
+            return view("employee.profile")
+                    ->with("employee",$employee)
+                    ->with("photo",$photo)
+                    ->with("company",$company)
+                    ->with("family",$family);
         }
         else{
             return redirect("/employee-login");
@@ -189,7 +210,7 @@ class EmployeeController extends Controller
 
     public function uploadEmployeeBenefits(Request $request){
         $request->validate([
-            'uploadAddFile' => 'required|mimes:xlsx,xls',
+            "uploadAddFile" => "required|mimes:xlsx,xls",
         ]);
         $admin_id = Session::get("admin_id");
         $admin = Admin::where("id",$admin_id)->first();
@@ -200,12 +221,213 @@ class EmployeeController extends Controller
 
     public function updateEmployeeBenefits(Request $request){
         $request->validate([
-            'uploadEditFile' => 'required|mimes:xlsx,xls',
+            "uploadEditFile" => "required|mimes:xlsx,xls",
         ]);
         $admin_id = Session::get("admin_id");
         $admin = Admin::where("id",$admin_id)->first();
         Excel::import(new EmployeeBenefitUpdateImport, $request->file("uploadEditFile"));
         Log::info("updateEmployeeBenefits(): Employee Benefits updated for employees by admin: ".$admin->email);
         return redirect("/employee-benefits-admin");
+    }
+
+    public function savePersonal(Request $request){
+        if($this->checkSession()){
+            
+        }
+        else{
+            return redirect("/employee-login");
+        }
+        $request->validate([
+            "name" => "required|regex:/^[a-zA-Z .]+$/",
+            "mobile"=> "required|regex:/[6-9]{1}[0-9]{9}/",
+            "dob"=> "required"
+        ]);
+
+        $name = request("name");
+        $mobile = request("mobile");
+        $dob = request("dob");
+        $id = Session::get("employee");
+        $employee = Employee::find($id);
+        $employee->name = $name;
+        $employee->mobile = $mobile;
+        $employee->date_of_birth = $dob;
+        $employee->updated_by = $employee->email;
+        $employee->update();
+
+        Log::info("savePersonal(): Employee data saved for id: ".$id);
+        return redirect()->back();
+    }
+
+    public function saveMarital(Request $request){
+        if($this->checkSession()){
+            $request->validate([
+                "marital_status" => "required",
+            ]);
+            $marital_status = $request->marital_status;
+            $id = Session::get("employee");
+            $employee = Employee::find($id);
+            $employee->marital_status = $marital_status;
+            $employee->updated_by = $employee->email;
+            $employee->update();
+    
+            Log::info("saveMarital(): Marital status updated for employee: ".$id);
+    
+            $employee_family = EmployeeFamilyDetails::where("pan_number",$employee->pan_number)->where("relation","Spouse")->first();
+    
+            if($marital_status=="Married"){
+                $request->validate([
+                    "spouse_name" => "required|regex:/^[a-zA-Z .]+$/",
+                    "spouse_dob"=> "required"
+                ]);
+                $spouse_name = $request->spouse_name;
+                $spouse_dob = $request->spouse_dob;
+                if($employee_family==null){
+                    $employee_family = new EmployeeFamilyDetails();
+                    $employee_family->pan_number = $employee->pan_number;
+                    $employee_family->relation = "Spouse";
+                    $employee_family->name = $spouse_name;
+                    $employee_family->date_of_birth = $spouse_dob;
+                    $employee_family->created_by = $employee->email;
+                    $employee_family->updated_by = $employee->email;
+                    $employee_family->save();
+                    Log::info("saveMarital(): Save spouse data");
+                }
+                else{
+                    $employee_family->name = $spouse_name;
+                    $employee_family->date_of_birth = $spouse_dob;
+                    $employee_family->updated_by = $employee->email;
+                    $employee_family->update();
+                    Log::info("saveMarital(): Updated spouse data");
+                }
+            }
+            else{
+                $employee_family->delete();
+                Log::info("saveMarital(): Deleted spouse data");
+            }
+            return redirect()->back();
+        }
+        else{
+            return redirect("/employee-login");
+        }
+    }
+
+    public function saveKids(Request $request){
+        if($this->checkSession()){
+            $request->validate([
+                "num_of_kids" => "required",
+            ]);
+            $num_of_kids = $request->num_of_kids;
+    
+            $id = Session::get("employee");
+            $employee = Employee::find($id);
+            $employee->num_of_kids = $num_of_kids;
+            $employee->updated_by = $employee->email;
+            $employee->update();
+    
+            $employee_family = EmployeeFamilyDetails::where("pan_number",$employee->pan_number)->where("relation","Kid")->get();
+            foreach($employee_family as $family){
+                $family->delete();
+            }
+            Log::info("saveKids(): Deleted all the kids info for employee: ".$id);
+    
+            if($num_of_kids>0){
+                $request->validate([
+                    "kid1_name" => "required|regex:/^[a-zA-Z .]+$/",
+                    "kid1_dob"=> "required"
+                ]);
+    
+                $employee_family1 = new EmployeeFamilyDetails();
+                $employee_family1->pan_number = $employee->pan_number;
+                $employee_family1->name = $request->kid1_name;
+                $employee_family1->relation = "Kid";
+                $employee_family1->date_of_birth = $request->kid1_dob;
+                $employee_family1->created_by = $employee->email;
+                $employee_family1->updated_by = $employee->email;
+                $employee_family1->save();
+    
+                Log::info("saveKids(): Kid1 info saved for employee: ".$id);
+    
+                if($num_of_kids>1){
+                    $request->validate([
+                        "kid2_name" => "required|regex:/^[a-zA-Z .]+$/",
+                        "kid2_dob"=> "required"
+                    ]);
+                    $employee_family2 = new EmployeeFamilyDetails();
+                    $employee_family2->pan_number = $employee->pan_number;
+                    $employee_family2->name = $request->kid2_name;
+                    $employee_family2->relation = "Kid";
+                    $employee_family2->date_of_birth = $request->kid2_dob;
+                    $employee_family2->created_by = $employee->email;
+                    $employee_family2->updated_by = $employee->email;
+                    $employee_family2->save();
+        
+                    Log::info("saveKids(): Kid2 info saved for employee: ".$id);
+    
+                    if($num_of_kids>2){
+                        $request->validate([
+                            "kid3_name" => "required|regex:/^[a-zA-Z .]+$/",
+                            "kid3_dob"=> "required"
+                        ]);
+                        $employee_family3 = new EmployeeFamilyDetails();
+                        $employee_family3->pan_number = $employee->pan_number;
+                        $employee_family3->name = $request->kid3_name;
+                        $employee_family3->relation = "Kid";
+                        $employee_family3->date_of_birth = $request->kid3_dob;
+                        $employee_family3->created_by = $employee->email;
+                        $employee_family3->updated_by = $employee->email;
+                        $employee_family3->save();
+            
+                        Log::info("saveKids(): Kid3 info saved for employee: ".$id);
+                    }
+                }
+            }
+            return redirect()->back();
+        }
+        else{
+            return redirect("/employee-login");
+        }
+    }
+
+    public function changePhoto(Request $request){
+        if($this->checkSession()){
+            $id=Session::get("employee");
+            $request->validate([
+                "employee-photo"=> "required"
+            ]);
+            $photo=$request->file("employee-photo");
+            $name=$photo->getClientOriginalName(); 
+            $photo->move("images/employee-images",$name); 
+            $employee = Employee::find($id);
+            $employee->photo=$name;
+            $employee->update();
+
+            Log::info("changePhoto(): Photo updated for employee: ".$id);
+            return redirect()->back();
+        }
+        else{
+            return redirect("/employee-login");
+        }
+    }
+
+    public function deletePhoto(){
+        if($this->checkSession()){
+            $id=Session::get("employee");
+            $employee = Employee::find($id);
+            $photo = $employee->photo;
+            File::delete("images/employee-images/".$photo);
+            $employee->photo=null;
+            $employee->update();
+            Log::info("deletePhoto(): Photo deleted for employee: ".$id);
+            return redirect()->back();
+        }
+        else{
+            return redirect("/employee-login");
+        }
+        if((new PagesController)->checkSession()){
+            
+        }
+        else{
+            return redirerct("/login");
+        }
     }
 }

@@ -20,8 +20,19 @@
                     </li>
                 </ul>
                 @if(Session::has("employee"))
-                    <div class="d-flex">				
-                        <a class="btn btn-colored" href="{{route('logout')}}" style="padding: 10px 20px; margin-right: 20px;">Logout</a>
+                    <div class="d-flex dropdown">	
+                        @php
+                            $name = App\Models\Employee::find(Session::get("employee"))->first()->name;
+                        @endphp
+                        <button class="btn btn-colored dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome {{$name}}
+                        </button>	
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="{{route('profile')}}">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Benefits Available</a></li>
+                            <li><a class="dropdown-item" href="#">Benefits Availed</a></li>
+                            <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
+                        </ul>
                     </div>
                 @else
                     <div class="d-flex">				

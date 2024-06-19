@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 @section('pageTitle', 'Change Password')
 @section('css')
     <link href="{{asset('css/register.css')}}" rel="stylesheet">
