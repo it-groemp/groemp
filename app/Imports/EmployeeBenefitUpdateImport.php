@@ -67,6 +67,7 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
                 $workflow_approval->approver_email = $workflow->approver1;
                 $workflow_approval->approval_for = "Employees Benefit";
                 $workflow_approval->token = $token;
+                $employee_benefit->created_by = $admin->email;
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));

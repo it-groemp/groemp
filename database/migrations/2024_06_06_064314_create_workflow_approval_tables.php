@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string("token",100)->nullable(true);
             $table->string("created_by",100)->nullable(false);
             $table->timestamp("created_at")->nullable(false)->useCurrent();
+            $table->timestamp("updated_at")->nullable(false)->useCurrent();
         });
     }
 
