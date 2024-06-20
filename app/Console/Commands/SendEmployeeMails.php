@@ -50,6 +50,8 @@ class SendEmployeeMails extends Command
                 $link=config("app.url")."/reset-password/$token";
     
                 Mail::to($employee->email)->send(new WelcomeEmployeeMail($employee->name,$link));
+            
+                EmployeeWelcomeMail::where("pan_number",$employee->pan_number)->first()->delete();
             }
         }
         else{
@@ -63,6 +65,8 @@ class SendEmployeeMails extends Command
         
                     $link=config("app.url")."/reset-password/$token";        
                     Mail::to($employee->email)->send(new EmployeeWelcomeMail($employee->name,$link));
+                
+                    EmployeeWelcomeMail::where("pan_number",$employee->pan_number)->first()->delete();
                 }
             }
             $this->info("Mail sent");
