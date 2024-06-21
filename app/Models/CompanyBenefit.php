@@ -9,4 +9,8 @@ class CompanyBenefit extends Model
 {
     use HasFactory;
     protected $table = "company_benefits";
+
+    protected $casts = [
+        'benefits' => 'array',
+    ];
 }

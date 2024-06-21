@@ -40,4 +40,24 @@ class PagesController extends Controller
     public function upload(){
         return view("upload");
     }
+
+    public function fuelSolution(){
+        return view("category-pages.fuel-solution");
+    }
+
+    public function carLease(){
+        return view("category-pages.car-lease");
+    }
+
+    public function transportFacility(){
+        return view("category-pages.transport-facility");
+    }
+
+    public function uniformedUniform(){
+        return view("category-pages.uniformed-uniform");
+    }
+
+    public function gadgetPurchases(){
+        return view("category-pages.gadget-purchases");
+    }
 }

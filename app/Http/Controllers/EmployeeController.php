@@ -17,6 +17,9 @@ use App\Models\Admin;
 use App\Models\Company;
 use App\Models\ResetPassword;
 use App\Models\WorkflowApproval;
+use App\Models\Benefit;
+use App\Models\Category;
+use App\Models\CompanyBenefit;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
@@ -423,11 +426,22 @@ class EmployeeController extends Controller
         else{
             return redirect("/employee-login");
         }
-        if((new PagesController)->checkSession()){
-            
+    }
+
+    public function currentBenefits(){
+        if($this->checkSession()){         
+            $id=Session::get("employee");
+            $employee = Employee::find($id);
+            $company = $employee->company;
+            $company_benefits_list = CompanyBenefit::where("company",$company)->pluck("benefits");
+            $benefits_list = Benefit::whereIn("id",$company_benefits_list[0])->get()->sortBy("category_id");
+            $categories = $benefits_list->pluck("category_id")->unique();
+            $category_list = Category::whereIn("id",$categories)->get();
+            //return view("employee.employee-current-benefits")->with("benefits_list",$benefits_list)->with("category_list",$category_list);
+            return redirect("/fuel-solution");
         }
         else{
-            return redirerct("/login");
+            return redirect("/employee-login");
         }
     }
 }
