@@ -430,13 +430,13 @@ class EmployeeController extends Controller
 
     public function currentBenefits(){
         if($this->checkSession()){         
-            $id=Session::get("employee");
-            $employee = Employee::find($id);
-            $company = $employee->company;
-            $company_benefits_list = CompanyBenefit::where("company",$company)->pluck("benefits");
-            $benefits_list = Benefit::whereIn("id",$company_benefits_list[0])->get()->sortBy("category_id");
-            $categories = $benefits_list->pluck("category_id")->unique();
-            $category_list = Category::whereIn("id",$categories)->get();
+            // $id=Session::get("employee");
+            // $employee = Employee::find($id);
+            // $company = $employee->company;
+            // $company_benefits_list = CompanyBenefit::where("company",$company)->pluck("benefits");
+            // $benefits_list = Benefit::whereIn("id",$company_benefits_list[0])->get()->sortBy("category_id");
+            // $categories = $benefits_list->pluck("category_id")->unique();
+            // $category_list = Category::whereIn("id",$categories)->get();
             //return view("employee.employee-current-benefits")->with("benefits_list",$benefits_list)->with("category_list",$category_list);
             return redirect("/fuel-solution");
         }
