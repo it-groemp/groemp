@@ -5,6 +5,15 @@
 @section("content")
     <div class="p-2 my-5 form-container no-border mx-auto">
 	    <h1 class="mb-3 text-center section-title">Register Company</h1>
+        @if ($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="text-right my-5 pr-3 align-right">
 			<a class="btn btn-outline" href="{{asset('files/Register_Company.xlsx')}}">Download Registration Data Sheet</a>
 			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModal">
