@@ -156,7 +156,8 @@ class AdminController extends Controller
                 Mail::to($email)->send(new ResetPasswordAdminMail($admin->name,$link));
                 Log::info("sendPasswordLink(): Reset password Link sent to ".$email);     
                 
-                return redirect()->back()->with("success","Reset password link has been sent to the email id");
+                $char = Str::position($email, "@");
+                return redirect()->back()->with("success","Reset password link has been sent to the email id: ".Str::mask($email, '*', 3, $char-3));
             }
         }
         return redirect()->back()->with("error",$error);     

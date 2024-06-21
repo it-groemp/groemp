@@ -114,9 +114,10 @@ class EmployeeController extends Controller
             }
             $link=config("app.url")."/reset-password/$token";
             Mail::to($email)->send(new ResetPasswordMail($employee->name,$link));
-            Log::info("sendPasswordLink(): Reset password Link sent to ".$email);    
+            Log::info("sendPasswordLink(): Reset password Link sent to ".$email);
             
-            return redirect()->back()->with("success","Reset password link has been sent to the email id");
+            $char = Str::position($email, "@");
+            return redirect()->back()->with("success","Reset password link has been sent to the email id: ".Str::mask($email, '*', 3, $char-3));
         }
         return redirect()->back()->with("error",$error);     
     }
