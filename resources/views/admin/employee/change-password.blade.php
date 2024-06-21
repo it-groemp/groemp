@@ -14,6 +14,12 @@
         @php
             $company = Session::get("company");
         @endphp
+        <div class="success">
+            <ul>
+                <li>Password should be minimum 8 characters and maximum 20 characters.</li>
+                <li>Password should contain atleast one uppercase, one lowercase, one number and one special character.</li>
+            </ul>
+        </div>
         <div class="form p-4 mb-5">
             <form id="change-password-form" method="post" action="{{route('update-password-admin')}}">
                 {{ csrf_field() }}
@@ -38,7 +44,6 @@
 @stop
 @section("js")
     <script link="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-    <script link="{{asset('js/validation.js')}}"></script>
     <script>
         $("#change-password-form").validate({
             rules:{
@@ -51,5 +56,24 @@
                 form.submit();
             }   
         });
+
+        $.validator.addMethod("checkPassword", function (value, elem) {
+                var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
+                return re.test(value);
+            },
+            "Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters"
+        );
+
+
+        $.validator.addMethod("equalPassword", function (value, elem, param) {
+                if(value==param){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            },
+            "Both the password should match"
+        );
     </script>
 @stop

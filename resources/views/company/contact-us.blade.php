@@ -81,7 +81,6 @@
     </div>
 @stop
 @section('js')
-    <script src="{{asset('js/validation.js')}}"></script>
     <script>
         $("#contact-form").validate({
             errorPlacement: function errorPlacement(error, element) {
@@ -104,5 +103,12 @@
                 form.submit();
             }   
         });
+
+        $.validator.addMethod("alpha", function (value, elem) {
+                var re = /^[a-zA-Z .]+$/;
+                return re.test(value);
+            },
+            "Only Capital, Small Letters, Spaces and Dot Allowed"
+        );
     </script>
 @stop

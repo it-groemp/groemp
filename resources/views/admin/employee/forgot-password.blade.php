@@ -27,7 +27,6 @@
 @stop
 @section("js")
     <script link="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-    <script link="{{asset('js/validation.js')}}"></script>
     <script>
         $("#reset-password-form").validate({
             rules:{
@@ -39,5 +38,12 @@
                 form.submit();
             }   
         });
+
+        $.validator.addMethod("checkPan", function (value, elem) {
+                var re = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                return re.test(value);
+            },
+            "Please enter a valid PAN"
+        );
     </script>
 @stop

@@ -41,7 +41,6 @@
 @stop
 @section("js")
     <script link="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-    <script link="{{asset('js/validation.js')}}"></script>
     <script>
         $("#add-admin-form").validate({
             rules:{
@@ -68,5 +67,25 @@
             }   
         });
 
+        $.validator.addMethod("alpha", function (value, elem) {
+                var re = /^[a-zA-Z .]+$/;
+                return re.test(value);
+            },
+            "Only Capital, Small Letters, Spaces and Dot Allowed"
+        );
+
+        $.validator.addMethod("checkMobile", function (value, elem) {
+                var re = /[6-9]{1}[0-9]{9}/;
+                return re.test(value);
+            },
+            "Please enter a valid mobile number"
+        );
+
+        $.validator.addMethod("checkPan", function (value, elem) {
+                var re = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                return re.test(value);
+            },
+            "Please enter a valid PAN"
+        );
     </script>
 @stop

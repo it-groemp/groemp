@@ -132,7 +132,6 @@
 @stop
 @section("js")
     <script link="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-    <script link="{{asset('js/validation.js')}}"></script>
     <script>
         $("#save").click(function(){
             $("#add-workflow-form").submit();
