@@ -56,7 +56,7 @@ class SendEmployeeMails extends Command
         }
         else{
             foreach($employee_list as $employee){
-                if(!in_array($employee->company)){
+                if(!in_array($employee->company,$company_list)){
                     $token = Str::random(20);
                     $resetPassword = new ResetPassword();
                     $resetPassword->email = $employee->email;
