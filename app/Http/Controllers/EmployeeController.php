@@ -153,15 +153,33 @@ class EmployeeController extends Controller
             return redirect()->back()->withErrors(["errors"=>"Both the passwords do not match"]);
         }
         else{
-            $employee = Employee::where("pan_number",$pan)->first();
-            $employee->password = password_hash($password,PASSWORD_DEFAULT);
-            $employee->update();
-            $email=$employee->email;
-            Session::forget("pan");
-            Session::put("employee",$employee->id);
-            Mail::to($email)->send(new ChangePasswordMail($employee->name));
-            Log::info("updatePassword(): Password updated for employee ".$employee." and mail sent to ".$email);
-            return redirect("/profile");
+            $password_list = PasswordBackupEmployee::where("pan",$pan)->pluck("password")->toArray();
+            $hash_password = password_hash($password,PASSWORD_DEFAULT);
+            if(count($password_list)>0 && in_array($hash_password, $password_list)){
+                $error = "Please do not enter last 3 passwords";
+            }
+            else{
+                $password_backup = new PasswordBackupEmployee();
+
+                if(count($password_list)==3){
+                    $backup = PasswordBackupAdmin::where("pan",$pan)->first();
+                    $backup->delete();
+                }
+
+                $password_backup->pan = $pan;
+                $password_backup->password = $hash_password;
+                $password_backup->save();
+
+                $employee = Employee::where("pan_number",$pan)->first();
+                $employee->password = password_hash($password,PASSWORD_DEFAULT);
+                $employee->update();
+                $email=$employee->email;
+                Session::forget("pan");
+                Session::put("employee",$employee->id);
+                Mail::to($email)->send(new ChangePasswordMail($employee->name));
+                Log::info("updatePassword(): Password updated for employee ".$employee." and mail sent to ".$email);
+                return redirect("/profile");
+            }
         }
     }
 

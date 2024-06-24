@@ -252,7 +252,6 @@ class AdminController extends Controller
     }
 
     public function adminLogin(){     
-        dd(password_hash("Groemp@1234",PASSWORD_DEFAULT));
         return view("admin.employee.login");
     }
 
