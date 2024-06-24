@@ -13,6 +13,7 @@
             <table class="table">
                 <tr>
                     <th scope="col">Sr. No.</th>
+                    <th scope="col">PAN</th>
                     <th scope="col">Name</th>
                     <th scope="col">Mobile</th>
                     <th scope="col">Email</th>
@@ -26,6 +27,7 @@
                     @endphp
                     <tr>
                         <td>{{$number}}</td>
+                        <td id="{{'pan'.$id}}">{{$admin->pan}}</td>
                         <td id="{{'name'.$id}}">{{$admin->name}}</td>
                         <td id="{{'mobile'.$id}}">{{$admin->mobile}}</td>
                         <td id="{{'email'.$id}}">{{$admin->email}}</td>

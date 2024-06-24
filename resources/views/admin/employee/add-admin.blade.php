@@ -12,6 +12,10 @@
         <form id="add-admin-form" method="post" action="{{route('save-admin')}}">
             {{ csrf_field() }}
             <div class="form-group">
+                <label for="pan">Your PAN:</label>
+                <input type="text" class="form-control" name="pan" id="pan" maxlength=10 required>
+            </div>
+            <div class="form-group mt-3">
                 <label for="name">Name:</label>
                 <input type="text" class="form-control" name="name" id="name" maxlength=50 required>
             </div>
@@ -24,8 +28,8 @@
                 <input type="tel" class="form-control" name="mobile" id="mobile" pattern="[6-9]{1}[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" minlength=10 maxlength=10 required>
             </div>
             <div class="form-group mt-3">
-                <label for="pan">Company PAN:</label>
-                <input type="text" class="form-control" name="pan" id="pan" maxlength=10 required>
+                <label for="company">Company PAN:</label>
+                <input type="text" class="form-control" name="company" id="company" maxlength=10 required>
             </div>
             <div class="form-group mt-3">
                 <label for="role" class="form-label">Role:</label>
@@ -54,6 +58,9 @@
                     checkMobile: true
                 },
                 pan: {
+                    checkPan: true
+                },
+                company: {
                     checkPan: true
                 }
             },

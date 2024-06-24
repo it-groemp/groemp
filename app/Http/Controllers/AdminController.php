@@ -11,6 +11,7 @@ use App\Models\Employee;
 use App\Models\Company;
 use App\Models\ResetPassword;
 use App\Models\WorkflowApproval;
+use App\Models\PasswordBackupAdmin;
 
 use App\Imports\EmployeeAddImport;
 use App\Imports\EmployeeUpdateImport;
@@ -36,6 +37,7 @@ class AdminController extends Controller
         $name = request("name");
         $mobile = request("mobile");
         $pan_number = Str::upper(request("pan"));
+        $company = Str::upper(request("company"));
         $role = request("role");
         $error = "";
 
@@ -51,6 +53,9 @@ class AdminController extends Controller
         if($pan_number=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan_number)){
             $error = $error."<br/> Please enter a valid PAN";
         }
+        if($company=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$company)){
+            $error = $error."<br/> Please enter a valid PAN";
+        }
         if($error==""){
             $admin_id = Session::get("admin_id");
             $old_admin = Admin::where("id",$admin_id)->first();
@@ -58,7 +63,8 @@ class AdminController extends Controller
             $admin->name = $name;
             $admin->mobile = $mobile;
             $admin->email = $email;
-            $admin->company = $pan_number;
+            $admin->pan = $pan_number;
+            $admin->company = $company;
             $admin->role = $role;
             $admin->created_by = $old_admin->email;
             $admin->updated_by = $old_admin->email;
@@ -103,7 +109,7 @@ class AdminController extends Controller
             $error = $error."<br/> Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
         }
         if($error==""){
-            $admin = Admin::where("company", $pan)->first();
+            $admin = Admin::where("pan", $pan)->first();
             if($admin==null) {
                 $error="Admin does not exists. Please register first.";
             }
@@ -133,7 +139,7 @@ class AdminController extends Controller
             $error = $error."Please enter a valid PAN";
         }
         if($error==null){
-            $admin = Admin::where("company", $pan)->first();
+            $admin = Admin::where("pan", $pan)->first();
             if($admin==null){
                 $error="Admin does not exists. Please register first.";
             }
@@ -167,9 +173,9 @@ class AdminController extends Controller
         $resetPassword = ResetPassword::where("token",$token)->first();
         if($resetPassword!=null){
             $email = $resetPassword->email;
-            $company = Admin::where("email",$email)->first()->company;
+            $pan = Admin::where("email",$email)->first()->pan;
             $resetPassword->delete();
-            Session::put("company",$company);
+            Session::put("pan",$pan);
             Log::info("resetPassword(): Password reset link successful for ".$email);
             return redirect("/display-change-password-admin");
         }
@@ -179,35 +185,51 @@ class AdminController extends Controller
         return view("admin.employee.change-password");
     }
 
-    public function updatePassword(){
-        $company = Str::upper(request("pan"));
-        $password = request("password");
-        $cnfm_password = request("cnfm_password");
+    public function updatePassword(Request $request){
+        $request->validate([
+            "password" => "required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",
+            "cnfm_password" => "required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/"
+        ]);
+        $pan = Str::upper($request->pan);
+        $password = $request->password;
+        $cnfm_password = $request->cnfm_password;
         $error="";
-        if($password==null || !preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",$password)){
-            $error = "Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
-        }
-        else if($cnfm_password==null || !preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",$cnfm_password)){
-            $error = "Confirm Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
-        }
-        else if($password!=$cnfm_password){
+        if($password!=$cnfm_password){
             $error = "Both the passwords do not match";
         }
         else{
-            $admin = Admin::where("company",$company)->first();
-            $admin->password = password_hash($password,PASSWORD_DEFAULT);
-            $admin->update();
-            $email=$admin->email;
-            Session::forget("company");
-            Session::put("admin_id",$admin->id);
-            Session::put("role",$admin->role);
-            Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
-            Log::info("updatePassword(): Password updated for company ".$admin." and mail sent to ".$email);
-            return redirect("/employee-details");
+            $password_list = PasswordBackupAdmin::where("pan",$pan)->pluck("password")->toArray();
+            $hash_password = password_hash($password,PASSWORD_DEFAULT);
+            if(count($password_list)>0 && in_array($hash_password, $password_list)){
+                $error = "Please do not enter last 3 passwords";
+            }
+            else{
+                $password_backup = new PasswordBackupAdmin();
+                
+                if(count($password_list)==3){
+                    $backup = PasswordBackupAdmin::where("pan",$pan)->first();
+                    $backup->delete();
+                }
+                
+                $password_backup->pan = $pan;
+                $password_backup->password = $hash_password;
+                $password_backup->save();
+
+                $admin = Admin::where("pan",$pan)->first();
+                $admin->password = password_hash($password,PASSWORD_DEFAULT);
+                $admin->update();
+                $email=$admin->email;
+                Session::forget("pan");
+                Session::put("admin_id",$admin->id);
+                Session::put("role",$admin->role);
+                Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
+                Log::info("updatePassword(): Password updated for pan ".$pan." and mail sent to ".$email);
+                return redirect("/employee-details");
+            }
         }
         if($error!=""){
-            Log::error("updatePassword(): Error occurred while updating password for ".$company." Error: ".$error);
-            return redirect()->back()->with("error",$error);
+            Log::error("updatePassword(): Error occurred while updating password for PAN: ".$pan." Error: ".$error);
+            return redirect()->back()->withErrors(["errors"=>"Both the passwords do not match"]);
         }
     }
 
@@ -230,6 +252,7 @@ class AdminController extends Controller
     }
 
     public function adminLogin(){     
+        dd(password_hash("Groemp@1234",PASSWORD_DEFAULT));
         return view("admin.employee.login");
     }
 

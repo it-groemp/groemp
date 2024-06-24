@@ -13,7 +13,7 @@
         <form id="login-form" method="post" action="{{route('verify-admin')}}">
             {{ csrf_field() }}
             <div class="form-group mt-3">
-                <label for="pan">Company PAN:</label>
+                <label for="pan">Your PAN:</label>
                 <input type="text" class="form-control" name="pan" id="pan" maxlength=10 required>
             </div>
             <div class="form-group mt-3">

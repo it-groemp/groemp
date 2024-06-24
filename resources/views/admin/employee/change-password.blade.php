@@ -6,13 +6,17 @@
 @section('content')
     <div class="container box">        
         <h1 class="mb-3 text-center"><strong><i>Change Password</i></strong></h1>
-        @if(session("success"))
-            <div class="success mb-3 p-3">{{session("success")}}</div>
-        @elseif(session("error"))
-            <div class="error mb-3 p-3">{{session("error")}}</div>
+        @if ($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
         @php
-            $company = Session::get("company");
+            $pan = Session::get("pan");
         @endphp
         <div class="success">
             <ul>
@@ -24,8 +28,8 @@
             <form id="change-password-form" method="post" action="{{route('update-password-admin')}}">
                 {{ csrf_field() }}
                 <div class="form-group mt-3">
-                    <label for="pan">Company PAN:</label>
-                    <input type="text" class="form-control" name="pan" id="pan" maxlength=10 value="{{$company}}" readonly required>
+                    <label for="pan">Your PAN:</label>
+                    <input type="text" class="form-control" name="pan" id="pan" maxlength=10 value="{{$pan}}" readonly required>
                 </div>
                 <div class="form-group mt-3">
                     <label for="password">Password:</label>
@@ -48,6 +52,9 @@
         $("#change-password-form").validate({
             rules:{
                 password: {
+                    checkPassword: true
+                }
+                cnfm_password: {
                     checkPassword: true,
                     equalPassword: true
                 }
