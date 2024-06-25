@@ -9,4 +9,7 @@ class EmployeeWelcomeMail extends Model
 {
     use HasFactory;
     protected $table="employee_welcome_mail";
+    protected $fillable = [
+        "pan_number"
+    ];
 }

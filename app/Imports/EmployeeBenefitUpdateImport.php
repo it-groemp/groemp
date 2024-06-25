@@ -23,8 +23,10 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas, WithValidation, SkipsEmptyRows
 {
     /**
     * @param Collection $collection
@@ -35,8 +37,6 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
         $admin = Admin::where("id",$admin_id)->first();
         $company_pan = $admin->company;
         $role = $admin->role;
-        $today = Carbon::now();
-        $month = (str_pad($today->month, 2, "0", STR_PAD_LEFT).($today->format('y')));
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         $approval_pan = [];
         foreach ($collection as $row){
@@ -49,7 +49,6 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
                     $month = str_pad($row["benefit_month"], 2, "0", STR_PAD_LEFT);                        
                     $employee_benefit = EmployeeBenefit::where("pan_number",$pan)->where("month",$month)->first();            
                     $employee_benefit->current_benefit = $row["benefit_amount"];
-                    $employee_benefit->updated_at = $today->toDateTimeString();
                     $employee_benefit->updated_by = $admin->email;
                     $employee_benefit->update();
                     Log::info("EmployeeBenefitUpdateImport: Employee Benefit: ".$employee_benefit);
@@ -67,12 +66,34 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
                 $workflow_approval->approver_email = $workflow->approver1;
                 $workflow_approval->approval_for = "Employees Benefit";
                 $workflow_approval->token = $token;
-                $employee_benefit->created_by = $admin->email;
+                $workflow_approval->created_by = $admin->email;
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-edit-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsEditMail($link));
                 Log::info("EmployeeBenefitUpdateImport: Mail sent for approving Employee Benefits Updation to ".$workflow->approver1);
             }
         }
+    }
+
+    public function rules(): array
+    {
+        return [
+            "*.employee_pan" => ["required","regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/"],
+            "*.benefit_month" => ["required","numeric","digits:4"],
+            "*.benefit_amount" =>["required","numeric"]
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            "employee_pan.required" => "Employee PAN is required",
+            "employee_pan.regex" => "Employee PAN is invalid",
+            "benefit_month.required" => "Benefit month is required",
+            "benefit_month.numeric" => "Benefit month should contain only numbers",
+            "benefit_month.digits" => "Benefit month should contain only 4 digits",
+            "benefit_amount.required" => "Benefit amount is required",
+            "benefit_amount.numeric" => "Benefit amount can have only numbers"
+        ];
     }
 }

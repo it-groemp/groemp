@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string("pan",10)->nullable(false);
             $table->foreign("pan")->references("pan_number")->on("employees");
             $table->string("password",80)->nullable(false);
-            $table->timestamps()->useCurrent();
+            $table->timestamp("created_at")->useCurrent();
+            $table->timestamp("updated_at")->useCurrent();
         });
     }
 

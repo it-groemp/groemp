@@ -9,4 +9,10 @@ class EmployeeBenefit extends Model
 {
     use HasFactory;
     protected $table="employee_benefits";
+    protected $fillable = [
+        "pan_number",
+        "company",
+        "month",
+        "current_benefit"
+    ];
 }

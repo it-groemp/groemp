@@ -3,6 +3,17 @@
 @section('content')
     <div class="container my-5">
         <h2 class="text-center mb-3">Employee Benefit Details</h2>
+        
+        @if($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        
         <div class="text-right my-5 pr-3 align-right">
 			<a class="btn btn-outline" href="{{asset('files/Benefit_Data.xlsx')}}">Download Employee Benefits Data Sheet</a>
 			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadBenefitAddData">
@@ -12,41 +23,44 @@
                 Update Employee Benefits Data
             </button>
 		</div>
+
         @if(count($employee_benefits)>0)
-            @if($approval_status!=null)
-                <ul class="error">
-                    @foreach($approval_status as $as)
-                        <li>
-                            Employees or Employees Benefits approval for {{$as->company_name}} is pending for approval with {{$as->approver_email}}
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-            <table class="table">
-                <tr>
-                    <th scope="col">Sr. No.</th>
-                    <th scope="col">Pan Number</th>
-                    <th scope="col">Company</th>
-                    <th scope="col">Month</th>
-                    <th scope="col">Current Benefit</th>
-                    <th scope="col">Previous Balance</th>
-                    <th scope="col">Availed Benefit</th>
-                </tr>
-                @foreach($employee_benefits as $employee_benefit)
-                    @php
-                        $number=$loop->index+1;
-                    @endphp
+            <div>
+                @if($approval_status!=null)
+                    <ul class="error">
+                        @foreach($approval_status as $as)
+                            <li>
+                                Employees or Employees Benefits approval for {{$as->company_name}} is pending for approval with {{$as->approver_email}}
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+                <table class="table">
                     <tr>
-                        <td>{{$number}}</td>
-                        <td>{{$employee_benefit->pan_number}}</td>
-                        <td>{{$employee_benefit->company}}</td>
-                        <td>{{$employee_benefit->month}}</td>
-                        <td>{{$employee_benefit->current_benefit}}</td>
-                        <td>{{$employee_benefit->previous_balance}}</td>
-                        <td>{{$employee_benefit->availed_benefit}}</td>
+                        <th scope="col">Sr. No.</th>
+                        <th scope="col">Pan Number</th>
+                        <th scope="col">Company</th>
+                        <th scope="col">Month</th>
+                        <th scope="col">Current Benefit</th>
+                        <th scope="col">Previous Balance</th>
+                        <th scope="col">Availed Benefit</th>
                     </tr>
-                @endforeach
-            </table>
+                    @foreach($employee_benefits as $employee_benefit)
+                        @php
+                            $number=$loop->index+1;
+                        @endphp
+                        <tr>
+                            <td>{{$number}}</td>
+                            <td>{{$employee_benefit->pan_number}}</td>
+                            <td>{{$employee_benefit->company}}</td>
+                            <td>{{$employee_benefit->month}}</td>
+                            <td>{{$employee_benefit->current_benefit}}</td>
+                            <td>{{$employee_benefit->previous_balance}}</td>
+                            <td>{{$employee_benefit->availed_benefit}}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
         @endif
     </div>
 

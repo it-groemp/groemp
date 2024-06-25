@@ -23,11 +23,13 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 
 use \Validator;
 
-class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas, WithBatchInserts
+class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas, WithValidation, SkipsEmptyRows, WithBatchInserts
 {
     /**
     * @param array $row
@@ -56,6 +58,8 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 $employee->email = $row["employee_email"];
                 $employee->designation = $row["employee_designation"];
                 $employee->company = Str::upper($company);
+                $employee->marital_status = "Single";
+                $employee->num_of_kids = 0;
                 $employee->created_at = $today->toDateTimeString();
                 $employee->created_by = $admin->email;
                 $employee->updated_at = $today->toDateTimeString();
@@ -83,7 +87,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                         $employee_benefit = new EmployeeBenefit();
                         $employee_benefit->pan_number = $row["employee_pan"];
                         $employee_benefit->company = Str::upper($company);
-                        $employee_benefit->current_benefit = intval($row["benefit_amount"]);
+                        $employee_benefit->current_benefit = $benefit_amount;
                         $employee_benefit->month = $month;
                         $employee_benefit->created_at = $today->toDateTimeString();
                         $employee_benefit->created_by = $admin->email;
@@ -115,6 +119,43 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                 Log::info("approveEmployeeAddDetails(): Mail sent for approving Employee Addition to ".$workflow->approver1);
             }
         }
+    }
+
+    public function rules(): array
+    {
+        return [
+            "*.company_pan" => ["required","regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/"],
+            "*.employee_pan" => ["required","regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/","unique:employees,pan_number"],
+            "*.employee_id" => ["required"],
+            "*.employee_name" => ["required","regex:/^[a-zA-Z .]+$/"],
+            "*.employee_mobile" => ["required","regex:/[6-9]{1}[0-9]{9}/","unique:employees,mobile"],
+            "*.employee_email" => ["required","regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/","unique:employees,email"],
+            "*.employee_designation" => ["required"],
+            "*.benefit_amount" =>["required","numeric"]
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            "company_pan.required" => "Company PAN is required",
+            "company_pan.regex" => "Company PAN is invalid",
+            "employee_pan.required" => "Employee PAN is required",
+            "employee_pan.regex" => "Employee PAN is invalid",
+            "employee_pan.unique" => "Employee PAN is already registered",
+            "employee_id.required" => "Company Employee ID is required",
+            "employee_name.required" => "Employee name is required",
+            "employee_name.regex" => "Only Capital, Small Letters, Spaces and Dot Allowed for name",
+            "employee_mobile.required" => "Employee mobile is required",
+            "employee_mobile.regex" => "Employee mobile number is invalid",
+            "employee_mobile.unique" => "Employee mobile is already registered",
+            "employee_email.required" => "Employee email is required",
+            "employee_email.regex" => "Employee email is invalid",
+            "employee_email.unique" => "Employee email is already registered",
+            "employee_designation.required" => "Employee designation is required",
+            "benefit_amount.required" => "Benefit amount is required",
+            "benefit_amount.numeric" => "Benefit amount can have only numbers"
+        ];
     }
 
     public function batchSize(): int

@@ -6,6 +6,15 @@
 @section('content')
     <div class="container my-5">
         <h2 class="text-center mb-3">Employee Details</h2>
+        @if($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="text-right my-5 pr-3 align-right">
 			<a class="btn btn-outline" href="{{asset('files/Employee_Data.xlsx')}}">Download Employee Data Sheet</a>
 			<button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#uploadDataModalAdd">
@@ -16,51 +25,53 @@
             </button>
 		</div>
         @if(count($employees)>0)
-            @if($approval_status!=null)
-                <ul class="error">
-                    @foreach($approval_status as $as)
-                        <li>
-                            Employees approval for {{$as->company_name}} is pending for approval with {{$as->approver_email}}
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-            <table class="table">
-                <tr>
-                    <th scope="col">Sr. No.</th>
-                    <th scope="col">Pan Number</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Mobile</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Designation</th>
-                    <th scope="col">View Details</th>
-                </tr>
-                @foreach($employees as $employee)
-                    @php
-                        $number=$loop->index+1;
-                        $id = $employee->id;
-                    @endphp
+            <div>
+                @if($approval_status!=null)
+                    <ul class="error">
+                        @foreach($approval_status as $as)
+                            <li>
+                                Employees approval for {{$as->company_name}} is pending for approval with {{$as->approver_email}}
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+                <table class="table">
                     <tr>
-                        <td>{{$number}}</td>
-                        <td id="{{'pan'.$id}}">{{$employee->pan_number}}</td>
-                        <td id="{{'name'.$id}}">{{$employee->name}}</td>
-                        <td id="{{'mobile'.$id}}">{{$employee->mobile}}</td>
-                        <td id="{{'email'.$id}}">{{$employee->email}}</td>
-                        <td id="{{'designation'.$id}}">{{$employee->designation}}</td>
-                        <td>
-                            <!-- <a class="btn btn-outline" id="{{'view'.$id}}" href="">
-                                View
-                            </a> -->
-                            <button class="btn btn-outline edit" id="{{'edit'.$id}}">
-                                Edit
-                            </button>
-                            <a class="btn btn-delete freeze" id="{{'freeze'.$id}}">
-                                Freeze Account
-                            </a>
-                        </td>
+                        <th scope="col">Sr. No.</th>
+                        <th scope="col">Pan Number</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Designation</th>
+                        <th scope="col">View Details</th>
                     </tr>
-                @endforeach
-            </table>
+                    @foreach($employees as $employee)
+                        @php
+                            $number=$loop->index+1;
+                            $id = $employee->id;
+                        @endphp
+                        <tr>
+                            <td>{{$number}}</td>
+                            <td id="{{'pan'.$id}}">{{$employee->pan_number}}</td>
+                            <td id="{{'name'.$id}}">{{$employee->name}}</td>
+                            <td id="{{'mobile'.$id}}">{{$employee->mobile}}</td>
+                            <td id="{{'email'.$id}}">{{$employee->email}}</td>
+                            <td id="{{'designation'.$id}}">{{$employee->designation}}</td>
+                            <td>
+                                <!-- <a class="btn btn-outline" id="{{'view'.$id}}" href="">
+                                    View
+                                </a> -->
+                                <button class="btn btn-outline edit" id="{{'edit'.$id}}">
+                                    Edit
+                                </button>
+                                <a class="btn btn-delete freeze" id="{{'freeze'.$id}}">
+                                    Freeze Account
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
         @endif
     </div>
 

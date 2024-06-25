@@ -23,8 +23,11 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 
-class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas, WithValidation, SkipsEmptyRows, WithBatchInserts
 {
     /**
     * @param Collection $collection
@@ -89,12 +92,39 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
                 $workflow_approval->approver_email = $workflow->approver1;
                 $workflow_approval->approval_for = "Employees Benefit";
                 $workflow_approval->token = $token;
-                $employee_benefit->created_by = $admin->email;
+                $workflow_approval->created_by = $admin->email;
                 $workflow_approval->save();
                 $link=config("app.url")."/approve-employee-benefit-add-details/$token";
                 Mail::to($workflow->approver1)->send(new ApproverEmployeeBenefitsAddMail($link));
                 Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Employee Benefits Addition to ".$workflow->approver1);
             }
         }
+    }
+
+    public function rules(): array
+    {
+        return [
+            "*.employee_pan" => ["required","regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/"],
+            "*.benefit_month" => ["required","numeric","digits:4"],
+            "*.benefit_amount" =>["required","numeric"]
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            "employee_pan.required" => "Employee PAN is required",
+            "employee_pan.regex" => "Employee PAN is invalid",
+            "benefit_month.required" => "Benefit month is required",
+            "benefit_month.numeric" => "Benefit month should contain only numbers",
+            "benefit_month.digits" => "Benefit month should contain only 4 digits",
+            "benefit_amount.required" => "Benefit amount is required",
+            "benefit_amount.numeric" => "Benefit amount can have only numbers"
+        ];
+    }
+
+    public function batchSize(): int
+    {
+        return 25;
     }
 }
