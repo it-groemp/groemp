@@ -49,7 +49,6 @@
             rules:{
                 password: {
                     checkPassword: true,
-                    equalPassword: true
                 }
             },
             submitHandler : function(form) {
@@ -62,18 +61,6 @@
                 return re.test(value);
             },
             "Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters"
-        );
-
-
-        $.validator.addMethod("equalPassword", function (value, elem, param) {
-                if(value==param){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            },
-            "Both the password should match"
         );
     </script>
 @stop
