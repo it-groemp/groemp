@@ -20,6 +20,7 @@ use App\Models\WorkflowApproval;
 use App\Models\Benefit;
 use App\Models\Category;
 use App\Models\CompanyBenefit;
+use App\Models\PasswordBackupEmployee;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
@@ -77,7 +78,7 @@ class EmployeeController extends Controller
         else{
             $error="PAN and Password doesn't match. Please try again";
         }
-        return redirect("/employee-login")->withErrors(["errors"=>$error]);
+        return redirect()->back()->withErrors(["errors"=>$error]);
     }
 
     public function forgotPassword(){

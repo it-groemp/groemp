@@ -7,8 +7,14 @@
 <div class="container box mb-5">
     <h1 class="mb-3 text-center"><strong><i>LOGIN</i></strong></h1>
     <div class="form p-4">
-        @if(session("error"))
-            <div class="error mb-3">{!!session("error")!!}</div>
+        @if ($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
         <form id="login-form" method="post" action="{{route('verify-admin')}}">
             {{ csrf_field() }}

@@ -6,8 +6,14 @@
 @section('content')
     <div class="container box my-5" style="width: 70%">
         <h1 class="mb-3 text-center"><strong><i>Add Admin</i></strong></h1>
-        @if(session("error"))
-            <div class="error mb-3">{!!session("error")!!}</div>
+        @if ($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
         <form id="add-admin-form" method="post" action="{{route('save-admin')}}">
             {{ csrf_field() }}

@@ -32,62 +32,47 @@ use Excel;
 
 class AdminController extends Controller
 {
-    public function saveAdmin(){
-        $email = request("email");
+    public function saveAdmin(Request $request){
+        $request->validate([
+            "name" => "required|regex:/^[a-zA-Z .]+$/",
+            "email" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+            "mobile" => "required|regex:/[6-9]{1}[0-9]{9}/",
+            "pan_number" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",
+            "company" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/"
+        ]);
+
+        $email = Str::lower(request("email"));
         $name = request("name");
         $mobile = request("mobile");
         $pan_number = Str::upper(request("pan"));
         $company = Str::upper(request("company"));
         $role = request("role");
-        $error = "";
 
-        if($name=="" || !preg_match ("/^[a-zA-Z .]+$/",$name)){
-            $error = "Name should contain only Capital, Small Letters, Spaces and Dot Allowed";
-        }
-        if($email=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$email)){
-            $error = $error."<br/> Please enter a valid email address";
-        }
-        if($mobile=="" || !preg_match ("/[6-9]{1}[0-9]{9}/",$mobile)){
-            $error = "Please enter a valid mobile number";
-        }
-        if($pan_number=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan_number)){
-            $error = $error."<br/> Please enter a valid PAN";
-        }
-        if($company=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$company)){
-            $error = $error."<br/> Please enter a valid PAN";
-        }
-        if($error==""){
-            $admin_id = Session::get("admin_id");
-            $old_admin = Admin::where("id",$admin_id)->first();
-            $admin = new Admin();
-            $admin->name = $name;
-            $admin->mobile = $mobile;
-            $admin->email = $email;
-            $admin->pan = $pan_number;
-            $admin->company = $company;
-            $admin->role = $role;
-            $admin->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
-            $admin->created_by = $old_admin->email;
-            $admin->updated_by = $old_admin->email;
-            $admin->save();
-            Log::info("saveAdmin(): New admin created email: ".$admin." by admin: ".$old_admin->company);
+        $admin_id = Session::get("admin_id");
+        $old_admin = Admin::where("id",$admin_id)->first();
+        $admin = new Admin();
+        $admin->name = $name;
+        $admin->mobile = $mobile;
+        $admin->email = $email;
+        $admin->pan = $pan_number;
+        $admin->company = $company;
+        $admin->role = $role;
+        $admin->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
+        $admin->created_by = $old_admin->email;
+        $admin->updated_by = $old_admin->email;
+        $admin->save();
+        Log::info("saveAdmin(): New admin created email: ".$admin." by admin: ".$old_admin->company);
             
-            $token = Str::random(20);
+        $token = Str::random(20);
+        $resetPassword = new ResetPassword();
+        $resetPassword->email = $email;
+        $resetPassword->token = $token;
+        $resetPassword->save();
 
-            $resetPassword = new ResetPassword();
-            $resetPassword->email = $email;
-            $resetPassword->token = $token;
-            $resetPassword->save();
+        $link=config("app.url")."/reset-password-admin/$token";
+        Mail::to($email)->send(new WelcomeAdminMail($admin->name,$link));
 
-            $link=config("app.url")."/reset-password-admin/$token";
-            Mail::to($email)->send(new WelcomeAdminMail($admin->name,$link));
-
-            return redirect("/admin/display-admin");
-        }
-        else{
-            Log::error("saveAdmin(): Error occurred while creating new admin email: ".$email."   Error: ".$error);
-            return redirect()->back()->with("error",$error);
-        }
+        return redirect("/admin/display-admin");
     }
 
     public function adminLogout(){      
@@ -97,35 +82,32 @@ class AdminController extends Controller
     }
 
     public function verifyAdmin(Request $request){
+        $request->validate([
+            "pan" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",
+            "password" => "required|regex:/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/"
+        ]);
+
         $pan = Str::upper(request("pan"));
         $password = request("password");
         $error="";
         
         Log::info("verifyAdmin(): Login for ".$pan);
         
-        if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
-            $error = $error."<br/> Please enter a valid PAN";
+        $admin = Admin::where("pan", $pan)->first();
+        if($admin==null) {
+            $error="Admin does not exists. Please register first.";
         }
-        if($password==null || !preg_match("/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/",$password)){
-            $error = $error."<br/> Password should be 8-20 Characters, atleast one Capital and one Small Letter, one numberic and special characters";
+        else if (password_verify($password,$admin->password)){
+            Session::put("admin_id",$admin->id);
+            Session::put("role",$admin->role);
+            Log::info("verifyAdmin(): Logging successful for admin: ".$admin->company);
+            return redirect("/employee-details");
         }
-        if($error==""){
-            $admin = Admin::where("pan", $pan)->first();
-            if($admin==null) {
-                $error="Admin does not exists. Please register first.";
-            }
-            else if (password_verify($password,$admin->password)){
-                Session::put("admin_id",$admin->id);
-                Session::put("role",$admin->role);
-                Log::info("verifyAdmin(): Logging successful for admin: ".$admin->company);
-                return redirect("/employee-details");
-            }
-            else{
-                $error="PAN and Password doesn't match. Please try again";
-            }
+        else{
+            $error="PAN and Password doesn't match. Please try again";
         }
         Log::error("verifyAdmin(): Error has occurred while logging for ".$pan." Error: ".$error);
-        return redirect()->back()->with("error",$error);
+        return redirect()->back()->withErrors(["errors"=>$error]);
     }
 
     public function forgotPassword(){
@@ -151,7 +133,7 @@ class AdminController extends Controller
 
                 if($resetPassword==null){
                     $resetPassword = new ResetPassword();
-                    $resetPassword->email = $email;
+                    $resetPassword->email = Str::lower($email);
                     $resetPassword->token = $token;
                     $resetPassword->save();
                 }
@@ -332,11 +314,11 @@ class AdminController extends Controller
             "pan" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",
             "designation" => "required"
         ]);
-        $email = request("email");
+        $email = Str::lower(request("email"));
         $name = request("name");
         $mobile = request("mobile");
-        $pan = request("pan");
-        $designation = request("designation");
+        $pan = Str::upper(request("pan"));
+        $designation = Str::upper(request("designation"));
         
         $admin_id = Session::get("admin_id");
         $admin = Admin::where("id",$admin_id)->first();

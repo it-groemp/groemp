@@ -52,7 +52,7 @@ class CompanyImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                         $company->group_company_code = $group_company_pan;
                         $company->pan = $curr_pan ?? "";
                         $company->mobile = $row["admin_mobile"] ?? "";
-                        $company->email = $row["admin_email"] ?? "";    
+                        $company->email = Str::lower($row["admin_email"]) ?? "";    
                         $company->created_at = Carbon::now()->toDateTimeString();
                         $company->created_by = $admin->email;
                         $company->updated_at = Carbon::now()->toDateTimeString();
@@ -66,9 +66,9 @@ class CompanyImport implements ToCollection, WithHeadingRow, WithCalculatedFormu
                     if(!Str::startsWith($row["gst_no"],$row["state_gst_code"].$curr_pan)){
                         throw ValidationException::withMessages(["gst_no" => "There was an error on row ".$row_num.".  GST Number is invalid."]);
                     }
-                    $address->gst = $row["gst_no"];
-                    $address->state = $row["state"];
-                    $address->city = $row["city"];
+                    $address->gst = Str::upper($row["gst_no"]);
+                    $address->state = Str::upper($row["state"]);
+                    $address->city = Str::upper($row["city"]);
                     $address->pincode = $row["pincode"];
                     $address->created_at = Carbon::now()->toDateTimeString();
                     $address->created_by = $admin->email;

@@ -94,7 +94,7 @@ class CompanyController extends Controller
     public function saveCompanyDetails(Request $request){
         if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
             $request->validate([
-                'uploadFile' => 'required|mimes:xlsx,xls',
+                "uploadFile" => "required|mimes:xlsx,xls",
             ]);    
             Excel::import(new CompanyImport, $request->file("uploadFile"));
             Log::info("saveCompanyDetails(): Company details uploaded");
@@ -144,8 +144,8 @@ class CompanyController extends Controller
             $admin = Admin::where("id",$admin_id)->first();
             $cost_center = CostCenter::where("id",$admin_id)->first();
             for($i=1;$i<=10;$i++){
-                $name = "CC".$i;
-                $cost_center->$name = request("CC".$i);
+                $name = "cc".$i;
+                $cost_center->$name = Str::upper(request("CC".$i));
             }  
             $cost_center->updated_by = $admin->email; 
             $cost_center->update();     
@@ -157,7 +157,7 @@ class CompanyController extends Controller
     public function saveCCDetails(Request $request){
         if((new AdminController())->checkEmployerSession()){
             $request->validate([
-                'uploadFile' => 'required|mimes:xlsx,xls',
+                "uploadFile" => "required|mimes:xlsx,xls",
             ]);
             $admin_id = Session::get("admin_id");
             $admin = Admin::where("id",$admin_id)->first();
@@ -201,42 +201,33 @@ class CompanyController extends Controller
         }   
     }
 
-    public function saveWorkflow(){
+    public function saveWorkflow(Request $request){
         if((new AdminController())->checkEmployerSession() || (new AdminController())->checkAdminSession()){
-            $company = request("company");
-            $approver1 = request("approver1");
-            $approver2 = request("approver2");
-            $approver3 = request("approver3");
+            $request->validate([
+                "approver1" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+                "approver2" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+                "approver3" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+            ]); 
+            
+            $company = Str::upper(request("company"));
+            $approver1 = Str::lower(request("approver1"));
+            $approver2 = Str::lower(request("approver2"));
+            $approver3 = Str::lower(request("approver3"));
             $approver_admin = request("admin");
-            $errors="";
-            if($approver1=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver1)){
-                $errors = $errors."<br/> Please enter a valid email address";
-            }
-            if($approver2=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver2)){
-                $errors = $errors."<br/> Please enter a valid email address";
-            }
-            if($approver3=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver3)){
-                $errors = $errors."<br/> Please enter a valid email address";
-            }
+            
             $admin_id = Session::get("admin_id");
             $admin = Admin::where("id",$admin_id)->first();
-            if($errors!=""){
-                $workflow = new Workflow();
-                $workflow->company = $company;
-                $workflow->approver1 = $approver1;
-                $workflow->approver2 = $approver2;
-                $workflow->approver3 = $approver3;
-                $workflow->admin = $approver_admin;
-                $workflow->created_by = $admin->email;
-                $workflow->updated_by = $admin->email;
-                $workflow->save();
-                Log::info("saveWorkflow(): Workflow details added for company: ".$workflow." by admin: ".$admin->email);
-                return redirect("/workflow-details");
-            }
-            else{
-                Log::error("saveWorkflow(): Error occurred while saving workflow details for company: ".$company."  by admin: ".$admin->email." Error: ".$errors);
-                return redirect()->back()->with("errors",$errors);
-            }
+            $workflow = new Workflow();
+            $workflow->company = $company;
+            $workflow->approver1 = $approver1;
+            $workflow->approver2 = $approver2;
+            $workflow->approver3 = $approver3;
+            $workflow->admin = $approver_admin;
+            $workflow->created_by = $admin->email;
+            $workflow->updated_by = $admin->email;
+            $workflow->save();
+            Log::info("saveWorkflow(): Workflow details added for company: ".$workflow." by admin: ".$admin->email);
+            return redirect("/workflow-details");
         }
         else{
             return redirect("/admin/login");
@@ -245,36 +236,28 @@ class CompanyController extends Controller
 
     public function updateWorkflow(){
         if((new AdminController())->checkEmployerSession() || (new AdminController())->checkAdminSession()){
-            $company = request("company-edit");
-            $approver1 = request("approver1-edit");
-            $approver2 = request("approver2-edit");
-            $approver3 = request("approver3-edit");
-            $errors="";
-            if($approver1=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver1)){
-                $errors = $errors."<br/> Please enter a valid email address";
-            }
-            if($approver2=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver2)){
-                $errors = $errors."<br/> Please enter a valid email address";
-            }
-            if($approver3=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$approver3)){
-                $errors = $errors."<br/> Please enter a valid email address";
-            }
+            $request->validate([
+                "approver1-edit" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+                "approver2-edit" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+                "approver3-edit" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+            ]); 
+            
+            $company = Str::upper(request("company-edit"));
+            $approver1 = Str::lower(request("approver1-edit"));
+            $approver2 = Str::lower(request("approver2-edit"));
+            $approver3 = Str::lower(request("approver3-edit"));
+            $approver_admin = request("admin");
+            
             $admin_id = Session::get("admin_id");
             $admin = Admin::where("id",$admin_id)->first();
-            if($errors!=""){
-                $workflow = Workflow::where("company",$company)->first();
-                $workflow->approver1 = $approver1;
-                $workflow->approver2 = $approver2;
-                $workflow->approver3 = $approver3;
-                $workflow->updated_by = $admin->email;
-                $workflow->update();
-                Log::info("updateWorkflow(): Workflow details updated for company: ".$workflow." by admin: ".$admin->email);
-                return redirect("/workflow-details");
-            }
-            else{
-                Log::error("updateWorkflow(): Error occurred while updating workflow details for company: ".$company."  by admin: ".$admin->email." Error: ".$errors);
-                return redirect()->back()->with("errors",$errors);
-            }
+            $workflow = Workflow::where("company",$company)->first();
+            $workflow->approver1 = $approver1;
+            $workflow->approver2 = $approver2;
+            $workflow->approver3 = $approver3;
+            $workflow->updated_by = $admin->email;
+            $workflow->update();
+            Log::info("updateWorkflow(): Workflow details updated for company: ".$workflow." by admin: ".$admin->email);
+            return redirect("/workflow-details");
         }
         else{
             return redirect("/admin/login");
@@ -327,7 +310,7 @@ class CompanyController extends Controller
     public function saveCompanyBenefit(Request $request){
         if((new AdminController())->checkEmployerSession()){
             $request->validate([
-                'benefit' => 'required',
+                "benefit" => "required",
             ]); 
             $benefits = request("benefit");
             $admin_id = Session::get("admin_id");
@@ -364,7 +347,7 @@ class CompanyController extends Controller
     public function updateCompanyBenefit(Request $request){
         if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
             $request->validate([
-                'benefit' => 'required',
+                "benefit" => "required",
             ]); 
             $benefits = request("benefit");
             $id = request("id");
