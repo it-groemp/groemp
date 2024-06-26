@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("company",10)->nullable(false);            
             $table->foreign("company")->references("pan")->on("companies");
+            $table->string("gst",20)->nullable(false);
             $table->string("state",50)->nullable(false);
             $table->string("city",255)->nullable(false);
             $table->string("pincode",6)->nullable(false);

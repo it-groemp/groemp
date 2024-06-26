@@ -11,6 +11,7 @@ class Address extends Model
     protected $table = "address";
     protected $fillable=[
         "company",
+        "gst",
         "state",
         "city",
         "pincode",

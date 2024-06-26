@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('pageTitle','Employee Details')
+@section('pageTitle','Company Details')
 @section("css")
     <link href="{{asset('css/admin-home.css')}}" rel="stylesheet">
 @stop
@@ -38,7 +38,7 @@
                 <h3>Sub-Company Details:</h3>
                 <div class="row">
                 @foreach($sister_company as $sis)
-                    <div class="col-lg-4 col-md-6 col-12 mt-3">
+                    <div class="col-md-6 col-12 mt-3">
                         <h4>Company: {{$loop->index+1}}</h4>
                         <h5><b>Company Name:</b> {{$sis->name}}</h5>
                         <h5><b>Mobile: </b>{{$sis->mobile}}
@@ -49,12 +49,14 @@
                         @endphp
                         <table class="no-left-margin">
                             <tr>
+                                <th>GST</th>
                                 <th>State</th>
                                 <th>City</th>
                                 <th>Pincode</th>
                             </tr>
                             @foreach($addressSis as $address_sis)
                                 <tr>
+                                    <td>{{$address_sis->gst}}</td>
                                     <td>{{$address_sis->state}}</td>
                                     <td>{{$address_sis->city}}</td>
                                     <td>{{$address_sis->pincode}}</td>
