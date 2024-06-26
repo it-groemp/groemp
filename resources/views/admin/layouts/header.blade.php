@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{route('admin-login')}}">
-                <img src="../images/logo.png" width="80px" height="80px" alt="Logo"/>
+                <img src="{{asset('../images/logo.png')}}" width="80px" height="80px" alt="Logo"/>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
