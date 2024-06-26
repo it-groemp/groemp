@@ -6,6 +6,17 @@
 @section("content")
 <div class="container my-5">
         <h2 class="text-center mb-3">Cost Center Details</h2>
+
+        @if($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         @if(Session::get("role")=="Employer")
             <div class="text-right my-5 pr-3 align-right">
             <a class="btn btn-outline" href="{{asset('files/Cost_Center.xlsx')}}">Download Cost Center Data Sheet</a>

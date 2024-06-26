@@ -8,6 +8,8 @@ use App\Models\Company;
 use App\Models\Workflow;
 use App\Models\WorkflowApproval;
 
+use \Exception;
+
 use App\Mail\ApproverCostCenterMail;
 
 use Carbon\Carbon;
@@ -20,9 +22,14 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Validators\ValidationException;
+use Maatwebsite\Excel\Validators\Failure;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
 
-class CostCenterImport implements ToCollection, WithHeadingRow
+class CostCenterImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas, WithValidation, SkipsEmptyRows
 {
     /**
     * @param Collection $collection
@@ -36,26 +43,29 @@ class CostCenterImport implements ToCollection, WithHeadingRow
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         $approval_pan = [];
         foreach($collection as $key => $row){
-            if(in_array($row["company"], $company_list) || $role=="Admin"){
+            $company = $row["company_pan_no"];
+            $array = [];
+            if(in_array($company, $company_list) || $role=="Admin"){
                 $cost_center = new CostCenter();
-                $cost_center->company = Str::upper($row["company"]);
-                $cost_center->cc1 = $row["cc1"];
-                $cost_center->cc2 = $row["cc2"] ?? "";
-                $cost_center->cc3 = $row["cc3"] ?? "";
-                $cost_center->cc4 = $row["cc4"] ?? "";
-                $cost_center->cc5 = $row["cc5"] ?? "";
-                $cost_center->cc6 = $row["cc6"] ?? "";
-                $cost_center->cc7 = $row["cc7"] ?? "";
-                $cost_center->cc8 = $row["cc8"] ?? "";
-                $cost_center->cc9 = $row["cc9"] ?? "";
-                $cost_center->cc10 = $row["cc10"] ?? "";
+                $cost_center->company = Str::upper($company);
+                $cost_center->cc1 = $row["cc_name_1"];
+                array_push($array,$row["cc_name_1"]);
+                $cost_center->cc2 = $row["cc_name_2"] ?? "";
+                $cost_center->cc3 = $row["cc_name_3"] ?? "";
+                $cost_center->cc4 = $row["cc_name_4"] ?? "";
+                $cost_center->cc5 = $row["cc_name_5"] ?? "";
+                $cost_center->cc6 = $row["cc_name_6"] ?? "";
+                $cost_center->cc7 = $row["cc_name_7"] ?? "";
+                $cost_center->cc8 = $row["cc_name_8"] ?? "";
+                $cost_center->cc9 = $row["cc_name_9"] ?? "";
+                $cost_center->cc10 = $row["cc_name_10"] ?? "";
                 $cost_center->created_at = Carbon::now()->toDateTimeString();
                 $cost_center->created_by = $admin->email;
                 $cost_center->updated_at = Carbon::now()->toDateTimeString();
                 $cost_center->updated_by = $admin->email;
                 $cost_center->save();
                 Log::info("CostCenterImport: ".$cost_center." added by admin: ".$admin->email);
-                array_push($approval_pan,Str::upper($row["company"]));
+                array_push($approval_pan,Str::upper($company));
             }
         }
         foreach($approval_pan as $company){
@@ -74,5 +84,21 @@ class CostCenterImport implements ToCollection, WithHeadingRow
                 Log::info("CostCenterImport: Mail sent for approving Cost Centers to ".$workflow->approver2);
             }
         }
+    }
+    
+    public function rules(): array
+    {
+        return [
+            "*.company_pan" => ["regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/","unique:cost_centers,company"],
+            "*.cc_name_1" => ["required"]
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            "company_pan.regex" => "Company PAN is invalid",
+            "cc_name_1.required" => "CC Name 1 name is required"
+        ];
     }
 }
