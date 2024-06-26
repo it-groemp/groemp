@@ -66,9 +66,7 @@ class CostCenterImport implements ToCollection, WithHeadingRow, WithCalculatedFo
                     $name="cc".$i;
                     $cost_center->$name = Arr::get($array,$i);
                 }
-                $cost_center->created_at = Carbon::now()->toDateTimeString();
                 $cost_center->created_by = $admin->email;
-                $cost_center->updated_at = Carbon::now()->toDateTimeString();
                 $cost_center->updated_by = $admin->email;
                 $cost_center->save();
                 $row_num++;

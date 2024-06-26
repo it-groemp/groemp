@@ -30,9 +30,7 @@ class BenefitImport implements ToCollection, WithHeadingRow
             $benefit->name = $row["name"];
             $benefit->amount = $row["amount"];
             $benefit->image_name = $row["image"];
-            $benefit->created_at = Carbon::now()->toDateTimeString();
             $benefit->created_by = $admin->email;
-            $benefit->updated_at = Carbon::now()->toDateTimeString();
             $benefit->updated_by = $admin->email;
             $benefit->save();
             Log::info("BenefitImport: ".$benefit." added by admin: ".$admin->email);

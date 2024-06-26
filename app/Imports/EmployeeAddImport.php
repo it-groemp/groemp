@@ -80,7 +80,6 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                     $employee_benefit = EmployeeBenefit::where("pan_number",Str::upper($row["employee_pan"]))->where("month",$month)->first();
                     if($employee_benefit!=null){
                         $employee_benefit->current_benefit = $benefit_amount;
-                        $employee_benefit->updated_at = $today->toDateTimeString();
                         $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->update();
                         Log::info("AddEmployeeImport: Update employee benefit:".$employee_benefit);
@@ -91,9 +90,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                         $employee_benefit->company = $company;
                         $employee_benefit->current_benefit = $benefit_amount;
                         $employee_benefit->month = $month;
-                        $employee_benefit->created_at = $today->toDateTimeString();
-                        $employee_benefit->created_by = $admin->email;
-                        $employee_benefit->updated_at = $today->toDateTimeString();                            
+                        $employee_benefit->created_by = $admin->email;                          
                         $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->save();
                         Log::info("AddEmployeeImport: Add employee benefit:".$employee_benefit);

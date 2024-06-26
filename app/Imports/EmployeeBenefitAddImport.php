@@ -60,7 +60,6 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
                         $employee_benefit_backup->current_benefit = $employee_benefit->current_benefit;
                         $employee_benefit_backup->availed_benefit = $employee_benefit->availed_benefit;
                         $employee_benefit_backup->month = $employee_benefit->month;
-                        $employee_benefit_backup->created_at = $today->toDateTimeString();
                         $employee_benefit_backup->created_by = $admin->email;
                         $employee_benefit_backup->save();
                         Log::info("EmployeeBenefitAddImport: Backup done: ".$employee_benefit_backup);
@@ -69,9 +68,7 @@ class EmployeeBenefitAddImport implements ToCollection, WithHeadingRow, WithCalc
                         $employee_benefit->month = $month;
                         $employee_benefit->current_benefit = $row["benefit_amount"];
                         $employee_benefit->availed_benefit = 0;
-                        $employee_benefit->created_at = Carbon::now()->toDateTimeString();
                         $employee_benefit->created_by = $admin->email;
-                        $employee_benefit->updated_at = $today->toDateTimeString();
                         $employee_benefit->updated_by = $admin->email;
                         $employee_benefit->update();
                         Log::info("EmployeeBenefitAddImport: Employee Benefit: ".$employee_benefit);
