@@ -19,13 +19,15 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+
+use Illuminate\Validation\ValidationException;
+
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Validators\ValidationException;
-use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
 
@@ -42,28 +44,34 @@ class CostCenterImport implements ToCollection, WithHeadingRow, WithCalculatedFo
         $role = $admin->role;
         $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
         $approval_pan = [];
+        $row_num=2;
         foreach($collection as $key => $row){
             $company = $row["company_pan_no"];
-            $array = [];
             if(in_array($company, $company_list) || $role=="Admin"){
                 $cost_center = new CostCenter();
                 $cost_center->company = Str::upper($company);
-                $cost_center->cc1 = $row["cc_name_1"];
-                array_push($array,$row["cc_name_1"]);
-                $cost_center->cc2 = $row["cc_name_2"] ?? "";
-                $cost_center->cc3 = $row["cc_name_3"] ?? "";
-                $cost_center->cc4 = $row["cc_name_4"] ?? "";
-                $cost_center->cc5 = $row["cc_name_5"] ?? "";
-                $cost_center->cc6 = $row["cc_name_6"] ?? "";
-                $cost_center->cc7 = $row["cc_name_7"] ?? "";
-                $cost_center->cc8 = $row["cc_name_8"] ?? "";
-                $cost_center->cc9 = $row["cc_name_9"] ?? "";
-                $cost_center->cc10 = $row["cc_name_10"] ?? "";
+                $array = [];
+                for($i=1; $i<=10; $i++){
+                    if($row["cc_name_".$i]==""){
+                        Arr::set($array, $i, Str::upper($row["cc_name_".$i]));
+                    }
+                    else if(in_array(Str::upper($row["cc_name_".$i]),$array)){
+                        throw ValidationException::withMessages(["cc_name_".$i => "There was an error on row ".$row_num.". CC Name ".$i." value already exists."]);
+                    }
+                    else{
+                        Arr::set($array, $i, Str::upper($row["cc_name_".$i]));
+                    }
+                }
+                for($i=1; $i<=10; $i++){
+                    $name="cc".$i;
+                    $cost_center->$name = Arr::get($array,$i);
+                }
                 $cost_center->created_at = Carbon::now()->toDateTimeString();
                 $cost_center->created_by = $admin->email;
                 $cost_center->updated_at = Carbon::now()->toDateTimeString();
                 $cost_center->updated_by = $admin->email;
                 $cost_center->save();
+                $row_num++;
                 Log::info("CostCenterImport: ".$cost_center." added by admin: ".$admin->email);
                 array_push($approval_pan,Str::upper($company));
             }
