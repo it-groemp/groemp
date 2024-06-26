@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string("photo",50)->nullable(true);
             $table->enum("marital_status",["Single","Married","Widow","Divorced"])->default("Single");
             $table->integer("num_of_kids")->autoincrement(false)->default(0);
+            $table->string("approver1",100)->nullable(true);
+            $table->string("approver2",100)->nullable(true);
+            $table->string("approver3",100)->nullable(true);
             $table->timestamp("from_date")->useCurrent();
             $table->timestamp("to_date")->nullable(true);
             $table->string("created_by",100)->nullable(false);

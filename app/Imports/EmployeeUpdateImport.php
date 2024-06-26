@@ -42,7 +42,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
                 $pan = Str::upper($row["employee_pan"]);
                 $employee = Employee::where("employee_pan",$pan)->first();
                 if($row["employee_id"]!="NA"){
-                    $employee->employee_code = $row["employee_id"];
+                    $employee->employee_code = Str::upper($row["employee_id"]);
                 }
                 if($row["employee_name"]!="NA"){
                     $employee->name = $row["employee_name"];
@@ -51,16 +51,24 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
                     $employee->name = $row["employee_mobile"];
                 }
                 if($row["employee_email"]!="NA"){
-                    $employee->email = $row["employee_email"];
+                    $employee->email = Str::lower($row["employee_email"]);
                 }
                 if($row["employee_designation"]!="NA"){
-                    $employee->designation = $row["employee_designation"];
+                    $employee->designation = Str::upper($row["employee_designation"]);
                 }
-                $employee->updated_at = Carbon::now()->toDateTimeString();
+                if($row["approver_1_email_id"]!="NA"){
+                    $employee->approver1 = $row["approver_1_email_id"]==null ? null : Str::lower($row["approver_1_email_id"]);
+                }
+                if($row["approver_2_email_id"]!="NA"){
+                    $employee->approver2 = $row["approver_2_email_id"]==null ? null : Str::lower($row["approver_2_email_id"]);
+                }
+                if($row["approver_3_email_id"]!="NA"){
+                    $employee->approver3 = $row["approver_3_email_id"]==null ? null : Str::lower($row["approver_3_email_id"]);
+                }
                 $employee->updated_by = $admin->email;
                 $employee->update();
                 Log::info("EmployeeUpdateImport: ".$employee);
-                array_push($approval_pan,Str::upper($company));   
+                array_push($approval_pan,$company);   
             }
         }
 

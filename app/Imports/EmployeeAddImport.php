@@ -52,17 +52,19 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
             if($company!="" && (in_array($company, $company_list)==true || $role=="Admin")){
                 $employee = new Employee();
                 $employee->pan_number = Str::upper($row["employee_pan"]);
-                $employee->employee_code = $row["employee_id"];
+                $employee->employee_code = Str::upper($row["employee_id"]);
                 $employee->name = $row["employee_name"];
                 $employee->mobile = $row["employee_mobile"];
-                $employee->email = $row["employee_email"];
-                $employee->designation = $row["employee_designation"];
+                $employee->email = Str::lower($row["employee_email"]);
+                $employee->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
+                $employee->designation = Str::upper($row["employee_designation"]);
                 $employee->company = Str::upper($company);
                 $employee->marital_status = "Single";
                 $employee->num_of_kids = 0;
-                $employee->created_at = $today->toDateTimeString();
+                $employee->approver1 = $row["approver_1_email_id"]==null ? null : Str::lower($row["approver_1_email_id"]);
+                $employee->approver2 = $row["approver_2_email_id"]==null ? null : Str::lower($row["approver_2_email_id"]);
+                $employee->approver3 = $row["approver_3_email_id"]==null ? null : Str::lower($row["approver_3_email_id"]);
                 $employee->created_by = $admin->email;
-                $employee->updated_at = $today->toDateTimeString();
                 $employee->updated_by = $admin->email;
                 $employee->save();
 
@@ -86,7 +88,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                     else{
                         $employee_benefit = new EmployeeBenefit();
                         $employee_benefit->pan_number = $row["employee_pan"];
-                        $employee_benefit->company = Str::upper($company);
+                        $employee_benefit->company = $company;
                         $employee_benefit->current_benefit = $benefit_amount;
                         $employee_benefit->month = $month;
                         $employee_benefit->created_at = $today->toDateTimeString();
@@ -97,7 +99,7 @@ class EmployeeAddImport implements ToCollection, WithHeadingRow, WithCalculatedF
                         Log::info("AddEmployeeImport: Add employee benefit:".$employee_benefit);
                     }
                 }
-                array_push($approval_pan,Str::upper($company));    
+                array_push($approval_pan,$company);    
             }           
         }
 
