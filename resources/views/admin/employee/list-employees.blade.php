@@ -101,13 +101,9 @@
                             <label for="email">Email:</label>
                             <input type="email" class="form-control" name="email" id="email" maxlength=100 required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mt-3">
                             <label for="name">Designation:</label>
                             <input type="text" class="form-control" name="designation" id="designation" maxlength=50 required>
-                        </div>
-                        <div class="form-group">
-                            <label for="amount">Benefit Amount:</label>
-                            <input type="text" class="form-control" name="amount" id="amount" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6" required>
                         </div>
                     </form>
                 </div>
@@ -204,7 +200,8 @@
         });
 
         $(".edit").click(function(){
-            $id=$(this).attr("id").substring(4,5);
+            $length = $(this).attr("id").length;
+            $id=$(this).attr("id").substring(4,$length);
             $("#pan").prop("value",$("#pan"+$id).html());
             $("#name").prop("value",$("#name"+$id).html());
             $("#mobile").prop("value",$("#mobile"+$id).html());

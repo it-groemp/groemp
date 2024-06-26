@@ -66,6 +66,7 @@ class AdminController extends Controller
             $admin->pan = $pan_number;
             $admin->company = $company;
             $admin->role = $role;
+            $admin->password = password_hash("Groemp@1234",PASSWORD_DEFAULT);
             $admin->created_by = $old_admin->email;
             $admin->updated_by = $old_admin->email;
             $admin->save();
@@ -323,51 +324,33 @@ class AdminController extends Controller
         return redirect("/employee-details");
     }
 
-    public function updateEmployeeDetails($id){
+    public function updateEmployeeDetails($id, Request $request){
+        $request->validate([
+            "email" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+            "name" => "required|regex:/^[a-zA-Z .]+$/",
+            "mobile" => "required|regex:/[6-9]{1}[0-9]{9}/",
+            "pan" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",
+            "designation" => "required"
+        ]);
         $email = request("email");
         $name = request("name");
         $mobile = request("mobile");
         $pan = request("pan");
         $designation = request("designation");
-        $amount = request("amount");
-        $error = "";
-        if($name=="" || !preg_match ("/^[a-zA-Z .]+$/",$name)){
-            $error = "Name should contain only Capital, Small Letters, Spaces and Dot Allowed";
-        }
-        if($email=="" || !preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",$email)){
-            $error = $error."<br/> Please enter a valid email address";
-        }
-        if($mobile=="" || !preg_match ("/[6-9]{1}[0-9]{9}/",$mobile)){
-            $error = "Please enter a valid mobile number";
-        }
-        if($pan=="" || !preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",$pan)){
-            $error = $error."<br/> Please enter a valid PAN";
-        }
-        if($designation==""){
-            $error = $error."<br/> Please enter a valid Designation";
-        }
-        if($amount=="" || !preg_match("/^[0-9]+$/",$amount)){
-            $error = $error."<br/> Please enter a valid Amount";
-        }
-        if($error==""){
-            $admin_id = Session::get("admin_id");
-            $admin = Admin::where("id",$admin_id)->first();
-            $employee = Employee::where("id",$id)->first();
-            $employee->pan_number = $pan;
-            $employee->name = $name;
-            $employee->mobile = $mobile;
-            $employee->email = $email;
-            $employee->designation = $designation;
-            $employee->updated_by = $admin->email;
-            $employee->update();
-            $admin_id = Session::get("admin_id");
-            Log::info("updateEmployeeDetails(): Update employee details for employee: ".$employee." by admin: ".$admin->company);
-            return redirect("/employee-details");
-        }
-        else{
-            Log::error("updateEmployeeDetails(): Error occurred while updating employee: ".$id." Error: ".$error);
-            return redirect()->back()->with("error",$error);
-        }
+        
+        $admin_id = Session::get("admin_id");
+        $admin = Admin::where("id",$admin_id)->first();
+        $employee = Employee::where("id",$id)->first();
+        $employee->pan_number = $pan;
+        $employee->name = $name;
+        $employee->mobile = $mobile;
+        $employee->email = $email;
+        $employee->designation = $designation;
+        $employee->updated_by = $admin->email;
+        $employee->update();
+        $admin_id = Session::get("admin_id");
+        Log::info("updateEmployeeDetails(): Update employee details for employee: ".$employee." by admin: ".$admin->company);
+        return redirect("/employee-details");
     }
 
     public function freezeEmployee($id){
