@@ -45,8 +45,9 @@
 @stop
 @section("js")
     <script>
-        $(".btn-delete").click(function(){			
-			$row=this.id.substring(6,7);
+        $(".btn-delete").click(function(){		
+            $length = $(this).attr("id").length;	
+			$row=this.id.substring(6,$length);
 			$name=$("#name"+$row).html();
 			$btn = confirm("Do you wish to delete "+$name+"?");
             if(!$btn){

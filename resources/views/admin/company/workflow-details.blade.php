@@ -166,7 +166,8 @@
         });
 
         $(".edit").click(function(){
-            $id=$(this).attr("id").substring(4,5);
+            $length = $(this).attr("id").length;
+            $id=$(this).attr("id").substring(4,$length);
             $("#company-edit").prop("value",$("#company"+$id).html());
             $("#approver1-edit").prop("value",$("#ap1"+$id).html());
             $("#approver2-edit").prop("value",$("#ap2"+$id).html());

@@ -264,7 +264,8 @@
 		});
 
         $(".freeze").click(function(){
-            $row = $(this).attr("id").substring(6,7);
+            $length = $(this).attr("id").length;
+            $row = $(this).attr("id").substring(6,$length);
             $name = $("#name"+$row).html();
             $text="Do you wish to freeze the employee "+$name+"?";
 			$(".text").html($text);
