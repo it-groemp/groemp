@@ -6,10 +6,14 @@
 @section('content')
     <div class="container box">        
         <h1 class="mb-3 text-center"><strong><i>Change Password</i></strong></h1>
-        @if(session("success"))
-            <div class="success mb-3 p-3">{{session("success")}}</div>
-        @elseif(session("error"))
-            <div class="error mb-3 p-3">{{session("error")}}</div>
+        @if($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
         @php
             $pan = Session::get("pan");

@@ -176,43 +176,41 @@ class AdminController extends Controller
         $pan = Str::upper($request->pan);
         $password = $request->password;
         $cnfm_password = $request->cnfm_password;
-        $error="";
+
         if($password!=$cnfm_password){
-            $error = "Both the passwords do not match";
+            Log::error("updatePassword(): Error occurred while updating password for PAN: ".$pan." Error: Both the passwords do not match");
+            return redirect()->back()->withErrors(["errors"=>"Both the passwords do not match"]);
         }
         else{
             $password_list = PasswordBackupAdmin::where("pan",$pan)->pluck("password")->toArray();
-            $hash_password = password_hash($password,PASSWORD_DEFAULT);
-            if(count($password_list)>0 && in_array($hash_password, $password_list)){
-                $error = "Please do not enter last 3 passwords";
+            
+            foreach($password_list as $hash_password){
+                if(password_verify($password,$hash_password)){
+                    Log::error("updatePassword(): Error occurred while updating password for PAN: ".$pan." Error: Please do not enter last 3 passwords");
+                    return redirect()->back()->withErrors(["errors"=>"Please do not enter last 3 passwords"]);
+                }                
             }
-            else{
-                $password_backup = new PasswordBackupAdmin();
-                
-                if(count($password_list)==3){
-                    $backup = PasswordBackupAdmin::where("pan",$pan)->first();
-                    $backup->delete();
-                }
-                
-                $password_backup->pan = $pan;
-                $password_backup->password = $hash_password;
-                $password_backup->save();
+            $password_backup = new PasswordBackupAdmin();
+            
+            if(count($password_list)==3){
+                $backup = PasswordBackupAdmin::where("pan",$pan)->first();
+                $backup->delete();
+            }
+            
+            $password_backup->pan = $pan;
+            $password_backup->password = password_hash($password,PASSWORD_DEFAULT);
+            $password_backup->save();
 
-                $admin = Admin::where("pan",$pan)->first();
-                $admin->password = password_hash($password,PASSWORD_DEFAULT);
-                $admin->update();
-                $email=$admin->email;
-                Session::forget("pan");
-                Session::put("admin_id",$admin->id);
-                Session::put("role",$admin->role);
-                Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
-                Log::info("updatePassword(): Password updated for pan ".$pan." and mail sent to ".$email);
-                return redirect("/employee-details");
-            }
-        }
-        if($error!=""){
-            Log::error("updatePassword(): Error occurred while updating password for PAN: ".$pan." Error: ".$error);
-            return redirect()->back()->withErrors(["errors"=>"Both the passwords do not match"]);
+            $admin = Admin::where("pan",$pan)->first();
+            $admin->password = password_hash($password,PASSWORD_DEFAULT);
+            $admin->update();
+            $email=$admin->email;
+            Session::forget("pan");
+            Session::put("admin_id",$admin->id);
+            Session::put("role",$admin->role);
+            Mail::to($email)->send(new UpdatePasswordAdminMail($admin->name));
+            Log::info("updatePassword(): Password updated for pan ".$pan." and mail sent to ".$email);
+            return redirect("/employee-details");
         }
     }
 
