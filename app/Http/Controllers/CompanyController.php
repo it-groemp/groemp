@@ -328,22 +328,6 @@ class CompanyController extends Controller
                 $company_benefit->updated_by = $admin->email;
                 $company_benefit->save();
                 Log::info("saveCompanyBenefit(): Save company benefits for company ".$company_benefit." by employer:".$admin->email);
-            
-                $workflow = Workflow::where("company",$company)->first();
-                if($workflow!=null && $workflow->approver1!=null){
-                    $workflow_approval = new WorkflowApproval();
-                    $token = Str::random(20);
-                    $workflow_approval->company = $company;
-                    $workflow_approval->type="approver1";
-                    $workflow_approval->approver_email = $workflow->approver1;
-                    $workflow_approval->approval_for = "Employees Benefit";
-                    $workflow_approval->token = $token;
-                    $workflow_approval->created_by = $admin->email;
-                    $workflow_approval->save();
-                    $link=config("app.url")."/approve-employee-benefit-add-details/$token";
-                    Mail::to($workflow->approver1)->send(new ApproverCompanyBenefitsMail($link));
-                    Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Company Benefits Addition to ".$workflow->approver1);
-                }
             }
             return redirect("/company-benefit-details");
         }
