@@ -3,7 +3,7 @@ body{
 }
 
 .nav-link{
-    font-size: 1.5vw;
+    font-size: 1.5rem;
     font-weight: bolder;
     color: black !important;
 }
@@ -207,6 +207,10 @@ footer{
 }
 
 @media only screen and (max-width: 600px){
+    .nav-link{
+        font-size: 1rem;
+    }
+    
     .form-container{
         width: 95%;
     }
