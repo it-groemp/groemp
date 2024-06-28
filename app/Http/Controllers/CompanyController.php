@@ -282,6 +282,12 @@ class CompanyController extends Controller
         else if((new AdminController())->checkEmployerSession()){
             $admin_id = Session::get("admin_id");
             $admin = Admin::where("id",$admin_id)->first();
+            $company_pan = $admin->company;
+            $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
+            $approval_status = WorkflowApproval::where("approval_for","Company Benefits")->whereIn("company",$company_list)->get();
+            if(count($approval_status)>0){
+                return view("admin.company.company-benefits-details")->with("approval_status",$approval_status);
+            }
             $benefits = CompanyBenefit::join("companies","company_benefits.company","companies.pan")
                         ->orWhere("companies.pan",$admin->company)->orWhere("companies.group_company_code",$admin->company)
                         ->get();
@@ -328,6 +334,22 @@ class CompanyController extends Controller
                 $company_benefit->updated_by = $admin->email;
                 $company_benefit->save();
                 Log::info("saveCompanyBenefit(): Save company benefits for company ".$company_benefit." by employer:".$admin->email);
+            
+                $workflow = Workflow::where("company",$company)->first();
+                if($workflow!=null && $workflow->approver1!=null){
+                    $workflow_approval = new WorkflowApproval();
+                    $token = Str::random(20);
+                    $workflow_approval->company = $company;
+                    $workflow_approval->type="approver1";
+                    $workflow_approval->approver_email = $workflow->approver1;
+                    $workflow_approval->approval_for = "Company Benefits";
+                    $workflow_approval->token = $token;
+                    $workflow_approval->created_by = $admin->email;
+                    $workflow_approval->save();
+                    $link=config("app.url")."/approve-company-benefit-add-details/$token";
+                    Mail::to($workflow->approver1)->send(new ApproverCompanyBenefitsMail($link,"added"));
+                    Log::info("saveCompanyBenefit(): Mail sent for approving Company Benefits Addition to ".$workflow->approver1);
+                }
             }
             return redirect("/company-benefit-details");
         }

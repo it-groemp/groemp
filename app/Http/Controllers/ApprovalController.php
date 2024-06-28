@@ -19,6 +19,7 @@ use App\Mail\ApproverEmployeeAddMail;
 use App\Mail\ApproverEmployeeEditMail;
 use App\Mail\ApproverEmployeeBenefitsAddMail;
 use App\Mail\ApproverEmployeeBenefitsEditMail;
+use App\Mail\ApproverCompanyBenefitsMail;
 
 
 class ApprovalController extends Controller
@@ -216,5 +217,44 @@ class ApprovalController extends Controller
             $workflow_approval->delete();
         }
         return view("admin.approvals.employee");
+    }
+
+    public function approveCompanyAddBenefits($token){
+        $workflow_approval = WorkflowApproval::where("token",$token)->first();
+        $workflow = Workflow::where("company",$workflow_approval->company)->first();
+        if($workflow_approval->type == "approver1"){
+            $workflow_approval->delete();
+            if($workflow->approver2!=null){
+                $workflow_approval->company = $workflow->company;
+                $token = Str::random(20);
+                $workflow_approval->type="approver2";
+                $workflow_approval->approver_email = $workflow->approver2;
+                $workflow_approval->approval_for = "Company Benefits";
+                $workflow_approval->token = $token;
+                $workflow_approval->save();
+                $link=config("app.url")."/approve-company-benefit-add-details/$token";
+                Mail::to($workflow->approver2)->send(new ApproverCompanyBenefitsMail($link,"added"));
+                Log::info("approveCompanyAddBenefits(): Mail sent for approving Employee Benefits Updation to ".$workflow->approver2);
+            }
+        }
+        else if($workflow_approval->type == "approver2"){
+            $workflow_approval->delete();
+            if($workflow->approver3!=null){
+                $workflow_approval->company = $workflow->$company;
+                $token = Str::random(20);
+                $workflow_approval->type="approver3";
+                $workflow_approval->approver_email = $workflow->approver3;
+                $workflow_approval->approval_for = "Company Benefits";
+                $workflow_approval->token = $token;
+                $workflow_approval->save();
+                $link=config("app.url")."/approve-company-benefit-add-details/$token";
+                Mail::to($workflow->approver3)->send(new ApproverCompanyBenefitsMail($link, "added"));
+                Log::info("approveCompanyAddBenefits(): Mail sent for approving Employee Benefits Updation to ".$workflow->approver3);
+            }
+        }
+        else{
+            $workflow_approval->delete();
+        }
+        return view("admin.approvals.company-benefits");
     }
 }

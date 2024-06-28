@@ -73,6 +73,8 @@ class EmployeeController extends Controller
         else if (password_verify($password,$employee->password)){
             Session::put("employee",$employee->id);
             Log::info("verifyEmployee(): Logging successful for employee: ".$employee);
+            $approval_status = WorkflowApproval::where("approval_for","Company Benefits")->where("company",$employee->company)->first();
+            Session::put("company_benefit_status",$approval_status==null?true:false);
             return redirect("/profile");
         }
         else{
