@@ -20,8 +20,11 @@ use App\Models\CompanyBenefit;
 use App\Imports\CompanyImport;
 use App\Imports\CostCenterImport;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+
 use App\Mail\QueryMail;
+use App\Mail\ApproverCompanyBenefitsMail;
 
 use Excel;
 
@@ -205,8 +208,8 @@ class CompanyController extends Controller
         if((new AdminController())->checkEmployerSession() || (new AdminController())->checkAdminSession()){
             $request->validate([
                 "approver1" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
-                "approver2" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
-                "approver3" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+                "approver2" => "nullable|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
+                "approver3" => "nullable|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
             ]); 
             
             $company = Str::upper(request("company"));
@@ -325,6 +328,22 @@ class CompanyController extends Controller
                 $company_benefit->updated_by = $admin->email;
                 $company_benefit->save();
                 Log::info("saveCompanyBenefit(): Save company benefits for company ".$company_benefit." by employer:".$admin->email);
+            
+                $workflow = Workflow::where("company",$company)->first();
+                if($workflow!=null && $workflow->approver1!=null){
+                    $workflow_approval = new WorkflowApproval();
+                    $token = Str::random(20);
+                    $workflow_approval->company = $company;
+                    $workflow_approval->type="approver1";
+                    $workflow_approval->approver_email = $workflow->approver1;
+                    $workflow_approval->approval_for = "Employees Benefit";
+                    $workflow_approval->token = $token;
+                    $workflow_approval->created_by = $admin->email;
+                    $workflow_approval->save();
+                    $link=config("app.url")."/approve-employee-benefit-add-details/$token";
+                    Mail::to($workflow->approver1)->send(new ApproverCompanyBenefitsMail($link));
+                    Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Company Benefits Addition to ".$workflow->approver1);
+                }
             }
             return redirect("/company-benefit-details");
         }
@@ -339,7 +358,7 @@ class CompanyController extends Controller
                         ->orderBy("categories.name")
                         ->orderBy("benefits.name")
                         ->get(['benefits.id as id','benefits.name as name','categories.name as category_name']);
-                        Log::info("addCompanyBenefit(): Edit company benefits for company ".$company_benefit." by employer:".$admin->email);            
+            Log::info("addCompanyBenefit(): Edit company benefits for company ".$company_benefit." by employer:".$admin->email);            
             return view("admin.company.edit-company-benefits")->with("company_benefit",$company_benefit)->with("benefits",$benefits);
         }
     }

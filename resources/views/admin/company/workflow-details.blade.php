@@ -1,10 +1,16 @@
 @extends('admin.layouts.app')
-@section('pageTitle','Register Company')
+@section('pageTitle','Workflow Details')
 @section("content")
     <div class="container my-5">
         <h2 class="text-center mb-3">Workflow Details</h2>
-        @if(session("error"))
-            <div class="error mb-3">{!!session("error")!!}</div>
+        @if($errors->any())
+            <div class="alert error mt-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
         <div class="text-right my-5 pr-3 align-right">
             <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#addWorkflowModal">
