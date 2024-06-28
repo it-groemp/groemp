@@ -29,7 +29,7 @@
                         </button>	
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li><a class="dropdown-item" href="{{route('profile')}}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{{route('current-benefits')}}">Current Benefits</a></li>
+                            <li><a class="dropdown-item" href="{{route('employee-benefits-home')}}">Current Benefits</a></li>
                             <li><a class="dropdown-item" href="#">Benefits Availed</a></li>
                             <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
                         </ul>

@@ -46,6 +46,15 @@ body{
     background-color: transparent;
 }
 
+.btn-delete, .btn-delete:hover{
+    border: 2px solid red;
+    padding: 5px 30px; 
+    border-radius: 30px;
+    color: red;
+    font-weight: 500;
+    background-color: transparent;
+}
+
 footer{
     background: linear-gradient( rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75) ),url('../images/footer.jpeg');
     background-size: 100% 100%;

@@ -451,20 +451,33 @@ class EmployeeController extends Controller
         }
     }
 
-    public function currentBenefits(){
+    public function employeeBenefitsHome(){
         if($this->checkSession()){         
-            // $id=Session::get("employee");
-            // $employee = Employee::find($id);
-            // $company = $employee->company;
-            // $company_benefits_list = CompanyBenefit::where("company",$company)->pluck("benefits");
-            // $benefits_list = Benefit::whereIn("id",$company_benefits_list[0])->get()->sortBy("category_id");
-            // $categories = $benefits_list->pluck("category_id")->unique();
-            // $category_list = Category::whereIn("id",$categories)->get();
-            //return view("employee.employee-current-benefits")->with("benefits_list",$benefits_list)->with("category_list",$category_list);
-            return redirect("/fuel-solution");
+            $id=Session::get("employee");
+            $employee = Employee::find($id);
+            $employee_benefit = EmployeeBenefit::where("pan_number",$employee->pan_number)->first();
+            $company = $employee->company;
+            $company_benefits_list = CompanyBenefit::where("company",$company)->pluck("benefits");
+            $benefits_array = json_decode($company_benefits_list[0]);
+            $benefits_list = Benefit::whereIn("id",$benefits_array)->get()->sortBy("category_id");
+            $categories = $benefits_list->pluck("category_id")->unique();
+            $category_list = Category::whereIn("id",$categories)->get();
+            Session::put("category_list",$category_list);
+            Session::put("benefits_list",$benefits_array);
+            Session::put("benefit_amount",($employee_benefit->current_benefit+$employee_benefit->previous_balance));
+            Session::forget("current_cat");
+            return view("employee.employee-benefits-home");
         }
         else{
             return redirect("/employee-login");
         }
+    }
+
+    public function employeeBenefits($id){
+        $benefits_array = Session::get("benefits_list");
+        $benefits_category = Benefit::where("category_id",$id)->whereIn("id",$benefits_array)->get();
+        $category = Category::find($id);
+        Session::put("current_cat",$id);
+        return view("employee.employee-benefits")->with("benefits_list",$benefits_category)->with("category",$category);
     }
 }

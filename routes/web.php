@@ -8,7 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BenefitController;
 use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\MailController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers;
 
@@ -27,12 +27,6 @@ Route::get("/", [PagesController::class,"index"])->name("home");
 Route::get("/our-benefits", [PagesController::class,"ourBenefits"])->name("our-benefits");
 Route::get("/about-us", [PagesController::class,"aboutUs"])->name("about-us");
 Route::get("/contact-us", [PagesController::class,"contactUs"])->name("contact-us");
-Route::get("/fuel-solution", [PagesController::class,"fuelSolution"])->name("fuel-solution");
-Route::get("/car-lease", [PagesController::class,"carLease"])->name("car-lease");
-Route::get("/gadget-purchases", [PagesController::class,"gadgetPurchases"])->name("gadget-purchases");
-Route::get("/uniformed-uniform", [PagesController::class,"uniformedUniform"])->name("uniformed-uniform");
-Route::get("/transport-facility", [PagesController::class,"transportFacility"])->name("transport-facility");
-Route::get("/uniformed-uniform", [PagesController::class,"uniformedUniform"])->name("uniformed-uniform");
 
 Route::get("/company-details-admin", [CompanyController::class,"companyDetailsAdmin"])->name("company-details-admin");
 Route::get("/company-details-employer", [CompanyController::class,"companyDetailsEmployer"])->name("company-details-employer");
@@ -78,7 +72,15 @@ Route::post("/save-marital",[EmployeeController::class,"saveMarital"])->name("sa
 Route::post("/save-kids",[EmployeeController::class,"saveKids"])->name("save-kids");
 Route::post("/change-photo", [EmployeeController::class,"changePhoto"])->name("change-photo");
 Route::get("/delete-photo", [EmployeeController::class,"deletePhoto"])->name("delete-photo");
-Route::get("/current-benefits", [EmployeeController::class,"currentBenefits"])->name("current-benefits");
+Route::get("/employee-benefits-home", [EmployeeController::class,"employeeBenefitsHome"])->name("employee-benefits-home");
+Route::get("/employee-benefits/{id}", [EmployeeController::class,"employeeBenefits"])->name("employee-benefits");
+
+Route::post("/save-cart-dropdown", [CartController::class,"saveCartDropdown"])->name("save-cart-dropdown");
+Route::post("/save-cart-number", [CartController::class,"saveCartNumber"])->name("save-cart-number");
+Route::post("/save-cart-text", [CartController::class,"saveCartText"])->name("save-cart-text");
+Route::get("/delete-from-cart/{id}", [CartController::class,"deleteFromCart"])->name("delete-from-cart");
+Route::get("/save-benefits", [CartController::class,"saveBenefits"])->name("save-benefits");
+Route::get("/display-cart", [CartController::class,"displayCart"])->name("display-cart");
 
 Route::get("/admin/login", [AdminController::class,"adminLogin"])->name("admin-login");
 Route::get("/admin/logout", [AdminController::class,"adminLogout"])->name("admin-logout");
