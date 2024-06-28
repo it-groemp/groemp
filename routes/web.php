@@ -51,6 +51,7 @@ Route::get("/approve-employee-add-details/{token}", [ApprovalController::class, 
 Route::get("/approve-employee-edit-details/{token}", [ApprovalController::class, "approveEmployeeEditDetails"])->name("approve-employee-edit-details");
 Route::get("/approve-employee-benefit-add-details/{token}", [ApprovalController::class, "approveEmployeeBenefitAddDetails"])->name("approve-employee-benefit-add-details");
 Route::get("/approve-employee-benefit-edit-details/{token}", [ApprovalController::class, "approveEmployeeBenefitEditDetails"])->name("approve-employee-benefit-edit-details");
+Route::get("/approve-company-benefit-add-details/{token}", [ApprovalController::class, "approveCompanyAddBenefits"])->name("approve-company-benefit-add-details");
 
 Route::get("/login", [EmployeeController::class,"login"])->name("login");
 Route::get("/employee-login", [EmployeeController::class,"employeeLogin"])->name("employee-login");
