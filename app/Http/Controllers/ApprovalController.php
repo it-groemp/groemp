@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\Employee;
 use App\Models\Workflow;
 use App\Models\WorkflowApproval;
 
@@ -80,6 +81,17 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeAddMail($link));
                 Log::info("approveEmployeeAddDetails(): Mail sent for approving Employee Addition to ".$workflow->approver2);
             }
+            else{
+                $employee_list = Employee::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+
+                    $employee_benefit = EmployeeBenfit::where("company",$employee->pan)->first();
+                    $employee_benefit->verified = "Yes";
+                    $employee_benefit->update();
+                }
+            }
         }
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
@@ -95,9 +107,29 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeAddMail($link));
                 Log::info("approveEmployeeAddDetails(): Mail sent for approving Employee Addition to ".$workflow->approver3);
             }
+            else{
+                $employee_list = Employee::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+
+                    $employee_benefit = EmployeeBenfit::where("company",$employee->pan)->first();
+                    $employee_benefit->verified = "Yes";
+                    $employee_benefit->update();
+                }
+            }
         }
         else{
             $workflow_approval->delete();
+            $employee_list = Employee::where("company",$workflow_approval->company)->where("verified","No")->get();
+            foreach($employee_list as $employee){
+                $employee->verified = "Yes";
+                $employee->update();
+
+                $employee_benefit = EmployeeBenfit::where("company",$employee->pan)->first();
+                $employee_benefit->verified = "Yes";
+                $employee_benefit->update();
+            }
         }
         return view("admin.approvals.employee");
     }
@@ -119,6 +151,13 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeEditMail($link));
                 Log::info("approveEmployeeEditDetails(): Mail sent for approving Employee Updation to ".$workflow->approver2);
             }
+            else{
+                $employee_list = Employee::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+                }
+            }
         }
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
@@ -134,9 +173,21 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeEditMail($link));
                 Log::info("approveEmployeeEditDetails(): Mail sent for approving Employee Updation to ".$workflow->approver3);
             }
+            else{
+                $employee_list = Employee::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+                }
+            }
         }
         else{
             $workflow_approval->delete();
+            $employee_list = Employee::where("company",$workflow_approval->company)->where("verified","No")->get();
+            foreach($employee_list as $employee){
+                $employee->verified = "Yes";
+                $employee->update();
+            }
         }
         return view("admin.approvals.employee");
     }
@@ -158,6 +209,13 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver2)->send(new ApproverEmployeeBenefitsAddMail($link));
                 Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Employee Benefits Addition to ".$workflow->approver2);
             }
+            else{
+                $employee_list = EmployeeBenefit::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+                }
+            }
         }
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
@@ -173,9 +231,21 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver3)->send(new ApproverEmployeeBenefitsAddMail($link));
                 Log::info("approveEmployeeBenefitAddDetails(): Mail sent for approving Employee Benefits Addition to ".$workflow->approver3);
             }
+            else{
+                $employee_list = EmployeeBenefit::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+                }
+            }
         }
         else{
             $workflow_approval->delete();
+            $employee_list = EmployeeBenefit::where("company",$workflow_approval->company)->where("verified","No")->get();
+            foreach($employee_list as $employee){
+                $employee->verified = "Yes";
+                $employee->update();
+            }
         }
         return view("admin.approvals.employee");
     }
@@ -236,6 +306,13 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver2)->send(new ApproverCompanyBenefitsMail($link,"added"));
                 Log::info("approveCompanyAddBenefits(): Mail sent for approving Employee Benefits Updation to ".$workflow->approver2);
             }
+            else{                
+                $employee_list = EmployeeBenefit::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+                }
+            }
         }
         else if($workflow_approval->type == "approver2"){
             $workflow_approval->delete();
@@ -251,9 +328,21 @@ class ApprovalController extends Controller
                 Mail::to($workflow->approver3)->send(new ApproverCompanyBenefitsMail($link, "added"));
                 Log::info("approveCompanyAddBenefits(): Mail sent for approving Employee Benefits Updation to ".$workflow->approver3);
             }
+            else{                
+                $employee_list = EmployeeBenefit::where("company",$workflow_approval->company)->where("verified","No")->get();
+                foreach($employee_list as $employee){
+                    $employee->verified = "Yes";
+                    $employee->update();
+                }
+            }
         }
         else{
             $workflow_approval->delete();
+            $employee_list = EmployeeBenefit::where("company",$workflow_approval->company)->where("verified","No")->get();
+            foreach($employee_list as $employee){
+                $employee->verified = "Yes";
+                $employee->update();
+            }
         }
         return view("admin.approvals.company-benefits");
     }

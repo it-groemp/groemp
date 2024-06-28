@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string("approver1",100)->nullable(true);
             $table->string("approver2",100)->nullable(true);
             $table->string("approver3",100)->nullable(true);
+            $table->string("verified",3)->nullable(false)->default("No");
             $table->timestamp("from_date")->useCurrent();
             $table->timestamp("to_date")->nullable(true);
             $table->string("created_by",100)->nullable(false);

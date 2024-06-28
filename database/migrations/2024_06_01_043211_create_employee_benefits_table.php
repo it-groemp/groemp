@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer("current_benefit")->nullable(false)->default(0);
             $table->integer("previous_balance")->nullable(false)->default(0);
             $table->integer("availed_benefit")->nullable(false)->default(0);
+            $table->string("verified",3)->nullable(false)->default("No");
             $table->string("created_by",100)->nullable(false);
             $table->string("updated_by",100)->nullable(false);
             $table->timestamp("created_at")->nullable(false)->useCurrent();

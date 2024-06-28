@@ -65,6 +65,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
                 if($row["approver_3_email_id"]!="NA"){
                     $employee->approver3 = $row["approver_3_email_id"]==null ? null : Str::lower($row["approver_3_email_id"]);
                 }
+                $employee->verified = "No";
                 $employee->updated_by = $admin->email;
                 $employee->update();
                 Log::info("EmployeeUpdateImport: ".$employee);
@@ -101,8 +102,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
             "*.employee_name" => ["required","regex:/^[a-zA-Z .]+$/"],
             "*.employee_mobile" => ["required","regex:/[6-9]{1}[0-9]{9}/","unique:employees,mobile"],
             "*.employee_email" => ["required","regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/","unique:employees,email"],
-            "*.employee_designation" => ["required"],
-            "*.benefit_amount" =>["required","numeric"]
+            "*.employee_designation" => ["required"]
         ];
     }
 
@@ -123,9 +123,7 @@ class EmployeeUpdateImport implements ToCollection, WithHeadingRow, WithCalculat
             "employee_email.required" => "Employee email is required",
             "employee_email.regex" => "Employee email is invalid",
             "employee_email.unique" => "Employee email is already registered",
-            "employee_designation.required" => "Employee designation is required",
-            "benefit_amount.required" => "Benefit amount is required",
-            "benefit_amount.numeric" => "Benefit amount can have only numbers"
+            "employee_designation.required" => "Employee designation is required"
         ];
     }
 }

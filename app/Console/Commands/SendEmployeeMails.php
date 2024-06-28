@@ -34,42 +34,23 @@ class SendEmployeeMails extends Command
      */
     public function handle()
     {
-        $employee_list = EmployeeWelcomeMail::join("employees","employee_welcome_mail.pan_number","employees.pan_number")
+        $employee_list = EmployeeWelcomeMail::join("employees","employee_welcome_mail.pan_number","employees.pan_number")->where("employee.verified","Yes")
         ->get(["employee_welcome_mail.pan_number", "name", "email"]);
 
-        $company_list = WorkflowApproval::where("approval_for","Employees")->pluck("company");
+        foreach($employee_list as $employee){
+            $token = Str::random(20);
+            $resetPassword = new ResetPassword();
+            $resetPassword->email = $employee->email;
+            $resetPassword->token = $token;
+            $resetPassword->save();
 
-        if(count($company_list)==0){
-            foreach($employee_list as $employee){
-                $token = Str::random(20);
-                $resetPassword = new ResetPassword();
-                $resetPassword->email = $employee->email;
-                $resetPassword->token = $token;
-                $resetPassword->save();
-    
-                $link=config("app.url")."/reset-password/$token";
-    
-                Mail::to($employee->email)->send(new WelcomeEmployeeMail($employee->name,$link));
-            
-                EmployeeWelcomeMail::where("pan_number",$employee->pan_number)->first()->delete();
-            }
-        }
-        else{
-            foreach($employee_list as $employee){
-                if(!in_array($employee->company,$company_list)){
-                    $token = Str::random(20);
-                    $resetPassword = new ResetPassword();
-                    $resetPassword->email = $employee->email;
-                    $resetPassword->token = $token;
-                    $resetPassword->save();
+            $link=config("app.url")."/reset-password/$token";
+
+            Mail::to($employee->email)->send(new WelcomeEmployeeMail($employee->name,$link));
         
-                    $link=config("app.url")."/reset-password/$token";        
-                    Mail::to($employee->email)->send(new EmployeeWelcomeMail($employee->name,$link));
-                
-                    EmployeeWelcomeMail::where("pan_number",$employee->pan_number)->first()->delete();
-                }
-            }
-            $this->info("Mail sent");
+            EmployeeWelcomeMail::where("pan_number",$employee->pan_number)->first()->delete();
         }
+
+        $this->info("Mail sent");
     }
 }

@@ -50,6 +50,7 @@ class EmployeeBenefitUpdateImport implements ToCollection, WithHeadingRow, WithC
                     $employee_benefit = EmployeeBenefit::where("pan_number",$pan)->where("month",$month)->first();            
                     $employee_benefit->current_benefit = $row["benefit_amount"];
                     $employee_benefit->updated_by = $admin->email;
+                    $employee_benefit->verified = "No";
                     $employee_benefit->update();
                     Log::info("EmployeeBenefitUpdateImport: Employee Benefit: ".$employee_benefit);
                 }

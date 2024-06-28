@@ -29,7 +29,7 @@
                         </button>	
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li><a class="dropdown-item" href="{{route('profile')}}">Profile</a></li>
-                            @if(Session::get("company_benefit_status"))
+                            @if(Session::get("benefit_status"))
                                 <li><a class="dropdown-item" href="{{route('employee-benefits-home')}}">Current Benefits</a></li>
                             @endif
                             <li><a class="dropdown-item" href="#">Benefits Availed</a></li>
