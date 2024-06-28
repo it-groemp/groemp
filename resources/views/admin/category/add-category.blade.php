@@ -53,6 +53,12 @@
                         Free Text
                     </label>
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="booking" value="Booking">
+                    <label class="form-check-label" for="free-text">
+                        Direct Booking
+                    </label>
+                </div>
             </div>
             <div class="form-group mt-3" id="values" style="display: none;">
                 

@@ -46,7 +46,7 @@
                     <span class='fa fa-plus add mx-3' style="visibility: hidden;"></span>
                     <span class='fa fa-minus' style="visibility: hidden;"></span>
                 @endif
-                <div class="form-group mt-3" id="values">
+                <div class="form-group mt-3" id="values" style="display:none;">
                     @foreach($values as $key => $value)
                         <div id="#category{{$key+1}}">
                             <label for="value{{$key+1}}">Value {{$key+1}}:</label>
@@ -73,6 +73,16 @@
                 @endif                    
                 <label class="form-check-label" for="free-text">
                     Free Text
+                </label>
+            </div>
+            <div class="form-check">
+                @if($category->type=="Booking")
+                    <input class="form-check-input" type="radio" name="type" id="booking" value="Booking" checked>
+                @else
+                    <input class="form-check-input" type="radio" name="type" id="booking" value="Booking">
+                @endif                    
+                <label class="form-check-label" for="free-text">
+                    Direct Booking
                 </label>
             </div>
             <div class="form-group mt-3">
