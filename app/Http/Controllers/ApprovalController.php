@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Employee;
+use App\Models\EmployeeBenefit;
 use App\Models\Workflow;
 use App\Models\WorkflowApproval;
 
