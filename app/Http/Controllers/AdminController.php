@@ -37,7 +37,7 @@ class AdminController extends Controller
             "name" => "required|regex:/^[a-zA-Z .]+$/",
             "email" => "required|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/",
             "mobile" => "required|regex:/[6-9]{1}[0-9]{9}/",
-            "pan_number" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",
+            "pan" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/",
             "company" => "required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}/"
         ]);
 
