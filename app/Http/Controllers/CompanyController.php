@@ -307,7 +307,7 @@ class CompanyController extends Controller
             $benefits = Benefit::join("categories","benefits.category_id","=","categories.id")
                         ->orderBy("categories.name")
                         ->orderBy("benefits.name")
-                        ->get(['benefits.id as id','benefits.name as name','categories.name as category_name']);
+                        ->get(['benefits.id as id','benefits.name as name',"category_id as category_id",'categories.name as category_name']);
             Log::info("addCompanyBenefit(): Add company benefits for company ".$admin->company." by employer:".$admin->email);
             return view("admin.company.add-company-benefits")->with("benefits",$benefits);
         }
@@ -326,10 +326,20 @@ class CompanyController extends Controller
             $admin = Admin::find($admin_id);
             $company_pan = $admin->company;
             $company_list = Company::where("pan",$company_pan)->orWhere("group_company_code",$company_pan)->pluck("pan")->toArray();
+            $category_array = array();
+            $gl_array = array();
+
+            foreach($benefits as $benefit){
+                array_push($gl_array, request("gl-benefit".$benefit));
+                array_push($category_array, Benefit::find($benefit)->category_id);
+            }
+            
             foreach($company_list as $company){
                 $company_benefit = new CompanyBenefit();
                 $company_benefit->company = $company;
                 $company_benefit->benefits = json_encode($benefits);
+                $company_benefit->gl_codes = json_encode($gl_array);
+                $company_benefit->categories = json_encode($category_array);
                 $company_benefit->created_by = $admin->email;
                 $company_benefit->updated_by = $admin->email;
                 $company_benefit->save();
@@ -363,7 +373,7 @@ class CompanyController extends Controller
             $benefits = Benefit::join("categories","benefits.category_id","=","categories.id")
                         ->orderBy("categories.name")
                         ->orderBy("benefits.name")
-                        ->get(['benefits.id as id','benefits.name as name','categories.name as category_name']);
+                        ->get(['benefits.id as id','benefits.name as name',"category_id as category_id",'categories.name as category_name']);
             Log::info("addCompanyBenefit(): Edit company benefits for company ".$company_benefit." by employer:".$admin->email);            
             return view("admin.company.edit-company-benefits")->with("company_benefit",$company_benefit)->with("benefits",$benefits);
         }
@@ -373,13 +383,19 @@ class CompanyController extends Controller
         if((new AdminController())->checkAdminSession() || (new AdminController())->checkEmployerSession()){
             $request->validate([
                 "benefit" => "required",
-            ]); 
+            ]);
             $benefits = request("benefit");
             $id = request("id");
             $admin_id = Session::get("admin_id");
             $admin = Admin::find($id);
+            $gl_array = array();
+
+            foreach($benefits as $benefit){
+                array_push($gl_array, request("gl-benefit".$benefit));
+            }
             $company_benefit = CompanyBenefit::find($id);
             $company_benefit->benefits = json_encode($benefits);
+            $company_benefit->gl_codes = json_encode($gl_array);
             $company_benefit->created_by = $admin->email;
             $company_benefit->updated_by = $admin->email;
             $company_benefit->update();

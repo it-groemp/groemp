@@ -31,18 +31,23 @@
                     @foreach($benefits as $benefit)
                         @php
                             $cbList = [];
+                            $glList = [];
                             $number=$loop->index+1;
                             $id = $benefit->id;
                             $company_benefits = json_decode($benefit->benefits);
+                            $gl_codes = json_decode($benefit->gl_codes);
                             foreach($company_benefits as $cb){
                                 array_push($cbList,$benefits_list[$cb-1]->name);
+                            }                        
+                            foreach($gl_codes as $gl){
+                                array_push($glList,$gl);
                             }                        
                         @endphp
                         <tr>
                             <td>{{$number}}</td>
                             <td id="{{'company'.$id}}">{{$benefit->company}}</td>
                             <td id="{{'list'.$id}}">
-                                <button class="btn btn-outline" onClick='viewList(<?php echo json_encode($cbList); ?>)'>View Selected Benefits</button>
+                                <button class="btn btn-outline" onClick='viewList(<?php echo json_encode($cbList); ?>,<?php echo json_encode($glList); ?>)'>View Selected Benefits</button>
                             </td>
                             <td>
                                 <a class="btn btn-outline edit" id="{{'edit'.$id}}" href="{{route('edit-company-benefit',$id)}}">
@@ -74,11 +79,11 @@
 @stop
 @section("js")
     <script>
-        function viewList(arr){
+        function viewList(cb, gl){
             $(".modal-body").empty();
             $text = "<div><ul>";
-            for(var i=0;i<arr.length;i++){
-                $text+="<li>"+arr[i]+"</li>";
+            for(var i=0;i<cb.length;i++){
+                $text+="<li>"+cb[i]+": "+gl[i]+"</li>";
             }
             $text+="</ul></div>";
             $(".modal-body").append($text);

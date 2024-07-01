@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string("company",10)->nullable(false);
             $table->foreign("company")->references("pan")->on("companies");
             $table->json("benefits")->nullable(false);
+            $table->json("categories")->nullable(false);
+            $table->json("gl_codes")->nullable(false);
             $table->string("created_by",100)->nullable(false);
             $table->string("updated_by",100)->nullable(false);
             $table->timestamp("created_at")->nullable(false)->useCurrent();
